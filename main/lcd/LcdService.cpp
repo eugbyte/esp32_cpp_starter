@@ -2,13 +2,15 @@
 // Created by eugen on 7/3/2026.
 //
 
-#include "LcdService.h"
+#include "LcdService.hpp"
 
 #include <string>
 
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "esp_log.h"
+
+#include <memory>
 
 LcdService::LcdService() {
 	uart_config = {
@@ -30,6 +32,10 @@ LcdService::LcdService() {
 	uart_param_config(LCD_UART_NUM, &uart_config);
 	uart_set_pin(LCD_UART_NUM, LCD_TX_PIN, LCD_RX_PIN, UART_PIN_NO_CHANGE,
 				 UART_PIN_NO_CHANGE);
+}
+
+LcdService::~LcdService() {
+	uart_driver_delete(LCD_UART_NUM);
 }
 
 esp_err_t LcdService::SendText(std::string_view text) {

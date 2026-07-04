@@ -22,4 +22,4 @@ set confirm off
 set confirm on
 
 # Load application symbols
-file D:/Users/eugen/Codes/esp/cpp_example/build/cpp_example.elf
+file D:/Users/eugen/Codes/esp/cpp_example/build/cpp_starter.elf

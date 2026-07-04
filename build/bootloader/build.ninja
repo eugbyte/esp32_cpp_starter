@@ -169,9 +169,8 @@ build bootloader_check_size: phony CMakeFiles/bootloader_check_size gen_project_
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -334,9 +333,8 @@ build CMakeFiles/bootloader_check_size | ${cmake_ninja_workdir}CMakeFiles/bootlo
 # Utility command for edit_cache
 
 build esp-idf/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/edit_cache: phony esp-idf/CMakeFiles/edit_cache.util
@@ -407,9 +405,8 @@ build esp-idf/xtensa/libxtensa.a: C_STATIC_LIBRARY_LINKER____idf_xtensa_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/xtensa/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\xtensa && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\xtensa && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/xtensa/edit_cache: phony esp-idf/xtensa/CMakeFiles/edit_cache.util
@@ -436,9 +433,8 @@ build esp-idf/xtensa/rebuild_cache: phony esp-idf/xtensa/CMakeFiles/rebuild_cach
 # Utility command for edit_cache
 
 build esp-idf/esp_libc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_libc && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_libc && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_libc/edit_cache: phony esp-idf/esp_libc/CMakeFiles/edit_cache.util
@@ -563,9 +559,8 @@ build esp-idf/soc/libsoc.a: C_STATIC_LIBRARY_LINKER____idf_soc_ esp-idf/soc/CMak
 # Utility command for edit_cache
 
 build esp-idf/soc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\soc && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\soc && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/soc/edit_cache: phony esp-idf/soc/CMakeFiles/edit_cache.util
@@ -663,9 +658,8 @@ build esp-idf/hal/libhal.a: C_STATIC_LIBRARY_LINKER____idf_hal_ esp-idf/hal/CMak
 # Utility command for edit_cache
 
 build esp-idf/hal/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\hal && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\hal && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/hal/edit_cache: phony esp-idf/hal/CMakeFiles/edit_cache.util
@@ -763,9 +757,8 @@ build esp-idf/esp_hal_gpio/libesp_hal_gpio.a: C_STATIC_LIBRARY_LINKER____idf_esp
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_gpio/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_gpio && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_gpio && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_gpio/edit_cache: phony esp-idf/esp_hal_gpio/CMakeFiles/edit_cache.util
@@ -792,9 +785,8 @@ build esp-idf/esp_hal_gpio/rebuild_cache: phony esp-idf/esp_hal_gpio/CMakeFiles/
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_usb/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_usb && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_usb && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_usb/edit_cache: phony esp-idf/esp_hal_usb/CMakeFiles/edit_cache.util
@@ -856,9 +848,8 @@ build esp-idf/esp_hal_pmu/libesp_hal_pmu.a: C_STATIC_LIBRARY_LINKER____idf_esp_h
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_pmu/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_pmu && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_pmu && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_pmu/edit_cache: phony esp-idf/esp_hal_pmu/CMakeFiles/edit_cache.util
@@ -885,9 +876,8 @@ build esp-idf/esp_hal_pmu/rebuild_cache: phony esp-idf/esp_hal_pmu/CMakeFiles/re
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_dma/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_dma && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_dma && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_dma/edit_cache: phony esp-idf/esp_hal_dma/CMakeFiles/edit_cache.util
@@ -985,9 +975,8 @@ build esp-idf/esp_hal_gpspi/libesp_hal_gpspi.a: C_STATIC_LIBRARY_LINKER____idf_e
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_gpspi/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_gpspi && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_gpspi && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_gpspi/edit_cache: phony esp-idf/esp_hal_gpspi/CMakeFiles/edit_cache.util
@@ -1049,9 +1038,8 @@ build esp-idf/esp_hal_clock/libesp_hal_clock.a: C_STATIC_LIBRARY_LINKER____idf_e
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_clock/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_clock && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_clock && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_clock/edit_cache: phony esp-idf/esp_hal_clock/CMakeFiles/edit_cache.util
@@ -1078,9 +1066,8 @@ build esp-idf/esp_hal_clock/rebuild_cache: phony esp-idf/esp_hal_clock/CMakeFile
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_mspi/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_mspi && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_mspi && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_mspi/edit_cache: phony esp-idf/esp_hal_mspi/CMakeFiles/edit_cache.util
@@ -1107,9 +1094,8 @@ build esp-idf/esp_hal_mspi/rebuild_cache: phony esp-idf/esp_hal_mspi/CMakeFiles/
 # Utility command for edit_cache
 
 build esp-idf/esp_blockdev/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_blockdev && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_blockdev && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_blockdev/edit_cache: phony esp-idf/esp_blockdev/CMakeFiles/edit_cache.util
@@ -1171,9 +1157,8 @@ build esp-idf/spi_flash/libspi_flash.a: C_STATIC_LIBRARY_LINKER____idf_spi_flash
 # Utility command for edit_cache
 
 build esp-idf/spi_flash/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\spi_flash && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\spi_flash && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/spi_flash/edit_cache: phony esp-idf/spi_flash/CMakeFiles/edit_cache.util
@@ -1235,9 +1220,8 @@ build esp-idf/esp_bootloader_format/libesp_bootloader_format.a: C_STATIC_LIBRARY
 # Utility command for edit_cache
 
 build esp-idf/esp_bootloader_format/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_bootloader_format && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_bootloader_format && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_bootloader_format/edit_cache: phony esp-idf/esp_bootloader_format/CMakeFiles/edit_cache.util
@@ -1264,9 +1248,8 @@ build esp-idf/esp_bootloader_format/rebuild_cache: phony esp-idf/esp_bootloader_
 # Utility command for edit_cache
 
 build esp-idf/esp_app_format/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_app_format && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_app_format && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_app_format/edit_cache: phony esp-idf/esp_app_format/CMakeFiles/edit_cache.util
@@ -1293,9 +1276,8 @@ build esp-idf/esp_app_format/rebuild_cache: phony esp-idf/esp_app_format/CMakeFi
 # Utility command for edit_cache
 
 build esp-idf/partition_table/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\partition_table && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\partition_table && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/partition_table/edit_cache: phony esp-idf/partition_table/CMakeFiles/edit_cache.util
@@ -1322,9 +1304,8 @@ build esp-idf/partition_table/rebuild_cache: phony esp-idf/partition_table/CMake
 # Utility command for edit_cache
 
 build esp-idf/esptool_py/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esptool_py && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esptool_py && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esptool_py/edit_cache: phony esp-idf/esptool_py/CMakeFiles/edit_cache.util
@@ -1386,9 +1367,8 @@ build esp-idf/micro-ecc/libmicro-ecc.a: C_STATIC_LIBRARY_LINKER____idf_micro-ecc
 # Utility command for edit_cache
 
 build esp-idf/micro-ecc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\micro-ecc && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\micro-ecc && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/micro-ecc/edit_cache: phony esp-idf/micro-ecc/CMakeFiles/edit_cache.util
@@ -1459,9 +1439,8 @@ build esp-idf/esp_hal_timg/libesp_hal_timg.a: C_STATIC_LIBRARY_LINKER____idf_esp
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_timg/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_timg && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_timg && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_timg/edit_cache: phony esp-idf/esp_hal_timg/CMakeFiles/edit_cache.util
@@ -1532,9 +1511,8 @@ build esp-idf/esp_hal_wdt/libesp_hal_wdt.a: C_STATIC_LIBRARY_LINKER____idf_esp_h
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_wdt/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_wdt && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_wdt && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_wdt/edit_cache: phony esp-idf/esp_hal_wdt/CMakeFiles/edit_cache.util
@@ -1614,9 +1592,8 @@ build esp-idf/esp_hal_uart/libesp_hal_uart.a: C_STATIC_LIBRARY_LINKER____idf_esp
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_uart/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_uart && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_uart && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_uart/edit_cache: phony esp-idf/esp_hal_uart/CMakeFiles/edit_cache.util
@@ -1687,9 +1664,8 @@ build esp-idf/esp_hal_i2s/libesp_hal_i2s.a: C_STATIC_LIBRARY_LINKER____idf_esp_h
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_i2s/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_i2s && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_i2s && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_i2s/edit_cache: phony esp-idf/esp_hal_i2s/CMakeFiles/edit_cache.util
@@ -1787,9 +1763,8 @@ build esp-idf/esp_hal_ana_conv/libesp_hal_ana_conv.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_ana_conv/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_ana_conv && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_ana_conv && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_ana_conv/edit_cache: phony esp-idf/esp_hal_ana_conv/CMakeFiles/edit_cache.util
@@ -1816,9 +1791,8 @@ build esp-idf/esp_hal_ana_conv/rebuild_cache: phony esp-idf/esp_hal_ana_conv/CMa
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_rtc_timer/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_rtc_timer && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_rtc_timer && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_rtc_timer/edit_cache: phony esp-idf/esp_hal_rtc_timer/CMakeFiles/edit_cache.util
@@ -1880,9 +1854,8 @@ build esp-idf/esp_hal_security/libesp_hal_security.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_hal_security/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_security && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hal_security && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hal_security/edit_cache: phony esp-idf/esp_hal_security/CMakeFiles/edit_cache.util
@@ -1953,9 +1926,8 @@ build esp-idf/esp_security/libesp_security.a: C_STATIC_LIBRARY_LINKER____idf_esp
 # Utility command for edit_cache
 
 build esp-idf/esp_security/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_security && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_security && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_security/edit_cache: phony esp-idf/esp_security/CMakeFiles/edit_cache.util
@@ -2215,9 +2187,8 @@ build esp-idf/bootloader_support/libbootloader_support.a: C_STATIC_LIBRARY_LINKE
 # Utility command for edit_cache
 
 build esp-idf/bootloader_support/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\bootloader_support && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\bootloader_support && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/bootloader_support/edit_cache: phony esp-idf/bootloader_support/CMakeFiles/edit_cache.util
@@ -2375,9 +2346,8 @@ build esp-idf/efuse/efuse_test_table: phony esp-idf/efuse/CMakeFiles/efuse_test_
 # Utility command for edit_cache
 
 build esp-idf/efuse/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\efuse && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\efuse && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/efuse/edit_cache: phony esp-idf/efuse/CMakeFiles/edit_cache.util
@@ -2484,9 +2454,8 @@ build esp-idf/esp_system/libesp_system.a: C_STATIC_LIBRARY_LINKER____idf_esp_sys
 # Utility command for edit_cache
 
 build esp-idf/esp_system/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_system && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_system && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_system/edit_cache: phony esp-idf/esp_system/CMakeFiles/edit_cache.util
@@ -2629,9 +2598,8 @@ build esp-idf/esp_hw_support/libesp_hw_support.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hw_support/edit_cache: phony esp-idf/esp_hw_support/CMakeFiles/edit_cache.util
@@ -2658,9 +2626,8 @@ build esp-idf/esp_hw_support/rebuild_cache: phony esp-idf/esp_hw_support/CMakeFi
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/port/esp32/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support\port\esp32 && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support\port\esp32 && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hw_support/port/esp32/edit_cache: phony esp-idf/esp_hw_support/port/esp32/CMakeFiles/edit_cache.util
@@ -2687,9 +2654,8 @@ build esp-idf/esp_hw_support/port/esp32/rebuild_cache: phony esp-idf/esp_hw_supp
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/lowpower/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support\lowpower && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_hw_support\lowpower && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_hw_support/lowpower/edit_cache: phony esp-idf/esp_hw_support/lowpower/CMakeFiles/edit_cache.util
@@ -2751,9 +2717,8 @@ build esp-idf/esp_common/libesp_common.a: C_STATIC_LIBRARY_LINKER____idf_esp_com
 # Utility command for edit_cache
 
 build esp-idf/esp_common/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_common && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_common && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_common/edit_cache: phony esp-idf/esp_common/CMakeFiles/edit_cache.util
@@ -2878,9 +2843,8 @@ build esp-idf/esp_rom/libesp_rom.a: C_STATIC_LIBRARY_LINKER____idf_esp_rom_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_rom/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_rom && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_rom && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_rom/edit_cache: phony esp-idf/esp_rom/CMakeFiles/edit_cache.util
@@ -3014,9 +2978,8 @@ build esp-idf/log/liblog.a: C_STATIC_LIBRARY_LINKER____idf_log_ esp-idf/log/CMak
 # Utility command for edit_cache
 
 build esp-idf/log/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\log && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\log && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/log/edit_cache: phony esp-idf/log/CMakeFiles/edit_cache.util
@@ -3043,9 +3006,8 @@ build esp-idf/log/rebuild_cache: phony esp-idf/log/CMakeFiles/rebuild_cache.util
 # Utility command for edit_cache
 
 build esp-idf/bootloader/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\bootloader && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\bootloader && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/bootloader/edit_cache: phony esp-idf/bootloader/CMakeFiles/edit_cache.util
@@ -3072,9 +3034,8 @@ build esp-idf/bootloader/rebuild_cache: phony esp-idf/bootloader/CMakeFiles/rebu
 # Utility command for edit_cache
 
 build esp-idf/esp_stdio/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_stdio && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\esp_stdio && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/esp_stdio/edit_cache: phony esp-idf/esp_stdio/CMakeFiles/edit_cache.util
@@ -3101,9 +3062,8 @@ build esp-idf/esp_stdio/rebuild_cache: phony esp-idf/esp_stdio/CMakeFiles/rebuil
 # Utility command for edit_cache
 
 build esp-idf/freertos/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\freertos && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\freertos && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/freertos/edit_cache: phony esp-idf/freertos/CMakeFiles/edit_cache.util
@@ -3165,9 +3125,8 @@ build esp-idf/main/libmain.a: C_STATIC_LIBRARY_LINKER____idf_main_ esp-idf/main/
 # Utility command for edit_cache
 
 build esp-idf/main/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\main && C:\Users\eugen\.espressif\tools\cmake\4.0.3\bin\cmake-gui.exe -SC:\esp\v6.0.1\esp-idf\components\bootloader\subproject -BD:\Users\eugen\Codes\esp\cpp_example\build\bootloader"
-  DESC = Running CMake cache editor...
-  pool = console
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D D:\Users\eugen\Codes\esp\cpp_example\build\bootloader\esp-idf\main && "C:\Program Files\JetBrains\CLion 2026.1.2\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
   restat = 1
 
 build esp-idf/main/edit_cache: phony esp-idf/main/CMakeFiles/edit_cache.util
