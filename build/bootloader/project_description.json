@@ -1,7 +1,7 @@
 {
     "version":            "1.3",
     "project_name":       "bootloader",
-    "project_version":    "1",
+    "project_version":    "v6.0.1-1-g0dfae9a1",
     "project_path":       "C:/esp/v6.0.1/esp-idf/components/bootloader/subproject",
     "idf_path":           "C:/esp/v6.0.1/esp-idf",
     "build_dir":          "D:/Users/eugen/Codes/esp/cpp_example/build/bootloader",
@@ -11,7 +11,7 @@
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
     "build_type":         "flash_app",
-    "git_revision":       "v6.0.1",
+    "git_revision":       "v6.0.1-1-g0dfae9a1",
     "target":             "esp32",
     "rev":                "0",
     "min_rev":            "0",

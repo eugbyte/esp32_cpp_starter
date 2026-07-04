@@ -1,14 +1,18 @@
 #include "esp_log.h"
 #include "esp_random.h"
 #include "etl/string.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "lcd/LcdService.hpp"
 #include "mqtt_client.h"
 #include <cstdio>
+#include <esp_netif.h>
+#include <nvs_flash.h>
 
 extern "C" void app_main(void) {
-	printf("Hello world!\n");
+	ESP_ERROR_CHECK(nvs_flash_init());
+	ESP_ERROR_CHECK(esp_event_loop_create_default());
+	ESP_ERROR_CHECK(esp_netif_init());
+
+	printf("Initialized native esp-idf services\n");
 
 	auto lcd_service = LcdService();
 	lcd_service.Clear();

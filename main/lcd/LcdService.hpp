@@ -6,18 +6,18 @@
 #define CPP_EXAMPLE_LCDSERVICE_H
 
 #include "domain/interface/ILcdService.hpp"
+#include "etl/string_view.h"
 #include <driver/uart.h>
-#include <string_view>
 
-class LcdService: public ILcdService {
+class LcdService : public ILcdService {
 public:
 	LcdService();
 	~LcdService() override;
-	esp_err_t SendText(std::string_view text) override;
+	esp_err_t SendText(etl::string_view text) override;
 	esp_err_t Clear() override;
 
 private:
-	uart_config_t uart_config;
+	uart_config_t uart_config_{};
 };
 
 #define LCD_UART_NUM UART_NUM_1
