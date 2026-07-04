@@ -5,6 +5,10 @@
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/managed_components" />
+      <file path="$PROJECT_DIR$/submodule_libs" />
+    </libraryRoots>
     <excludeRoots>
       <file path="C:/esp/v6.0.1/esp-idf" />
     </excludeRoots>

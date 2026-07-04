@@ -1,15 +1,15 @@
 # Additional clean files
 cmake_minimum_required(VERSION 3.16)
 
-if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "Debug")
+if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
   file(REMOVE_RECURSE
   "bootloader\\bootloader.bin"
   "bootloader\\bootloader.elf"
   "bootloader\\bootloader.map"
   "config\\sdkconfig.cmake"
   "config\\sdkconfig.h"
-  "cpp_example.bin"
-  "cpp_example.map"
+  "cpp_starter.bin"
+  "cpp_starter.map"
   "esp-idf\\mbedtls\\x509_crt_bundle"
   "flash_app_args"
   "flash_bootloader_args"

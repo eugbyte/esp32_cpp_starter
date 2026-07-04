@@ -2,7 +2,7 @@
 // Created by eugen on 7/3/2026.
 //
 
-#include "LcdService.h"
+#include "LcdService.hpp"
 
 #include <string>
 
@@ -10,8 +10,10 @@
 #include "driver/uart.h"
 #include "esp_log.h"
 
+#include <memory>
+
 LcdService::LcdService() {
-	uart_config = {
+	uart_config_ = {
 		.baud_rate = LCD_BAUD_RATE,
 		.data_bits = UART_DATA_8_BITS,
 		.parity = UART_PARITY_DISABLE,
@@ -27,12 +29,14 @@ LcdService::LcdService() {
 	};
 
 	uart_driver_install(LCD_UART_NUM, 256, 0, 0, nullptr, 0);
-	uart_param_config(LCD_UART_NUM, &uart_config);
+	uart_param_config(LCD_UART_NUM, &uart_config_);
 	uart_set_pin(LCD_UART_NUM, LCD_TX_PIN, LCD_RX_PIN, UART_PIN_NO_CHANGE,
 				 UART_PIN_NO_CHANGE);
 }
 
-esp_err_t LcdService::SendText(std::string_view text) {
+LcdService::~LcdService() { uart_driver_delete(LCD_UART_NUM); }
+
+esp_err_t LcdService::SendText(etl::string_view text) {
 	return uart_write_bytes(LCD_UART_NUM, text.data(), text.length());
 }
 
