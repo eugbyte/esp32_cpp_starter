@@ -1,0 +1,17 @@
+Command: cmake -G Ninja -B D:\Users\eugen\Codes\esp\cpp_example\build -DPYTHON_DEPS_CHECKED=1 -DPYTHON=C:\Users\eugen\.espressif\python_env\idf6.0_py3.12_env\Scripts\python.exe -DESP_PLATFORM=1 -DCCACHE_ENABLE=True D:\Users\eugen\Codes\esp\cpp_example
+fatal: detected dubious ownership in repository at 'C:/esp/v6.0.1/esp-idf'
+'C:/esp/v6.0.1/esp-idf' is owned by:
+	BUILTIN/Administrators (S-1-5-32-544)
+but the current user is:
+	DESKTOP/eugen (S-1-5-21-1174856907-4046499382-871429786-1001)
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory C:/esp/v6.0.1/esp-idf
+Configuration Report               
++---------------------------------+
+|  Parser Version: 1              |
+|  Verbosity: default             |
+|  Defaults policy: sdkconfig     |
+|  Status: Finished successfully  |
+|                                 |
++---------------------------------+
