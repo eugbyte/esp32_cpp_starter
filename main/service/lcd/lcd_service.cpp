@@ -2,15 +2,15 @@
 // Created by eugen on 7/3/2026.
 //
 
-#include "LcdService.hpp"
+#include "lcd_service.hpp"
 
-#include <string>
-
-#include "driver/gpio.h"
-#include "driver/uart.h"
-#include "esp_log.h"
+#include <driver/gpio.h>
+#include <driver/uart.h>
+#include <esp_log.h>
 
 #include <memory>
+
+using svc::lcd::LcdService;
 
 LcdService::LcdService() {
 	uart_config_ = {
@@ -36,11 +36,11 @@ LcdService::LcdService() {
 
 LcdService::~LcdService() { uart_driver_delete(LCD_UART_NUM); }
 
-esp_err_t LcdService::SendText(etl::string_view text) {
+esp_err_t LcdService::send_text(etl::string_view text) {
 	return uart_write_bytes(LCD_UART_NUM, text.data(), text.length());
 }
 
-esp_err_t LcdService::Clear() {
+esp_err_t LcdService::clear() {
 	const uint8_t cmd[2] = {0xFE, 0x01};
 	esp_err_t err = uart_write_bytes(LCD_UART_NUM, cmd, 2);
 	vTaskDelay(pdMS_TO_TICKS(10)); // most LCDs need a short delay after clear

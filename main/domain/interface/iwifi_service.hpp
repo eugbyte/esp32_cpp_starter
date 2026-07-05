@@ -4,15 +4,15 @@
 
 #ifndef CPP_STARTER_IWIFISERVICE_H
 #define CPP_STARTER_IWIFISERVICE_H
-#include "etl/string_view.h"
 #include <esp_err.h>
+#include <etl/string_view.h>
 
 class IWifiService {
 public:
-	virtual ~IWifiService();
-	virtual esp_err_t StaConnect(etl::string_view ssid,
-								 etl::string_view password);
-	virtual esp_err_t StaDisconnect();
+	virtual ~IWifiService() = default;
+	virtual esp_err_t sta_connect(etl::string_view ssid,
+								  etl::string_view password) = 0;
+	virtual esp_err_t sta_disconnect() = 0;
 };
 
 #endif // CPP_STARTER_IWIFISERVICE_H

@@ -5,16 +5,17 @@
 #ifndef CPP_EXAMPLE_LCDSERVICE_H
 #define CPP_EXAMPLE_LCDSERVICE_H
 
-#include "domain/interface/ILcdService.hpp"
-#include "etl/string_view.h"
+#include "domain/interface/ildc_service.hpp"
 #include <driver/uart.h>
+#include <etl/string_view.h>
 
+namespace svc::lcd {
 class LcdService : public ILcdService {
 public:
 	LcdService();
 	~LcdService() override;
-	esp_err_t SendText(etl::string_view text) override;
-	esp_err_t Clear() override;
+	esp_err_t send_text(etl::string_view text) override;
+	esp_err_t clear() override;
 
 private:
 	uart_config_t uart_config_{};
@@ -24,5 +25,7 @@ private:
 #define LCD_TX_PIN GPIO_NUM_17
 #define LCD_RX_PIN UART_PIN_NO_CHANGE // not used, one-wire
 #define LCD_BAUD_RATE 9600			  // common default for serial LCDs
+
+} // namespace svc::lcd
 
 #endif // CPP_EXAMPLE_LCDSERVICE_H
