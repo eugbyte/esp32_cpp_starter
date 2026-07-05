@@ -27,7 +27,11 @@ extern "C" void app_main(void) {
 	etl::string<32> password = "28Stratton";
 	if (err = wifi_service.sta_connect(ssid, password);
 		err != ESP_OK) {
+		lcd_service.clear();
 		lcd_service.send_text("Wifi connection failed");
+	} else {
+		lcd_service.clear();
+		lcd_service.send_text("Wifi connected");
 	}
 
 	etl::string<32> buffer = "";
