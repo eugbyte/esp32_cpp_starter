@@ -8,11 +8,11 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 
-#include "domain/interface/iwifi_service.hpp"
-#include <etl/string_view.h>
-
 #include <esp_err.h>
 #include <esp_netif_types.h>
+#include <etl/string_view.h>
+
+#include "domain/interface/iwifi_service.hpp"
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1

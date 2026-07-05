@@ -10,6 +10,8 @@
 #include <nvs_flash.h>
 
 extern "C" void app_main(void) {
+	esp_err_t err = {0};
+
 	ESP_ERROR_CHECK(nvs_flash_init());
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	ESP_ERROR_CHECK(esp_netif_init());
@@ -23,8 +25,8 @@ extern "C" void app_main(void) {
 	auto wifi_service = svc::wifi::WifiService();
 	etl::string<32> ssid = "Tham Network";
 	etl::string<32> password = "28Stratton";
-	esp_err_t err = wifi_service.sta_connect(ssid, password);
-	if (err != ESP_OK) {
+	if (err = wifi_service.sta_connect(ssid, password);
+		err != ESP_OK) {
 		lcd_service.send_text("Wifi connection failed");
 	}
 

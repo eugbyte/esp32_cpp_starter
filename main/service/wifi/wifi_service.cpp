@@ -11,9 +11,9 @@
 #include <esp_wifi_types_generic.h>
 #include <lwip/netdb.h>
 
-const char TAG[] = "WifiService";
-
 using svc::wifi::WifiService;
+
+const char TAG[] = "WifiService";
 
 WifiService::~WifiService() { esp_netif_destroy_default_wifi(esp_sta_); }
 
