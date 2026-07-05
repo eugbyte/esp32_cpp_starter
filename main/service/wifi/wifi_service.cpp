@@ -2,25 +2,20 @@
 // Created by eugen on 7/4/2026.
 //
 
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-
-#include "WifiService.hpp"
-
-#include "esp_err.h"
-#include "esp_log.h"
-#include "esp_wifi.h"
-#include "esp_wifi_types_generic.h"
-#include "lwip/netdb.h"
+#include "wifi_service.hpp"
 
 #include <cstring>
-
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT BIT1
-#define CONFIG_ESP_MAXIMUM_RETRY 5
+#include <esp_err.h>
+#include <esp_log.h>
+#include <esp_wifi.h>
+#include <esp_wifi_types_generic.h>
+#include <lwip/netdb.h>
 
 const char TAG[] = "WifiService";
+
+using svc::wifi::WifiService;
+
+WifiService::~WifiService() { esp_netif_destroy_default_wifi(esp_sta_); }
 
 WifiService::WifiService() {
 	s_wifi_event_group_ = xEventGroupCreate();
@@ -44,8 +39,8 @@ WifiService::WifiService() {
 										event_handler, this, &instance_got_ip_);
 }
 
-esp_err_t WifiService::StaConnect(etl::string_view ssid,
-								  etl::string_view password) {
+esp_err_t WifiService::sta_connect(etl::string_view ssid,
+								   etl::string_view password) {
 	wifi_config_t wifi_config = {};
 	wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
 	wifi_config.sta.sae_pwe_h2e = WPA3_SAE_PWE_BOTH;
@@ -85,9 +80,7 @@ esp_err_t WifiService::StaConnect(etl::string_view ssid,
 	return ESP_OK;
 }
 
-esp_err_t WifiService::StaDisconnect() { return esp_wifi_disconnect(); }
-
-WifiService::~WifiService() { esp_netif_destroy_default_wifi(esp_sta_); }
+esp_err_t WifiService::sta_disconnect() { return esp_wifi_disconnect(); }
 
 void WifiService::StaEventHandler(void *arg, esp_event_base_t event_base,
 								  int32_t event_id, void *event_data) {
@@ -104,7 +97,7 @@ void WifiService::StaEventHandler(void *arg, esp_event_base_t event_base,
 		}
 		ESP_LOGI(TAG, "connect to the AP fail");
 	} else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-		ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+		auto *event = static_cast<ip_event_got_ip_t *>(event_data);
 		ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
 		s_retry_num_ = 0;
 		xEventGroupSetBits(s_wifi_event_group_, WIFI_CONNECTED_BIT);

@@ -1,8 +1,8 @@
 idf_component_register(
         SRCS
         "main.cpp"
-        "lcd/LcdService.cpp"
-        "wifi/WifiService.cpp"
+        "service/lcd/lcd_service.cpp"
+        "service/wifi/wifi_service.cpp"
         INCLUDE_DIRS
         "."    # optional, add here public include directories
         "${PROJECT_DIR}/submodule_libs/etl/include"
