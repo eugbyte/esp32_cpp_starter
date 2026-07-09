@@ -3,6 +3,7 @@ idf_component_register(
         "main.cpp"
         "service/lcd/lcd_service.cpp"
         "service/wifi/wifi_service.cpp"
+        "service/storage/nvs_service.cpp"
         INCLUDE_DIRS
         "."    # optional, add here public include directories
         "${PROJECT_DIR}/submodule_libs/etl/include"
