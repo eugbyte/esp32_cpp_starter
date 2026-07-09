@@ -9,3 +9,6 @@ idf_component_register(
         "${PROJECT_DIR}/submodule_libs/etl/include"
         REQUIRES esp_driver_gpio esp_driver_uart esp_wifi nvs_flash
 )
+
+# Link the CPM-fetched library directly to this component target
+target_link_libraries(${COMPONENT_LIB} PRIVATE nlohmann_json::nlohmann_json)

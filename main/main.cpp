@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <esp_netif.h>
 #include <nvs_flash.h>
+#include <nlohmann/json.hpp>
 
 extern "C" void app_main(void) {
 	esp_err_t err = {0};
@@ -46,7 +47,7 @@ extern "C" void app_main(void) {
 	}
 
 	auto nvs_service = svc::storage::NvsService();
-	ESP_LOGI("main", "len: %d, size: %d", ssid.length(), sizeof(ssid));
+	ESP_LOGI("main", "len: %d, capacity: %d, size: %d", ssid.length(), ssid.capacity(), sizeof(ssid));
 	// include null terminator
 	// nvs_service.write_blob("wifi", "ssid", ssid.data(), ssid.length() + 1);
 
