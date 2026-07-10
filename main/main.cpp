@@ -11,7 +11,6 @@
 #include <cstdio>
 #include <esp_netif.h>
 #include <nvs_flash.h>
-#include <nlohmann/json.hpp>
 
 extern "C" void app_main(void) {
 	esp_err_t err = {0};
