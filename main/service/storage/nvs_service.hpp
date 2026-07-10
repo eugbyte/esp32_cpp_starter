@@ -11,6 +11,13 @@
 
 namespace svc::storage {
 // https://github.com/espressif/esp-idf/blob/master/examples/storage/nvs/nvs_rw_value_cxx/main/nvs_value_example_main.cpp
+
+/**
+ * @brief ESP-IDF NVS-backed implementation of INvsService.
+ *
+ * Reads and writes blobs via nvs::NVSHandle, opening a fresh handle
+ * per call scoped to the requested namespace.
+ */
 class NvsService : public INvsService {
 public:
 	NvsService() = default;
