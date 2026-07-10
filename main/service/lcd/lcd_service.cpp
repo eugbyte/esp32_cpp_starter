@@ -12,6 +12,7 @@
 
 using svc::lcd::LcdService;
 
+// Configures and installs the UART1 driver used to talk to the LCD.
 LcdService::LcdService() {
 	uart_config_ = {
 		.baud_rate = LCD_BAUD_RATE,
@@ -34,12 +35,16 @@ LcdService::LcdService() {
 				 UART_PIN_NO_CHANGE);
 }
 
+// Uninstalls the UART1 driver.
 LcdService::~LcdService() { uart_driver_delete(LCD_UART_NUM); }
 
+// Writes the raw text bytes to the LCD as-is (no line wrapping/formatting).
 esp_err_t LcdService::send_text(etl::string_view text) {
 	return uart_write_bytes(LCD_UART_NUM, text.data(), text.length());
 }
 
+// Sends the vendor clear-screen command sequence and waits for the LCD to
+// finish processing it before returning.
 esp_err_t LcdService::clear() {
 	const uint8_t cmd[2] = {0xFE, 0x01};
 	esp_err_t err = uart_write_bytes(LCD_UART_NUM, cmd, 2);

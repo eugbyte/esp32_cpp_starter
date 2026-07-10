@@ -18,12 +18,15 @@ namespace {
 constexpr const char *TAG = "NvsService";
 }
 
+// Copies sv into out as a null-terminated C string, truncating to fit
+// out_size (including the terminator) if necessary.
 void NvsService::to_cstr(etl::string_view sv, char *out, size_t out_size) {
 	size_t len = sv.size() < (out_size - 1) ? sv.size() : (out_size - 1);
 	std::memcpy(out, sv.data(), len);
 	out[len] = '\0';
 }
 
+// Opens ns_name read-only and looks up key's stored blob size.
 tuple<size_t, esp_err_t> NvsService::get_item_size(etl::string_view ns_name,
 												   etl::string_view key) {
 	char ns_buf[kMaxNameLen];
@@ -50,6 +53,7 @@ tuple<size_t, esp_err_t> NvsService::get_item_size(etl::string_view ns_name,
 	return {required_size, err};
 }
 
+// Opens ns_name read-only and copies key's blob into out.
 esp_err_t NvsService::get_blob(etl::string_view ns_name, etl::string_view key,
 							   void *out, size_t required_size) {
 	char ns_buf[kMaxNameLen];
@@ -75,6 +79,7 @@ esp_err_t NvsService::get_blob(etl::string_view ns_name, etl::string_view key,
 	return err;
 }
 
+// Opens ns_name read-write, sets key's blob, and commits the change.
 esp_err_t NvsService::write_blob(etl::string_view ns_name, etl::string_view key,
 								 void *data, size_t size) {
 	char ns_buf[kMaxNameLen];

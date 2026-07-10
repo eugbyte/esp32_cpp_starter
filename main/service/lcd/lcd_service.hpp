@@ -10,6 +10,13 @@
 #include <etl/string_view.h>
 
 namespace svc::lcd {
+
+/**
+ * @brief UART-based implementation of ILcdService.
+ *
+ * Drives a serial character LCD over UART1 using vendor-specific
+ * control bytes (e.g. 0xFE 0x01 to clear).
+ */
 class LcdService : public ILcdService {
 public:
 	LcdService();

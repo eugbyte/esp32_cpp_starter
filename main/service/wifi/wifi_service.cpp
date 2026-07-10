@@ -15,8 +15,11 @@ using svc::wifi::WifiService;
 
 const char TAG[] = "WifiService";
 
+// Destroys the default STA netif created in the constructor.
 WifiService::~WifiService() { esp_netif_destroy_default_wifi(esp_sta_); }
 
+// Creates the default STA netif, initializes the Wi-Fi driver (RAM
+// storage only), and registers StaEventHandler for WIFI_EVENT/IP_EVENT.
 WifiService::WifiService() {
 	s_wifi_event_group_ = xEventGroupCreate();
 
@@ -39,6 +42,9 @@ WifiService::WifiService() {
 										event_handler, this, &instance_got_ip_);
 }
 
+// Configures STA mode with the given credentials, starts Wi-Fi, and
+// blocks until StaEventHandler reports connected or failed/exhausted
+// retries via s_wifi_event_group_.
 esp_err_t WifiService::sta_connect(etl::string_view ssid,
 								   etl::string_view password) {
 	wifi_config_t wifi_config = {};
@@ -80,8 +86,12 @@ esp_err_t WifiService::sta_connect(etl::string_view ssid,
 	return ESP_OK;
 }
 
+// Disconnects from the currently associated access point.
 esp_err_t WifiService::sta_disconnect() { return esp_wifi_disconnect(); }
 
+// Handles STA_START (kick off connect), STA_DISCONNECTED (retry up to
+// CONFIG_ESP_MAXIMUM_RETRY, then signal WIFI_FAIL_BIT), and
+// IP_EVENT_STA_GOT_IP (reset retry count, signal WIFI_CONNECTED_BIT).
 void WifiService::StaEventHandler(void *arg, esp_event_base_t event_base,
 								  int32_t event_id, void *event_data) {
 	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
