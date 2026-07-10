@@ -1,3 +1,0 @@
-[submodule "submodule_libs/etl"]
-	path = submodule_libs/etl
-	url = https://github.com/etlcpp/etl
