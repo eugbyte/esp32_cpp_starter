@@ -26,6 +26,7 @@ public:
 
 	esp_err_t start_server();
 	esp_err_t register_route(const httpd_uri_t* route_handler);
+	esp_err_t init_mdns();
 };
 
 }

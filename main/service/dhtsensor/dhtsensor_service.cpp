@@ -47,6 +47,10 @@ void DhtSensorService::dht_task() {
 }
 
 void DhtSensorService::start() {
-	xTaskCreatePinnedToCore(dht_task, "DHT11_task", DHT11_TASK_STACK_SIZE, NULL,
+	auto dht_task_ = [](void *parameter) {
+		auto *service = static_cast<DhtSensorService *>(parameter);
+		service->dht_task();
+	};
+	xTaskCreatePinnedToCore(dht_task_, "DHT11_task", DHT11_TASK_STACK_SIZE, NULL,
 							DHT11_TASK_PRIORITY, NULL, APP_CPU_NUM);
 }

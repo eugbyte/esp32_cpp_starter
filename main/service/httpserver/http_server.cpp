@@ -3,6 +3,7 @@
 //
 
 #include "http_server.hpp"
+#include "mdns.h"
 
 using namespace svc::httpserver;
 
@@ -41,4 +42,19 @@ esp_err_t HttpServer::start_server() {
 
 esp_err_t HttpServer::register_route(const httpd_uri_t *route_handler) {
 	return httpd_register_uri_handler(server_handle_, route_handler);
+}
+
+esp_err_t HttpServer::init_mdns() {
+	esp_err_t err = mdns_init();
+	if (err) {
+		printf("mDNS init failed: %d\n", err);
+		return err;
+	}
+
+	mdns_hostname_set("esp32");        // device reachable as http://esp32.local
+	mdns_instance_name_set("esp32 web server");
+
+	// Optionally advertise services (e.g. HTTP server on port 80)
+	mdns_service_add(nullptr, "_http", "_tcp", 80, nullptr, 0);
+	return ESP_OK;
 }

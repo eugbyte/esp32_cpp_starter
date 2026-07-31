@@ -18,3 +18,4 @@ dependencies:
   espressif/cjson: ^1.7.19~2
   esp-idf-lib/dht: '*'
   joltwallet/littlefs: ^1.22.3
+  espressif/mdns: ^1.11.3
