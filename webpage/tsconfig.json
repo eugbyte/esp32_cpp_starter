@@ -8,9 +8,8 @@
 		"noEmit": true,
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
-		"baseUrl": ".",
 		"paths": {
-			"~/*": ["src/*"]
+			"~/*": ["./src/*"]
 		}
 	},
 	"include": ["src/**/*.ts", "src/**/*.svelte"]

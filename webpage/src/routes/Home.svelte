@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
-	let healthCheck = $state('...');
+	let healthCheck = $state("...");
 
 	onMount(async () => {
 		try {
-			const response = await fetch('/health');
+			const response = await fetch("/health");
 			const data = await response.json();
 			healthCheck = data.status;
 		} catch (error) {
-			console.error('Error fetching health status:', error);
-			healthCheck = 'Error fetching health status';
+			console.error("Error fetching health status:", error);
+			healthCheck = "Error fetching health status";
 		}
 	});
 </script>

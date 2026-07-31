@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { routerLink } from '~/router';
+	import { routerLink } from "~/router";
 </script>
 
 <div class="navbar bg-base-100 shadow-sm">
@@ -25,14 +25,14 @@
 				tabindex="-1"
 				class="menu dropdown-content z-1 mt-3 w-52 menu-sm rounded-box bg-base-100 p-2 shadow"
 			>
-				<li><a href={routerLink('/wifi')}>Wifi</a></li>
+				<li><a href={routerLink("/wifi")}>Wifi</a></li>
 			</ul>
 		</div>
-		<a class="btn btn-ghost text-xl" href={routerLink('/')}>Home</a>
+		<a class="btn btn-ghost text-xl" href={routerLink("/")}>Home</a>
 	</div>
 	<div class="navbar-center hidden lg:flex">
 		<ul class="menu menu-horizontal px-1">
-			<li><a href={routerLink('/wifi')}>Wifi</a></li>
+			<li><a href={routerLink("/wifi")}>Wifi</a></li>
 		</ul>
 	</div>
 </div>

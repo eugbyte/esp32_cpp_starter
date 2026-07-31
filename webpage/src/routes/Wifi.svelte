@@ -1,14 +1,14 @@
 <script lang="ts">
-	let ssid = $state('');
-	let password = $state('');
-	let submitStatus = $state('');
+	let ssid = $state("");
+	let password = $state("");
+	let submitStatus = $state("");
 
 	const onSubmit = async () => {
 		try {
-			const response: Response = await fetch('/wifi', {
-				method: 'POST',
+			const response: Response = await fetch("/wifi", {
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json'
+					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({ ssid, password })
 			});
@@ -19,17 +19,17 @@
 			}
 
 			const result = await response.json(); // Parse the JSON response from the server
-			console.log('Success:', result);
-			submitStatus = 'connected';
+			console.log("Success:", result);
+			submitStatus = "connected";
 		} catch (error) {
-			console.error('Error:', error);
+			console.error("Error:", error);
 			submitStatus = `failed to connect: ${(error as Error).message}`;
 		}
 	};
 </script>
 
-<div class="flex items-center justify-center min-h-[calc(100vh-var(--navbar-size))]">
-	<div class="card bg-base-100 shadow-xl w-full max-w-sm">
+<div class="flex h-full items-center justify-center">
+	<div class="card w-full max-w-sm bg-base-100 shadow-xl">
 		<div class="card-body gap-4">
 			<h2 class="card-title">Wi-Fi Configuration</h2>
 
@@ -40,7 +40,7 @@
 					bind:value={ssid}
 					placeholder="Network name"
 					id="ssid"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 				/>
 			</fieldset>
 
@@ -51,19 +51,19 @@
 					bind:value={password}
 					placeholder="••••••••"
 					id="password"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 				/>
 			</fieldset>
 
-			<div class="card-actions mt-2">
-				<button class="btn btn-primary w-full" onclick={onSubmit}>Connect</button>
+			<div class="mt-2 card-actions">
+				<button class="btn w-full btn-primary" onclick={onSubmit}>Connect</button>
 			</div>
 
 			{#if submitStatus}
 				<p
-					class="text-sm text-center font-mono"
-					class:text-success={submitStatus === 'connected'}
-					class:text-error={submitStatus !== 'connected'}
+					class="text-center font-mono text-sm"
+					class:text-success={submitStatus === "connected"}
+					class:text-error={submitStatus !== "connected"}
 				>
 					{submitStatus}
 				</p>
