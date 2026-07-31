@@ -4,16 +4,21 @@
 	let healthCheck = $state('...');
 
 	onMount(async () => {
-		const response = await fetch('/health');
-		const data = await response.json();
-		healthCheck = data.status;
+		try {
+			const response = await fetch('/health');
+			const data = await response.json();
+			healthCheck = data.status;
+		} catch (error) {
+			console.error('Error fetching health status:', error);
+			healthCheck = 'Error fetching health status';
+		}
 	});
 </script>
 
-<div class="flex flex-col items-center justify-center min-h-screen">
-	<h1 class="text-4xl font-bold mb-4">Welcome to the ESP32 Webpage</h1>
-	<p class="text-lg mb-8">This is a simple Svelte application running on an ESP32.</p>
-	<div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-		<p class="text-2xl font-semibold mb-4 text-black">Health Status: {healthCheck}</p>
+<div class="flex min-h-[calc(100vh-var(--navbar-size))] flex-col items-center justify-center">
+	<h1 class="mb-4 text-4xl font-bold">Welcome to the ESP32 Webpage</h1>
+	<p class="mb-8 text-lg">This is a simple Svelte application running on an ESP32.</p>
+	<div class="w-full max-w-md rounded-lg bg-white p-2 shadow-md">
+		<p class="text-md mb-4 font-mono font-semibold text-black">Health Status: {healthCheck}</p>
 	</div>
 </div>

@@ -28,19 +28,46 @@
 	};
 </script>
 
-<div>
+<div class="flex items-center justify-center min-h-[calc(100vh-var(--navbar-size))]">
+	<div class="card bg-base-100 shadow-xl w-full max-w-sm">
+		<div class="card-body gap-4">
+			<h2 class="card-title">Wi-Fi Configuration</h2>
 
-    <fieldset class="fieldset">
-    	<label class="fieldset-legend" for="ssid">Wifi SSID</label>
-        <input type="text" bind:value={ssid} placeholder="SSID" id="ssid" />
-    </fieldset>
+			<fieldset class="fieldset">
+				<label class="fieldset-legend" for="ssid">SSID</label>
+				<input
+					type="text"
+					bind:value={ssid}
+					placeholder="Network name"
+					id="ssid"
+					class="input input-bordered w-full"
+				/>
+			</fieldset>
 
-    <fieldset class="fieldset">
-    	<label class="fieldset-legend" for="password">Wifi Password</label>
-        <input type="password" bind:value={password} placeholder="Password" id="password" />
-    </fieldset>
+			<fieldset class="fieldset">
+				<label class="fieldset-legend" for="password">Password</label>
+				<input
+					type="password"
+					bind:value={password}
+					placeholder="••••••••"
+					id="password"
+					class="input input-bordered w-full"
+				/>
+			</fieldset>
 
-	<button class="btn btn-primary" onclick={onSubmit}>Connect</button>
+			<div class="card-actions mt-2">
+				<button class="btn btn-primary w-full" onclick={onSubmit}>Connect</button>
+			</div>
 
-	<p>Submit Status: {submitStatus}</p>
+			{#if submitStatus}
+				<p
+					class="text-sm text-center font-mono"
+					class:text-success={submitStatus === 'connected'}
+					class:text-error={submitStatus !== 'connected'}
+				>
+					{submitStatus}
+				</p>
+			{/if}
+		</div>
+	</div>
 </div>
