@@ -25,7 +25,8 @@ private:
 	ILcdService &lcd_svc_;
 	INvsService &nvs_svc_;
 	IWifiService &wifi_svc_;
-	static esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filepath);
+	static esp_err_t set_content_type_from_file(httpd_req_t *req,
+												const char *filepath);
 
 public:
 	WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
@@ -34,6 +35,6 @@ public:
 	esp_err_t healthcheck(httpd_req_t *req);
 	static esp_err_t serve_static_files(httpd_req_t *req);
 };
-};
+}; // namespace svc::httpserver
 
 #endif // CPP_STARTER_WEB_HANDLER_HPP

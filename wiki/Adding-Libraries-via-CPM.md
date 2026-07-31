@@ -1,28 +1,32 @@
 # Adding GitHub Libraries via CPM
 
-This guide explains how to add external C/C++ libraries from GitHub using **CPM.cmake** (CMake Package Manager) in this project — and how that approach differs from the **ESP-IDF Component Manager**.
+This guide explains how to add external C/C++ libraries from GitHub using **CPM.cmake** (CMake Package Manager) in this
+project — and how that approach differs from the **ESP-IDF Component Manager**.
 
 ---
 
 ## Two Distinct Dependency Systems
 
-This project supports two separate ways to pull in external code. They are **independent of each other** and serve different purposes.
+This project supports two separate ways to pull in external code. They are **independent of each other** and serve
+different purposes.
 
-| | CPM.cmake | ESP-IDF Component Manager |
-|---|---|---|
-| **Config file** | Root `CMakeLists.txt` | `main/idf_component.yml` |
-| **Registry / Source** | Any GitHub repo, URL, or local path | [components.espressif.com](https://components.espressif.com) |
-| **Intended for** | Generic C/C++ libraries (header-only, CMake-based) | ESP-IDF components (hardware drivers, protocols, etc.) |
-| **Download location** | `build/_deps/` | `managed_components/` |
-| **Linked via** | `target_link_libraries()` in `main/CMakeLists.txt` | Declared in `REQUIRES` inside `idf_component_register()` |
+|                       | CPM.cmake                                          | ESP-IDF Component Manager                                    |
+|-----------------------|----------------------------------------------------|--------------------------------------------------------------|
+| **Config file**       | Root `CMakeLists.txt`                              | `main/idf_component.yml`                                     |
+| **Registry / Source** | Any GitHub repo, URL, or local path                | [components.espressif.com](https://components.espressif.com) |
+| **Intended for**      | Generic C/C++ libraries (header-only, CMake-based) | ESP-IDF components (hardware drivers, protocols, etc.)       |
+| **Download location** | `build/_deps/`                                     | `managed_components/`                                        |
+| **Linked via**        | `target_link_libraries()` in `main/CMakeLists.txt` | Declared in `REQUIRES` inside `idf_component_register()`     |
 
-> Do **not** mix them up. A library available as an ESP-IDF component should be added through `idf_component.yml`, not CPM — and vice versa.
+> Do **not** mix them up. A library available as an ESP-IDF component should be added through `idf_component.yml`, not
+> CPM — and vice versa.
 
 ---
 
 ## How CPM is Bootstrapped
 
-CPM itself is self-downloading. The root `CMakeLists.txt` contains a bootstrap block that fetches the CPM script on first configure if it is not already present:
+CPM itself is self-downloading. The root `CMakeLists.txt` contains a bootstrap block that fetches the CPM script on
+first configure if it is not already present:
 
 ```cmake
 set(CPM_DOWNLOAD_VERSION 0.40.2)
@@ -55,11 +59,11 @@ CPMAddPackage(
 
 **Parameters:**
 
-| Parameter | Description |
-|---|---|
-| `NAME` | Identifier used to refer to the package later (e.g. in `target_link_libraries`) |
-| `GITHUB_REPOSITORY` | `<owner>/<repo>` on GitHub |
-| `GIT_TAG` | A tag, branch name, or full commit SHA to pin the version |
+| Parameter           | Description                                                                     |
+|---------------------|---------------------------------------------------------------------------------|
+| `NAME`              | Identifier used to refer to the package later (e.g. in `target_link_libraries`) |
+| `GITHUB_REPOSITORY` | `<owner>/<repo>` on GitHub                                                      |
+| `GIT_TAG`           | A tag, branch name, or full commit SHA to pin the version                       |
 
 CPM will clone the repository into `build/_deps/<name>-src/` and make its CMake targets available.
 
@@ -86,8 +90,10 @@ target_link_libraries(${COMPONENT_LIB} PRIVATE etl::etl)
 ```
 
 - `${COMPONENT_LIB}` is the CMake target ESP-IDF creates for the `main` component.
-- `etl::etl` is the CMake target exported by the ETL library. The exact target name depends on the library — check its own `CMakeLists.txt` or README.
-- Use `PRIVATE` if the library is an implementation detail, `PUBLIC` if its headers must be visible to components that depend on `main`.
+- `etl::etl` is the CMake target exported by the ETL library. The exact target name depends on the library — check its
+  own `CMakeLists.txt` or README.
+- Use `PRIVATE` if the library is an implementation detail, `PUBLIC` if its headers must be visible to components that
+  depend on `main`.
 
 Your `main/CMakeLists.txt` should look like this when finished:
 
@@ -108,6 +114,7 @@ target_link_libraries(${COMPONENT_LIB} PRIVATE etl::etl)
 Suppose you want to add [nlohmann/json](https://github.com/nlohmann/json).
 
 **Root `CMakeLists.txt`:**
+
 ```cmake
 CPMAddPackage(
     NAME nlohmann_json
@@ -117,11 +124,13 @@ CPMAddPackage(
 ```
 
 **`main/CMakeLists.txt`:**
+
 ```cmake
 target_link_libraries(${COMPONENT_LIB} PRIVATE nlohmann_json::nlohmann_json)
 ```
 
 **Usage in your source code:**
+
 ```cpp
 #include <nlohmann/json.hpp>
 ```
@@ -130,7 +139,8 @@ target_link_libraries(${COMPONENT_LIB} PRIVATE nlohmann_json::nlohmann_json)
 
 ## Contrast: ESP-IDF Component Manager
 
-The ESP-IDF Component Manager is a **separate system** for libraries specifically packaged for ESP-IDF. It is configured in `main/idf_component.yml`:
+The ESP-IDF Component Manager is a **separate system** for libraries specifically packaged for ESP-IDF. It is configured
+in `main/idf_component.yml`:
 
 ```yaml
 dependencies:
@@ -139,7 +149,8 @@ dependencies:
   espressif/mqtt: ^1.0.0
 ```
 
-Components declared here are downloaded into the `managed_components/` directory at the project root and are registered as proper ESP-IDF components. They integrate with `idf_component_register()`'s `REQUIRES` field:
+Components declared here are downloaded into the `managed_components/` directory at the project root and are registered
+as proper ESP-IDF components. They integrate with `idf_component_register()`'s `REQUIRES` field:
 
 ```cmake
 idf_component_register(
@@ -148,20 +159,28 @@ idf_component_register(
 )
 ```
 
-Use this system for Espressif-provided or community ESP-IDF components (MQTT, LCD drivers, sensors, etc.). Use CPM for general-purpose C/C++ libraries that are not packaged as ESP-IDF components.
+Use this system for Espressif-provided or community ESP-IDF components (MQTT, LCD drivers, sensors, etc.). Use CPM for
+general-purpose C/C++ libraries that are not packaged as ESP-IDF components.
 
 ---
 
 ## Troubleshooting
 
 **`CPMAddPackage` target not found at link time**
-- Confirm the `CPMAddPackage` call appears *before* `project()` is referenced by any subdir, or at minimum before the component is configured. In ESP-IDF, place all `CPMAddPackage` calls in the root `CMakeLists.txt` after `include(CPM...)`.
+
+- Confirm the `CPMAddPackage` call appears *before* `project()` is referenced by any subdir, or at minimum before the
+  component is configured. In ESP-IDF, place all `CPMAddPackage` calls in the root `CMakeLists.txt` after
+  `include(CPM...)`.
 
 **Library CMake targets differ from the `NAME` argument**
-- The `NAME` you pass to CPM is not necessarily the CMake target name. Check the library's own `CMakeLists.txt` for `add_library(...)` or `install(TARGETS ...)` to find the correct target.
+
+- The `NAME` you pass to CPM is not necessarily the CMake target name. Check the library's own `CMakeLists.txt` for
+  `add_library(...)` or `install(TARGETS ...)` to find the correct target.
 
 **CPM re-downloads on every clean build**
-- The downloaded source is in `build/_deps/` which is wiped on a full clean. Set `CPM_SOURCE_CACHE` to a path outside the build directory to persist downloaded sources across cleans:
+
+- The downloaded source is in `build/_deps/` which is wiped on a full clean. Set `CPM_SOURCE_CACHE` to a path outside
+  the build directory to persist downloaded sources across cleans:
   ```cmake
   set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/.cpm_cache")
   ```

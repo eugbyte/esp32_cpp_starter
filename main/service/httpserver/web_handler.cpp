@@ -4,15 +4,16 @@
 
 #include "web_handler.hpp"
 #include <cJSON.h>
-#include <etl/string.h>
-#include <esp_littlefs.h>
+#include <cstring>
 #include <esp_http_server.h>
+#include <esp_littlefs.h>
 #include <esp_log.h>
 #include <esp_vfs.h>
+#include <etl/string.h>
 #include <fcntl.h>
-#include <cstring>
 
-#define CHECK_FILE_EXTENSION(filename, ext) (strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
+#define CHECK_FILE_EXTENSION(filename, ext)                                    \
+	(strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
 
 using namespace svc::httpserver;
 
@@ -34,9 +35,9 @@ esp_err_t WebHandler::healthcheck(httpd_req_t *req) {
 }
 
 // Serve static files from filesystem
-// Copied from https://github.com/espressif/esp-idf/blob/master/examples/protocols/http_server/restful_server/main/rest_server.c
-esp_err_t WebHandler::serve_static_files(httpd_req_t *req)
-{
+// Copied from
+// https://github.com/espressif/esp-idf/blob/master/examples/protocols/http_server/restful_server/main/rest_server.c
+esp_err_t WebHandler::serve_static_files(httpd_req_t *req) {
 	char filepath[FILE_PATH_MAX];
 
 	auto *rest_context = static_cast<rest_server_context_t *>(req->user_ctx);
@@ -50,7 +51,8 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req)
 	if (fd == -1) {
 		ESP_LOGE(TAG, "Failed to open file : %s", filepath);
 		/* Respond with 500 Internal Server Error */
-		httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to read existing file");
+		httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
+							"Failed to read existing file");
 		return ESP_FAIL;
 	}
 
@@ -71,7 +73,8 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req)
 				/* Abort sending file */
 				httpd_resp_sendstr_chunk(req, NULL);
 				/* Respond with 500 Internal Server Error */
-				httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to send file");
+				httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
+									"Failed to send file");
 				return ESP_FAIL;
 			}
 		}
@@ -85,8 +88,8 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req)
 }
 
 /* Set HTTP response content type according to file extension */
-esp_err_t WebHandler::set_content_type_from_file(httpd_req_t *req, const char *filepath)
-{
+esp_err_t WebHandler::set_content_type_from_file(httpd_req_t *req,
+												 const char *filepath) {
 	const char *type = "text/plain";
 	if (CHECK_FILE_EXTENSION(filepath, ".html")) {
 		type = "text/html";

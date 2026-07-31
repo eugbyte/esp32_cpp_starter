@@ -60,7 +60,7 @@ private:
 	esp_event_handler_instance_t instance_any_handler_id_{};
 	esp_event_handler_instance_t instance_got_ip_handler_id_{};
 	esp_err_t ap_event_handler(void *arg, esp_event_base_t event_base,
-								  int32_t event_id, void *event_data);
+							   int32_t event_id, void *event_data);
 	// WIFI_EVENT/IP_EVENT callback: triggers (re)connect attempts on
 	// disconnect (up to CONFIG_ESP_MAXIMUM_RETRY) and sets
 	// WIFI_CONNECTED_BIT/WIFI_FAIL_BIT on s_wifi_event_group_ once the

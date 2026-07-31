@@ -11,7 +11,6 @@
 #include <etl/string_view.h>
 #include <etl/tuple.h>
 
-
 /**
  * @brief Interface for non-volatile storage (NVS) blob access.
  *

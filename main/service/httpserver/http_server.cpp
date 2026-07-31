@@ -27,7 +27,6 @@ HttpServer::HttpServer() {
 			 "http_server_configure: Starting server on port: '%d' with task "
 			 "priority: '%d'",
 			 config_.server_port, config_.task_priority);
-
 }
 
 HttpServer::~HttpServer() {
@@ -51,7 +50,7 @@ esp_err_t HttpServer::init_mdns() {
 		return err;
 	}
 
-	mdns_hostname_set("esp32");        // device reachable as http://esp32.local
+	mdns_hostname_set("esp32"); // device reachable as http://esp32.local
 	mdns_instance_name_set("esp32 web server");
 
 	// Optionally advertise services (e.g. HTTP server on port 80)

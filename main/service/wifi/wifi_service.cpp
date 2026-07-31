@@ -34,12 +34,12 @@ WifiService::WifiService() {
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 	ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
 
-	esp_event_handler_t event_handler =
-		[](void *arg, esp_event_base_t event_base, int32_t event_id,
-		   void *event_data) {
-			auto *self = static_cast<WifiService *>(arg);
-			self->sta_event_handler(arg, event_base, event_id, event_data);
-			self->ap_event_handler(arg, event_base, event_id, event_data);
+	esp_event_handler_t event_handler = [](void *arg,
+										   esp_event_base_t event_base,
+										   int32_t event_id, void *event_data) {
+		auto *self = static_cast<WifiService *>(arg);
+		self->sta_event_handler(arg, event_base, event_id, event_data);
+		self->ap_event_handler(arg, event_base, event_id, event_data);
 	};
 
 	esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID,

@@ -5,9 +5,9 @@
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
 
-#include <etl/span.h>
 #include <esp_log.h>
 #include <esp_random.h>
+#include <etl/span.h>
 #include <etl/string.h>
 #include <mqtt_client.h>
 
@@ -19,7 +19,8 @@ extern "C" void app_main(void) {
 	esp_err_t err = {0};
 
 	err = nvs_flash_init();
-	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+	if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
+		err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
 		// NVS partition was truncated and needs to be erased
 		// Retry nvs_flash_init
 		ESP_ERROR_CHECK(nvs_flash_erase());
@@ -39,8 +40,7 @@ extern "C" void app_main(void) {
 	auto wifi_service = svc::wifi::WifiService();
 	etl::string<32> ssid = "Tham Network";
 	etl::string<32> password = "28Stratton";
-	if (err = wifi_service.sta_connect(ssid, password);
-		err != ESP_OK) {
+	if (err = wifi_service.sta_connect(ssid, password); err != ESP_OK) {
 		lcd_service.clear();
 		lcd_service.send_text("Wifi connection failed");
 	} else {
@@ -51,7 +51,8 @@ extern "C" void app_main(void) {
 	wifi_service.ap_connect();
 
 	auto nvs_service = svc::storage::NvsService();
-	ESP_LOGI("main", "len: %d, capacity: %d, size: %d", ssid.length(), ssid.capacity(), sizeof(ssid));
+	ESP_LOGI("main", "len: %d, capacity: %d, size: %d", ssid.length(),
+			 ssid.capacity(), sizeof(ssid));
 	// include null terminator
 	// nvs_service.write_blob("wifi", "ssid", ssid.data(), ssid.length() + 1);
 
@@ -59,11 +60,13 @@ extern "C" void app_main(void) {
 	auto [size2, err2] = nvs_service.get_item_size("wifi", "ssid");
 	ESP_LOGI("main", "size2: %d", size2);
 	etl::span<char> buffer_view(ssid2.data(), size2);
-	nvs_service.get_blob("wifi", "ssid", buffer_view.data(), buffer_view.size());
+	nvs_service.get_blob("wifi", "ssid", buffer_view.data(),
+						 buffer_view.size());
 
 	ESP_LOGI("main", "ssid_from_nvs: |%s|", ssid2.data(), ssid2.length());
 
-	auto web_handler = new svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
+	auto web_handler =
+		new svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
 	etl::string<32> buffer = "";
 
@@ -71,28 +74,28 @@ extern "C" void app_main(void) {
 	auto http_server = svc::httpserver::HttpServer();
 	using rest_server_context_t = svc::httpserver::rest_server_context_t;
 
-	auto* rest_context = static_cast<rest_server_context_t *>(
+	auto *rest_context = static_cast<rest_server_context_t *>(
 		calloc(1, sizeof(rest_server_context_t)));
 	etl::string<32> base_path = "/www";
-	strlcpy(rest_context->base_path, base_path.data(), sizeof(rest_context->base_path));
+	strlcpy(rest_context->base_path, base_path.data(),
+			sizeof(rest_context->base_path));
 
 	httpd_uri_t common_get_uri = {
 		.uri = "/*",
 		.method = HTTP_GET,
 		.handler = svc::httpserver::WebHandler::serve_static_files,
-		.user_ctx = rest_context
-	};
+		.user_ctx = rest_context};
 	http_server.register_route(&common_get_uri);
 
 	httpd_uri_t healthcheck_uri = {
 		.uri = "/healthcheck",
 		.method = HTTP_GET,
 		.handler = [](httpd_req_t *req) -> esp_err_t {
-			const auto wh = static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
+			const auto wh =
+				static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
 			return wh->healthcheck(req);
 		},
-		.user_ctx = &web_handler
-	};
+		.user_ctx = &web_handler};
 	http_server.register_route(&healthcheck_uri);
 
 	// device reachable at http://esp32.local

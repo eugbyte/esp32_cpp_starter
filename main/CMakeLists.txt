@@ -18,8 +18,8 @@ idf_component_register(
 target_link_libraries(${COMPONENT_LIB} PRIVATE etl::etl)
 
 set(WEB_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../webpage")
-if(EXISTS ${WEB_SRC_DIR}/dist)
+if (EXISTS ${WEB_SRC_DIR}/dist)
     littlefs_create_partition_image(www ${WEB_SRC_DIR}/dist FLASH_IN_PROJECT)
-else()
+else ()
     message(FATAL_ERROR "'${WEB_SRC_DIR}/dist' doesn't exist. Please run 'pnpm build' under '${WEB_SRC_DIR}'")
-endif()
+endif ()

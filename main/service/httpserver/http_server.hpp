@@ -13,7 +13,6 @@
 #define HTTP_SERVER_TASK_PRIORITY 4
 #define HTTP_SERVER_TASK_CORE_ID 0
 
-
 namespace svc::httpserver {
 class HttpServer {
 private:
@@ -25,10 +24,10 @@ public:
 	~HttpServer();
 
 	esp_err_t start_server();
-	esp_err_t register_route(const httpd_uri_t* route_handler);
+	esp_err_t register_route(const httpd_uri_t *route_handler);
 	esp_err_t init_mdns();
 };
 
-}
+} // namespace svc::httpserver
 
 #endif // CPP_STARTER_HTTP_SERVER_HPP
