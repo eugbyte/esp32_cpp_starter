@@ -1,6 +1,7 @@
 #include "service/lcd/lcd_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
+#include "service/httpserver/web_handler.hpp"
 
 #include <etl/span.h>
 #include <esp_log.h>
@@ -57,6 +58,8 @@ extern "C" void app_main(void) {
 	nvs_service.get_blob("wifi", "ssid", buffer_view.data(), buffer_view.size());
 
 	ESP_LOGI("main", "ssid_from_nvs: |%s|", ssid2.data(), ssid2.length());
+
+	svc::httpserver::WebHandler web_handler(lcd_service, nvs_service, wifi_service);
 
 	etl::string<32> buffer = "";
 
