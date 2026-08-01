@@ -9,6 +9,8 @@
 #include <esp_err.h>
 
 namespace svc::storage {
+// Mounts the web page LittleFS partition; must be called before
+// serving static files.
 esp_err_t init_fs();
 }
 

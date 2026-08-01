@@ -45,8 +45,12 @@ namespace svc::wifi {
  */
 class WifiService : public IWifiService {
 public:
+	// Creates STA+AP netifs, inits the Wi-Fi driver, and registers the
+	// WIFI_EVENT/IP_EVENT handlers.
 	WifiService();
+	// Destroys the default STA/AP netifs.
 	~WifiService() override;
+	// Starts the software AP alongside STA (WIFI_MODE_APSTA).
 	esp_err_t ap_connect();
 	esp_err_t sta_connect(etl::string_view ssid,
 						  etl::string_view password) override;
@@ -59,6 +63,8 @@ private:
 	EventGroupHandle_t s_wifi_event_group_{};
 	esp_event_handler_instance_t instance_any_handler_id_{};
 	esp_event_handler_instance_t instance_got_ip_handler_id_{};
+	// WIFI_EVENT callback for the AP interface: logs station
+	// connect/disconnect events.
 	esp_err_t ap_event_handler(void *arg, esp_event_base_t event_base,
 							   int32_t event_id, void *event_data);
 	// WIFI_EVENT/IP_EVENT callback: triggers (re)connect attempts on

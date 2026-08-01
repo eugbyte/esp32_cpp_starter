@@ -19,6 +19,8 @@ using namespace svc::httpserver;
 
 const char *TAG = "esp-rest";
 
+// Stores references to the shared LCD/NVS/Wi-Fi services so route
+// handlers (bound via httpd_uri_t.user_ctx) can reach them.
 WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 					   IWifiService &wifi_svc) :
 	lcd_svc_(lcd_svc), nvs_svc_(nvs_svc), wifi_svc_(wifi_svc) {
@@ -27,6 +29,7 @@ WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 	ESP_LOGI("Handler", "wifi_svc @ %p", static_cast<void *>(&wifi_svc_));
 }
 
+// GET /health handler: replies with a static JSON OK payload.
 esp_err_t WebHandler::healthcheck(httpd_req_t *req) {
 	const etl::string<128> payload = R"({"status": "OK"})";
 	httpd_resp_set_type(req, "application/json");

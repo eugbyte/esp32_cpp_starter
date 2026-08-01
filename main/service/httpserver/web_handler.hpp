@@ -29,10 +29,16 @@ private:
 												const char *filepath);
 
 public:
+	// Binds this handler to the shared LCD/NVS/Wi-Fi services used by
+	// its routes.
 	WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 			   IWifiService &wifi_svc);
 
+	// GET /health: returns a static JSON OK payload.
 	esp_err_t healthcheck(httpd_req_t *req);
+	// GET /*: serves files from the LittleFS-backed base_path in the
+	// request's rest_server_context_t user_ctx, defaulting to index.html
+	// for directory-style URIs.
 	static esp_err_t serve_static_files(httpd_req_t *req);
 };
 }; // namespace svc::httpserver

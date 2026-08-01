@@ -10,6 +10,8 @@
 
 static const char *TAG = "fs_service";
 
+// Mounts the "www" LittleFS partition at WEB_PAGE_MOUNT_POINT_IN_FS,
+// formatting it if mounting fails, and logs partition usage.
 esp_err_t svc::storage::init_fs() {
 	esp_vfs_littlefs_conf_t conf = {};
 	conf.base_path = WEB_PAGE_MOUNT_POINT_IN_FS;

@@ -31,20 +31,33 @@ HttpServer::HttpServer() {
 			 config_.server_port, config_.task_priority);
 }
 
+// Stops the httpd instance if one was started.
 HttpServer::~HttpServer() {
 	if (server_handle_ != nullptr) {
 		httpd_stop(server_handle_);
 	}
 }
 
+// Starts the httpd instance using the config built in the constructor.
+// Call once WifiService (STA/AP) is connected/started, otherwise the
+// server has nothing to bind to that clients can reach. Must be
+// called before register_route().
 esp_err_t HttpServer::start_server() {
 	return httpd_start(&server_handle_, &config_);
 }
 
+// Registers a URI handler with the running httpd instance. Must be
+// called after start_server(), since it needs the server handle
+// created there.
 esp_err_t HttpServer::register_route(const httpd_uri_t *route_handler) {
 	return httpd_register_uri_handler(server_handle_, route_handler);
 }
 
+// Initializes mDNS and advertises the device as http://esp32.local
+// with an _http._tcp service record. Call once WifiService (STA/AP)
+// is connected/started so the advertisement goes out over an active
+// interface; independent of start_server()/register_route(), so it
+// can be called before or after those.
 esp_err_t HttpServer::init_mdns() {
 	esp_err_t err = mdns_init();
 	if (err) {

@@ -14,6 +14,9 @@
 #include <esp_netif.h>
 #include <nvs_flash.h>
 
+// Entry point: brings up NVS, the default event loop and netif, then the
+// LCD, Wi-Fi (STA + AP), NVS-backed storage, filesystem and HTTP server
+// services, before looping to show a random number on the LCD.
 extern "C" void app_main(void) {
 	esp_err_t err = {0};
 
