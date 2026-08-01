@@ -28,7 +28,7 @@ WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 }
 
 esp_err_t WebHandler::healthcheck(httpd_req_t *req) {
-	const etl::string<128> payload = R"({"message": "OK"})";
+	const etl::string<128> payload = R"({"status": "OK"})";
 	httpd_resp_set_type(req, "application/json");
 	httpd_resp_send(req, payload.c_str(), payload.length());
 	return ESP_OK;

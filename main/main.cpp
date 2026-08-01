@@ -10,7 +10,6 @@
 #include <etl/span.h>
 #include <etl/string.h>
 #include <mqtt_client.h>
-
 #include <cstdio>
 #include <esp_netif.h>
 #include <nvs_flash.h>
@@ -80,15 +79,12 @@ extern "C" void app_main(void) {
 	strlcpy(rest_context->base_path, base_path.data(),
 			sizeof(rest_context->base_path));
 
-	httpd_uri_t common_get_uri = {
-		.uri = "/*",
-		.method = HTTP_GET,
-		.handler = svc::httpserver::WebHandler::serve_static_files,
-		.user_ctx = rest_context};
-	http_server.register_route(&common_get_uri);
+	// device reachable at http://esp32.local
+	http_server.init_mdns();
+	http_server.start_server();
 
 	httpd_uri_t healthcheck_uri = {
-		.uri = "/healthcheck",
+		.uri = "/health",
 		.method = HTTP_GET,
 		.handler = [](httpd_req_t *req) -> esp_err_t {
 			const auto wh =
@@ -98,14 +94,17 @@ extern "C" void app_main(void) {
 		.user_ctx = &web_handler};
 	http_server.register_route(&healthcheck_uri);
 
-	// device reachable at http://esp32.local
-	http_server.init_mdns();
-	http_server.start_server();
+	httpd_uri_t common_get_uri = {
+		.uri = "/*",
+		.method = HTTP_GET,
+		.handler = svc::httpserver::WebHandler::serve_static_files,
+		.user_ctx = rest_context};
+	http_server.register_route(&common_get_uri);
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;
 		sprintf(buffer.data(), "num: %d", static_cast<int>(random_num));
-		ESP_LOGI("main", "num: %d", random_num);
+		// ESP_LOGI("main", "num: %d", random_num);
 		lcd_service.clear();
 		lcd_service.send_text(buffer.data());
 

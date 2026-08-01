@@ -3,7 +3,8 @@
 //
 
 #include "http_server.hpp"
-#include "mdns.h"
+#include <esp_netif.h>	// must include esp_netif.h before mdns.h
+#include <mdns.h>
 
 using namespace svc::httpserver;
 
@@ -18,6 +19,7 @@ HttpServer::HttpServer() {
 	config_.stack_size = HTTP_SERVER_TASK_STACK_SIZE;
 	// increase uri handlers
 	config_.max_uri_handlers = 20;
+	config_.uri_match_fn = httpd_uri_match_wildcard;
 
 	// increase timeout limits
 	config_.recv_wait_timeout = 10;
