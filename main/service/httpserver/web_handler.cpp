@@ -23,10 +23,77 @@ const char *TAG = "esp-rest";
 // handlers (bound via httpd_uri_t.user_ctx) can reach them.
 WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 					   IWifiService &wifi_svc) :
-	lcd_svc_(lcd_svc), nvs_svc_(nvs_svc), wifi_svc_(wifi_svc) {
-	ESP_LOGI("Handler", "lcd_svc  @ %p", static_cast<void *>(&lcd_svc_));
-	ESP_LOGI("Handler", "nvs_svc  @ %p", static_cast<void *>(&nvs_svc_));
-	ESP_LOGI("Handler", "wifi_svc @ %p", static_cast<void *>(&wifi_svc_));
+	lcd_svc_(lcd_svc), nvs_svc_(nvs_svc), wifi_svc_(wifi_svc) {}
+
+esp_err_t WebHandler::login(httpd_req_t *req) {
+	char buffer[1024] = {};
+	esp_err_t err = parse_buffer(req, buffer);
+	if (err != ESP_OK) {
+		httpd_resp_send_500(req);
+		return err;
+	}
+
+	// Parse JSON
+	cJSON *root = cJSON_Parse(buffer);
+	if (root == nullptr) {
+		httpd_resp_send_500(req);
+		return ESP_FAIL;
+	}
+
+	cJSON *username_item = cJSON_GetObjectItem(root, "username");
+	cJSON *password_item = cJSON_GetObjectItem(root, "password");
+
+	etl::string_view username;
+	etl::string_view password;
+
+	if (cJSON_IsString(username_item) &&
+		(username_item->valuestring != nullptr)) {
+		username = username_item->valuestring;
+	} else {
+		cJSON_Delete(root);
+		httpd_resp_send_500(req);
+		return ESP_FAIL;
+	}
+
+	if (cJSON_IsString(password_item) &&
+		(password_item->valuestring != nullptr)) {
+		password = password_item->valuestring;
+	} else {
+		httpd_resp_send_500(req);
+		cJSON_Delete(root);
+		return ESP_FAIL;
+	}
+
+	ESP_LOGI(TAG, "Received username: %s, password: %s", username.data(), password.data());
+
+	nvs_svc_.write_blob("wifi", "username", username.data(),
+						username.length() + 1); // include null terminator
+	nvs_svc_.write_blob("wifi", "password", password.data(),
+						password.length() + 1); // include null terminator
+
+	cJSON_Delete(root);
+	return ESP_OK;
+}
+
+esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer) {
+	int total_len = req->content_len;
+	int cur_len = 0;
+	int received = 0;
+
+	if (total_len >= sizeof(buffer)) {
+		return ESP_FAIL;
+	}
+
+	// Read the body (may arrive in chunks)
+	while (cur_len < total_len) {
+		received = httpd_req_recv(req, buffer + cur_len, total_len - cur_len);
+		if (received <= 0) {
+			return ESP_FAIL;
+		}
+		cur_len += received;
+	}
+	buffer[total_len] = '\0';
+	return ESP_OK;
 }
 
 // GET /health handler: replies with a static JSON OK payload.
@@ -38,8 +105,7 @@ esp_err_t WebHandler::healthcheck(httpd_req_t *req) {
 }
 
 // Serve static files from filesystem
-// Copied from
-// https://github.com/espressif/esp-idf/blob/master/examples/protocols/http_server/restful_server/main/rest_server.c
+// Copied from (https://tinyurl.com/mwp4tjtd)
 esp_err_t WebHandler::serve_static_files(httpd_req_t *req) {
 	char filepath[FILE_PATH_MAX];
 

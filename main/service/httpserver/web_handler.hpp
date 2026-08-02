@@ -27,6 +27,7 @@ private:
 	IWifiService &wifi_svc_;
 	static esp_err_t set_content_type_from_file(httpd_req_t *req,
 												const char *filepath);
+	static esp_err_t parse_buffer(httpd_req_t *req, char *buffer);
 
 public:
 	// Binds this handler to the shared LCD/NVS/Wi-Fi services used by
@@ -35,11 +36,12 @@ public:
 			   IWifiService &wifi_svc);
 
 	// GET /health: returns a static JSON OK payload.
-	esp_err_t healthcheck(httpd_req_t *req);
+	static esp_err_t healthcheck(httpd_req_t *req);
 	// GET /*: serves files from the LittleFS-backed base_path in the
 	// request's rest_server_context_t user_ctx, defaulting to index.html
 	// for directory-style URIs.
 	static esp_err_t serve_static_files(httpd_req_t *req);
+	esp_err_t login(httpd_req_t *req);
 };
 }; // namespace svc::httpserver
 

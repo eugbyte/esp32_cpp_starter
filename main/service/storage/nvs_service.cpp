@@ -81,7 +81,7 @@ esp_err_t NvsService::get_blob(etl::string_view ns_name, etl::string_view key,
 
 // Opens ns_name read-write, sets key's blob, and commits the change.
 esp_err_t NvsService::write_blob(etl::string_view ns_name, etl::string_view key,
-								 void *data, size_t size) {
+								 const void *data, size_t size) {
 	char ns_buf[kMaxNameLen];
 	char key_buf[kMaxNameLen];
 	to_cstr(ns_name, ns_buf, sizeof(ns_buf));

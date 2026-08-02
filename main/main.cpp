@@ -71,14 +71,14 @@ extern "C" void app_main(void) {
 		new svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
 	etl::string<32> buffer = "";
+	etl::string<32> base_path = "/www";
 
-	svc::storage::init_fs();
+	svc::storage::init_fs(base_path);
 	auto http_server = svc::httpserver::HttpServer();
-	using rest_server_context_t = svc::httpserver::rest_server_context_t;
 
+	using rest_server_context_t = svc::httpserver::rest_server_context_t;
 	auto *rest_context = static_cast<rest_server_context_t *>(
 		calloc(1, sizeof(rest_server_context_t)));
-	etl::string<32> base_path = "/www";
 	strlcpy(rest_context->base_path, base_path.data(),
 			sizeof(rest_context->base_path));
 
@@ -89,12 +89,8 @@ extern "C" void app_main(void) {
 	httpd_uri_t healthcheck_uri = {
 		.uri = "/health",
 		.method = HTTP_GET,
-		.handler = [](httpd_req_t *req) -> esp_err_t {
-			const auto wh =
-				static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
-			return wh->healthcheck(req);
-		},
-		.user_ctx = &web_handler};
+		.handler = svc::httpserver::WebHandler::healthcheck,
+		.user_ctx = nullptr};
 	http_server.register_route(&healthcheck_uri);
 
 	httpd_uri_t common_get_uri = {
@@ -103,6 +99,17 @@ extern "C" void app_main(void) {
 		.handler = svc::httpserver::WebHandler::serve_static_files,
 		.user_ctx = rest_context};
 	http_server.register_route(&common_get_uri);
+
+	httpd_uri_t login_uri = {
+		.uri = "/wifi/login",
+		.method = HTTP_POST,
+		.handler = [](httpd_req_t *req) -> esp_err_t {
+			const auto wh =
+				static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
+			return wh->login(req);
+		},
+		.user_ctx = web_handler};
+	http_server.register_route(&login_uri);
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;
