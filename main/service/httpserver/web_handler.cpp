@@ -27,8 +27,9 @@ WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 
 esp_err_t WebHandler::login(httpd_req_t *req) {
 	char buffer[1024] = {};
-	esp_err_t err = parse_buffer(req, buffer);
+	esp_err_t err = parse_buffer(req, buffer, sizeof(buffer));
 	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "login - Failed to parse buffer");
 		httpd_resp_send_500(req);
 		return err;
 	}
@@ -40,7 +41,7 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 		return ESP_FAIL;
 	}
 
-	cJSON *username_item = cJSON_GetObjectItem(root, "username");
+	cJSON *username_item = cJSON_GetObjectItem(root, "ssid");
 	cJSON *password_item = cJSON_GetObjectItem(root, "password");
 
 	etl::string_view username;
@@ -64,9 +65,9 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 		return ESP_FAIL;
 	}
 
-	ESP_LOGI(TAG, "Received username: %s, password: %s", username.data(), password.data());
+	ESP_LOGI(TAG, "Received ssid: %s, password: %s", username.data(), password.data());
 
-	nvs_svc_.write_blob("wifi", "username", username.data(),
+	nvs_svc_.write_blob("wifi", "ssid", username.data(),
 						username.length() + 1); // include null terminator
 	nvs_svc_.write_blob("wifi", "password", password.data(),
 						password.length() + 1); // include null terminator
@@ -75,12 +76,12 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 	return ESP_OK;
 }
 
-esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer) {
+esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer, size_t buf_size) {
 	int total_len = req->content_len;
 	int cur_len = 0;
 	int received = 0;
 
-	if (total_len >= sizeof(buffer)) {
+	if (total_len >= static_cast<int>(buf_size)) {
 		return ESP_FAIL;
 	}
 

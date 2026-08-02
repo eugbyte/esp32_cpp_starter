@@ -93,13 +93,6 @@ extern "C" void app_main(void) {
 		.user_ctx = nullptr};
 	http_server.register_route(&healthcheck_uri);
 
-	httpd_uri_t common_get_uri = {
-		.uri = "/*",
-		.method = HTTP_GET,
-		.handler = svc::httpserver::WebHandler::serve_static_files,
-		.user_ctx = rest_context};
-	http_server.register_route(&common_get_uri);
-
 	httpd_uri_t login_uri = {
 		.uri = "/wifi/login",
 		.method = HTTP_POST,
@@ -110,6 +103,14 @@ extern "C" void app_main(void) {
 		},
 		.user_ctx = web_handler};
 	http_server.register_route(&login_uri);
+
+	// wildcard route must be registered last
+	httpd_uri_t common_get_uri = {
+		.uri = "/*",
+		.method = HTTP_GET,
+		.handler = svc::httpserver::WebHandler::serve_static_files,
+		.user_ctx = rest_context};
+	http_server.register_route(&common_get_uri);
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;
