@@ -73,6 +73,11 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 						password.length() + 1); // include null terminator
 
 	cJSON_Delete(root);
+
+	const etl::string<128> payload = R"({"status": "OK"})";
+	httpd_resp_set_type(req, "application/json");
+	httpd_resp_send(req, payload.c_str(), payload.length());
+	httpd_resp_send_chunk(req, nullptr, 0);
 	return ESP_OK;
 }
 
@@ -152,8 +157,6 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req) {
 	/* Close file after sending complete */
 	close(fd);
 	ESP_LOGI(TAG, "File sending complete");
-	/* Respond with an empty chunk to signal HTTP response completion */
-	httpd_resp_send_chunk(req, NULL, 0);
 	return ESP_OK;
 }
 
