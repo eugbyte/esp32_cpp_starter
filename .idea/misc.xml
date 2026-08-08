@@ -11,6 +11,8 @@
     </libraryRoots>
     <excludeRoots>
       <file path="C:/esp/v6.0.1/esp-idf" />
+      <file path="C:/esp/v6.0.2/esp-idf" />
     </excludeRoots>
   </component>
+  <component name="WestSettings">{}</component>
 </project>

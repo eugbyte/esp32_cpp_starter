@@ -27,7 +27,8 @@ private:
 	IWifiService &wifi_svc_;
 	static esp_err_t set_content_type_from_file(httpd_req_t *req,
 												const char *filepath);
-	static esp_err_t parse_buffer(httpd_req_t *req, char *buffer, size_t buf_size);
+	static esp_err_t parse_buffer(httpd_req_t *req, char *buffer,
+								  size_t buf_size);
 
 public:
 	// Binds this handler to the shared LCD/NVS/Wi-Fi services used by

@@ -1,17 +1,18 @@
 #include "service/httpserver/http_server.hpp"
 #include "service/httpserver/web_handler.hpp"
+#include "service/i2c/i2c.hpp"
 #include "service/lcd/lcd_service.hpp"
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
 
+#include <cstdio>
 #include <esp_log.h>
+#include <esp_netif.h>
 #include <esp_random.h>
 #include <etl/span.h>
 #include <etl/string.h>
 #include <mqtt_client.h>
-#include <cstdio>
-#include <esp_netif.h>
 #include <nvs_flash.h>
 
 // Entry point: brings up NVS, the default event loop and netif, then the
@@ -86,22 +87,22 @@ extern "C" void app_main(void) {
 	http_server.init_mdns();
 	http_server.start_server();
 
-	httpd_uri_t healthcheck_uri = {
-		.uri = "/health",
-		.method = HTTP_GET,
-		.handler = svc::httpserver::WebHandler::healthcheck,
-		.user_ctx = nullptr};
+	httpd_uri_t healthcheck_uri = {.uri = "/health",
+								   .method = HTTP_GET,
+								   .handler =
+									   svc::httpserver::WebHandler::healthcheck,
+								   .user_ctx = nullptr};
 	http_server.register_route(&healthcheck_uri);
 
-	httpd_uri_t login_uri = {
-		.uri = "/wifi/login",
-		.method = HTTP_POST,
-		.handler = [](httpd_req_t *req) -> esp_err_t {
-			const auto wh =
-				static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
-			return wh->login(req);
-		},
-		.user_ctx = web_handler};
+	httpd_uri_t login_uri = {.uri = "/wifi/login",
+							 .method = HTTP_POST,
+							 .handler = [](httpd_req_t *req) -> esp_err_t {
+								 const auto wh =
+									 static_cast<svc::httpserver::WebHandler *>(
+										 req->user_ctx);
+								 return wh->login(req);
+							 },
+							 .user_ctx = web_handler};
 	http_server.register_route(&login_uri);
 
 	// wildcard route must be registered last
@@ -111,6 +112,21 @@ extern "C" void app_main(void) {
 		.handler = svc::httpserver::WebHandler::serve_static_files,
 		.user_ctx = rest_context};
 	http_server.register_route(&common_get_uri);
+
+	auto i2c_service = svc::i2c::I2CService();
+
+	uint8_t data[20] = {};
+
+	i2c_master_dev_handle_t bmp280_device_handle = {};
+	constexpr uint8_t bmp280_address = 0x76;
+	i2c_service.subscribe(bmp280_address, &bmp280_device_handle);
+	constexpr uint8_t bmp280_reg_id = 0xD0;  // chip ID register; expected value 0x58
+	i2c_service.read(bmp280_device_handle, bmp280_reg_id, data, 1);
+	ESP_LOGI("i2c", "WHO_AM_I = %X", data[0]);
+
+	memset(data, 0, sizeof(data));
+
+
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;

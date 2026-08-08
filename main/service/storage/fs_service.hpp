@@ -13,6 +13,6 @@ namespace svc::storage {
 // Mounts the web page LittleFS partition; must be called before
 // serving static files.
 esp_err_t init_fs(etl::string_view base_path);
-}
+} // namespace svc::storage
 
 #endif // CPP_STARTER_FS_SERVICE_HPP

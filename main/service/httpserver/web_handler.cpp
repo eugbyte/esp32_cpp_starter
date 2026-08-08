@@ -65,7 +65,8 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 		return ESP_FAIL;
 	}
 
-	ESP_LOGI(TAG, "Received ssid: %s, password: %s", username.data(), password.data());
+	ESP_LOGI(TAG, "Received ssid: %s, password: %s", username.data(),
+			 password.data());
 
 	nvs_svc_.write_blob("wifi", "ssid", username.data(),
 						username.length() + 1); // include null terminator
@@ -81,7 +82,8 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 	return ESP_OK;
 }
 
-esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer, size_t buf_size) {
+esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer,
+								   size_t buf_size) {
 	int total_len = req->content_len;
 	int cur_len = 0;
 	int received = 0;
