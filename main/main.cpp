@@ -5,6 +5,7 @@
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
+#include "service/bmp280_sensor/bmp280_service.hpp"
 
 #include <cstdio>
 #include <esp_log.h>
@@ -115,18 +116,17 @@ extern "C" void app_main(void) {
 
 	auto i2c_service = svc::i2c::I2CService();
 
-	uint8_t data[20] = {};
-
-	i2c_master_dev_handle_t bmp280_device_handle = {};
-	constexpr uint8_t bmp280_address = 0x76;
-	i2c_service.subscribe(bmp280_address, &bmp280_device_handle);
-	constexpr uint8_t bmp280_reg_id = 0xD0;  // chip ID register; expected value 0x58
-	i2c_service.read(bmp280_device_handle, bmp280_reg_id, data, 1);
-	ESP_LOGI("i2c", "WHO_AM_I = %X", data[0]);
-
-	memset(data, 0, sizeof(data));
-
-
+	auto bmp280_service = svc::bmp280_sensor::Bmp280Service(i2c_service);
+	err = bmp280_service.connect();
+	if (err != ESP_OK) {
+		ESP_LOGE("main", "Failed to initialize BMP280 service");
+	}
+	auto [temperature, temperature_err] = bmp280_service.bmp280_read_temp();
+	if (temperature_err != ESP_OK) {
+		ESP_LOGE("main", "Failed to read temperature from BMP280");
+	} else {
+		ESP_LOGI("main", "Temperature: %.2f", temperature);
+	}
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;

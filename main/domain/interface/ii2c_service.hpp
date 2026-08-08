@@ -14,7 +14,7 @@ public:
 						i2c_master_dev_handle_t *device_handle) const = 0;
 	virtual esp_err_t unsubscribe(const i2c_master_dev_handle_t *device_handle) const = 0;
 	virtual esp_err_t read(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
-				   uint8_t *data, size_t len) = 0;
+				   uint8_t *data, size_t byte_size) = 0;
 	virtual esp_err_t write(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
 					uint8_t data) = 0;
 };

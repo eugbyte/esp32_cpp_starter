@@ -41,8 +41,9 @@ I2CService::unsubscribe(const i2c_master_dev_handle_t *device_handle) const {
 }
 
 esp_err_t I2CService::read(i2c_master_dev_handle_t device_handle,
-						   const uint8_t reg_addr, uint8_t *data, size_t len) {
-	return i2c_master_transmit_receive(device_handle, &reg_addr, 1, data, len,
+						   const uint8_t reg_addr, uint8_t *data,
+						   const size_t byte_size) {
+	return i2c_master_transmit_receive(device_handle, &reg_addr, 1, data, byte_size,
 									   I2C_MASTER_TIMEOUT_MS);
 }
 
