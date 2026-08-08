@@ -50,6 +50,9 @@ WifiService::WifiService() {
 										&instance_got_ip_handler_id_);
 }
 
+// Configures and starts the software access point (static IP/DHCP
+// server, SSID/password/channel from the WIFI_AP_* macros) alongside
+// the STA interface, switching the driver into WIFI_MODE_APSTA.
 esp_err_t WifiService::ap_connect() {
 	wifi_config_t ap_config = {};
 
@@ -96,6 +99,8 @@ esp_err_t WifiService::ap_connect() {
 	return ESP_OK;
 }
 
+// WIFI_EVENT callback for the AP interface: logs station join/leave
+// events (WIFI_EVENT_AP_STACONNECTED/STADISCONNECTED).
 esp_err_t WifiService::ap_event_handler(void *arg, esp_event_base_t event_base,
 										int32_t event_id, void *event_data) {
 	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_AP_STACONNECTED) {

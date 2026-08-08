@@ -1,19 +1,24 @@
 #include "service/httpserver/http_server.hpp"
 #include "service/httpserver/web_handler.hpp"
+#include "service/i2c/i2c.hpp"
 #include "service/lcd/lcd_service.hpp"
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
+#include "service/bmp280_sensor/bmp280_service.hpp"
 
+#include <cstdio>
 #include <esp_log.h>
+#include <esp_netif.h>
 #include <esp_random.h>
 #include <etl/span.h>
 #include <etl/string.h>
 #include <mqtt_client.h>
-#include <cstdio>
-#include <esp_netif.h>
 #include <nvs_flash.h>
 
+// Entry point: brings up NVS, the default event loop and netif, then the
+// LCD, Wi-Fi (STA + AP), NVS-backed storage, filesystem and HTTP server
+// services, before looping to show a random number on the LCD.
 extern "C" void app_main(void) {
 	esp_err_t err = {0};
 
@@ -68,14 +73,14 @@ extern "C" void app_main(void) {
 		new svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
 	etl::string<32> buffer = "";
+	etl::string<32> base_path = "/www";
 
-	svc::storage::init_fs();
+	svc::storage::init_fs(base_path);
 	auto http_server = svc::httpserver::HttpServer();
-	using rest_server_context_t = svc::httpserver::rest_server_context_t;
 
+	using rest_server_context_t = svc::httpserver::rest_server_context_t;
 	auto *rest_context = static_cast<rest_server_context_t *>(
 		calloc(1, sizeof(rest_server_context_t)));
-	etl::string<32> base_path = "/www";
 	strlcpy(rest_context->base_path, base_path.data(),
 			sizeof(rest_context->base_path));
 
@@ -83,23 +88,45 @@ extern "C" void app_main(void) {
 	http_server.init_mdns();
 	http_server.start_server();
 
-	httpd_uri_t healthcheck_uri = {
-		.uri = "/health",
-		.method = HTTP_GET,
-		.handler = [](httpd_req_t *req) -> esp_err_t {
-			const auto wh =
-				static_cast<svc::httpserver::WebHandler *>(req->user_ctx);
-			return wh->healthcheck(req);
-		},
-		.user_ctx = &web_handler};
+	httpd_uri_t healthcheck_uri = {.uri = "/health",
+								   .method = HTTP_GET,
+								   .handler =
+									   svc::httpserver::WebHandler::healthcheck,
+								   .user_ctx = nullptr};
 	http_server.register_route(&healthcheck_uri);
 
+	httpd_uri_t login_uri = {.uri = "/wifi/login",
+							 .method = HTTP_POST,
+							 .handler = [](httpd_req_t *req) -> esp_err_t {
+								 const auto wh =
+									 static_cast<svc::httpserver::WebHandler *>(
+										 req->user_ctx);
+								 return wh->login(req);
+							 },
+							 .user_ctx = web_handler};
+	http_server.register_route(&login_uri);
+
+	// wildcard route must be registered last
 	httpd_uri_t common_get_uri = {
 		.uri = "/*",
 		.method = HTTP_GET,
 		.handler = svc::httpserver::WebHandler::serve_static_files,
 		.user_ctx = rest_context};
 	http_server.register_route(&common_get_uri);
+
+	auto i2c_service = svc::i2c::I2CService();
+
+	auto bmp280_service = svc::bmp280_sensor::Bmp280Service(i2c_service);
+	err = bmp280_service.connect();
+	if (err != ESP_OK) {
+		ESP_LOGE("main", "Failed to initialize BMP280 service");
+	}
+	auto [temperature, temperature_err] = bmp280_service.bmp280_read_temp();
+	if (temperature_err != ESP_OK) {
+		ESP_LOGE("main", "Failed to read temperature from BMP280");
+	} else {
+		ESP_LOGI("main", "Temperature: %.2f", temperature);
+	}
 
 	while (true) {
 		const uint32_t random_num = (esp_random() % 10) + 1;

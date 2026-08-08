@@ -7,12 +7,15 @@
 #include <esp_err.h>
 #include <esp_littlefs.h>
 #include <esp_log.h>
+#include <etl/string_view.h>
 
 static const char *TAG = "fs_service";
 
-esp_err_t svc::storage::init_fs() {
+// Mounts the "www" LittleFS partition at WEB_PAGE_MOUNT_POINT_IN_FS,
+// formatting it if mounting fails, and logs partition usage.
+esp_err_t svc::storage::init_fs(etl::string_view base_path) {
 	esp_vfs_littlefs_conf_t conf = {};
-	conf.base_path = WEB_PAGE_MOUNT_POINT_IN_FS;
+	conf.base_path = base_path.data();
 	conf.partition_label = "www";
 	conf.format_if_mount_failed = true;
 

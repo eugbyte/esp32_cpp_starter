@@ -23,11 +23,11 @@ public:
 	NvsService() = default;
 
 	etl::tuple<size_t, esp_err_t> get_item_size(etl::string_view ns_name,
-												etl::string_view key);
+												etl::string_view key) override;
 	esp_err_t get_blob(etl::string_view ns_name, etl::string_view key,
-					   void *out, size_t required_size);
+					   void *out, size_t required_size) override;
 	esp_err_t write_blob(etl::string_view ns_name, etl::string_view key,
-						 void *data, size_t size);
+						 const void *data, size_t size) override;
 
 private:
 	// NVS namespace and key names are limited to 15 characters + null

@@ -5,7 +5,7 @@
 
     const onSubmit = async () => {
         try {
-            const response: Response = await fetch("/wifi", {
+            const response: Response = await fetch("/wifi/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

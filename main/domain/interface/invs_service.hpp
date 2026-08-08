@@ -28,8 +28,8 @@ public:
 	 * @return Tuple of (blob size in bytes, esp_err_t status). Size is
 	 *         0 when the lookup fails.
 	 */
-	etl::tuple<size_t, esp_err_t> get_item_size(etl::string_view ns_name,
-												etl::string_view key);
+	virtual etl::tuple<size_t, esp_err_t>
+	get_item_size(etl::string_view ns_name, etl::string_view key) = 0;
 
 	/**
 	 * @brief Read a stored blob into a caller-provided buffer.
@@ -39,8 +39,8 @@ public:
 	 * @param required_size Number of bytes to copy into out.
 	 * @return ESP_OK on success, or an esp_err_t error code on failure.
 	 */
-	esp_err_t get_blob(etl::string_view ns_name, etl::string_view key,
-					   void *out, size_t required_size);
+	virtual esp_err_t get_blob(etl::string_view ns_name, etl::string_view key,
+							   void *out, size_t required_size) = 0;
 
 	/**
 	 * @brief Write and commit a blob to storage.
@@ -50,8 +50,8 @@ public:
 	 * @param size Number of bytes to write.
 	 * @return ESP_OK on success, or an esp_err_t error code on failure.
 	 */
-	esp_err_t write_blob(etl::string_view ns_name, etl::string_view key,
-						 void *data, size_t size);
+	virtual esp_err_t write_blob(etl::string_view ns_name, etl::string_view key,
+								 const void *data, size_t size) = 0;
 };
 
 #endif // CPP_STARTER_INVS_SERVICE_H
