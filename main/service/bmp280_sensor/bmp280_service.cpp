@@ -117,43 +117,46 @@ esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
 	return ESP_OK;
 }
 
+
+
 // Compensation formula for temp copied from Bosch datasheet (s 3.11.3)
-float Bmp280Service::bmp280_compensate_temp(int32_t adc_T, int32_t *fine_temp) const {
-	int32_t var1 =
-		(((adc_T >> 3) - (static_cast<int32_t>(bmp280_calib_.dig_T1) << 1)) *
-		 static_cast<int32_t>(bmp280_calib_.dig_T2)) >>
-		11;
-	int32_t var2 =
-		(((((adc_T >> 4) - static_cast<int32_t>(bmp280_calib_.dig_T1)) *
-		   ((adc_T >> 4) - static_cast<int32_t>(bmp280_calib_.dig_T1))) >>
-		  12) *
-		 static_cast<int32_t>(bmp280_calib_.dig_T3)) >>
-		14;
+float Bmp280Service::bmp280_compensate_temp(int32_t adc_temp, int32_t *fine_temp) const {
+	bmp280_calib_t dev_ = this->bmp280_calib_;
+	auto dev = &dev_;
+
+	int32_t var1, var2;
+	var1 = ((((adc_temp >> 3) - ((int32_t)dev->dig_T1 << 1))) * (int32_t)dev->dig_T2) >> 11;
+	var2 = (((((adc_temp >> 4) - (int32_t)dev->dig_T1) * ((adc_temp >> 4) - (int32_t)dev->dig_T1)) >> 12) * (int32_t)dev->dig_T3) >> 14;
+
 	*fine_temp = var1 + var2;
-	float T = (*fine_temp * 5 + 128) >> 8;
+	int64_t T = (*fine_temp * 5 + 128) >> 8;	// temperature in hundredths of a degree Celsius
 	return T / 100.0f;
 }
 
 // Compensation formula for pressure copied from Bosch datasheet (s 3.11.3)
-float Bmp280Service::bmp280_compensate_pressure(int32_t adc_P, int32_t fine_temp) const {
-	int64_t var1 = static_cast<int64_t>(fine_temp) - 128000;
-	int64_t var2 = var1 * var1 * static_cast<int64_t>(bmp280_calib_.dig_P6);
-	var2 = var2 + ((var1 * static_cast<int64_t>(bmp280_calib_.dig_P5)) << 17);
-	var2 = var2 + (static_cast<int64_t>(bmp280_calib_.dig_P4) << 35);
-	var1 = ((var1 * var1 * static_cast<int64_t>(bmp280_calib_.dig_P3)) >> 8) +
-		   ((var1 * static_cast<int64_t>(bmp280_calib_.dig_P2)) << 12);
-	var1 =
-		((static_cast<int64_t>(1) << 47) + var1) * static_cast<int64_t>(bmp280_calib_.dig_P1) >> 33;
+float Bmp280Service::bmp280_compensate_pressure(int32_t adc_press, int32_t fine_temp) const {
+	bmp280_calib_t dev_ = this->bmp280_calib_;
+	auto dev = &dev_;
+	int64_t var1, var2, p;
 
-	if (var1 == 0) {
-		return 0; // avoid divide by zero
+	var1 = (int64_t)fine_temp - 128000;
+	var2 = var1 * var1 * (int64_t)dev->dig_P6;
+	var2 = var2 + ((var1 * (int64_t)dev->dig_P5) << 17);
+	var2 = var2 + (((int64_t)dev->dig_P4) << 35);
+	var1 = ((var1 * var1 * (int64_t)dev->dig_P3) >> 8) + ((var1 * (int64_t)dev->dig_P2) << 12);
+	var1 = (((int64_t)1 << 47) + var1) * ((int64_t)dev->dig_P1) >> 33;
+
+	if (var1 == 0)
+	{
+		return 0;  // avoid exception caused by division by zero
 	}
 
-	int64_t p = 1048576 - adc_P;
-	p = ((p << 31) - var2) * 3125 / var1;
-	var1 = (static_cast<int64_t>(bmp280_calib_.dig_P9) * (p >> 13) * (p >> 13)) >> 25;
-	var2 = (static_cast<int64_t>(bmp280_calib_.dig_P8) * p) >> 19;
-	p = ((p + var1 + var2) >> 8) + (static_cast<int64_t>(bmp280_calib_.dig_P7) << 4);
+	p = 1048576 - adc_press;
+	p = (((p << 31) - var2) * 3125) / var1;
+	var1 = ((int64_t)dev->dig_P9 * (p >> 13) * (p >> 13)) >> 25;
+	var2 = ((int64_t)dev->dig_P8 * p) >> 19;
 
-	return static_cast<float>(p) / 256.0f / 100.0f; // convert Pa -> hPa
+	p = ((p + var1 + var2) >> 8) + ((int64_t)dev->dig_P7 << 4);
+	p = (float)p / 256.0f / 100.0f; // convert Pa -> hPa
+	return p;
 }
