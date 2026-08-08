@@ -29,6 +29,9 @@ private:
 												const char *filepath);
 	static esp_err_t parse_buffer(httpd_req_t *req, char *buffer,
 								  size_t buf_size);
+	static esp_err_t healthcheck(httpd_req_t *req);
+	static esp_err_t serve_static_files(httpd_req_t *req);
+	esp_err_t login(httpd_req_t *req);
 
 public:
 	// Binds this handler to the shared LCD/NVS/Wi-Fi services used by
@@ -36,13 +39,10 @@ public:
 	WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 			   IWifiService &wifi_svc);
 
-	// GET /health: returns a static JSON OK payload.
-	static esp_err_t healthcheck(httpd_req_t *req);
-	// GET /*: serves files from the LittleFS-backed base_path in the
-	// request's rest_server_context_t user_ctx, defaulting to index.html
-	// for directory-style URIs.
-	static esp_err_t serve_static_files(httpd_req_t *req);
-	esp_err_t login(httpd_req_t *req);
+	// .uri must point to a string literal (ROM) — never a stack/heap buffer.
+	static httpd_uri_t healthcheck_uri();
+	httpd_uri_t login_uri();
+	static httpd_uri_t static_files_uri(rest_server_context_t *ctx);
 };
 }; // namespace svc::httpserver
 

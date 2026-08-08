@@ -25,6 +25,28 @@ WebHandler::WebHandler(ILcdService &lcd_svc, INvsService &nvs_svc,
 					   IWifiService &wifi_svc) :
 	lcd_svc_(lcd_svc), nvs_svc_(nvs_svc), wifi_svc_(wifi_svc) {}
 
+esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer,
+								   size_t buf_size) {
+	int total_len = req->content_len;
+	int cur_len = 0;
+	int received = 0;
+
+	if (total_len >= static_cast<int>(buf_size)) {
+		return ESP_FAIL;
+	}
+
+	// Read the body (may arrive in chunks)
+	while (cur_len < total_len) {
+		received = httpd_req_recv(req, buffer + cur_len, total_len - cur_len);
+		if (received <= 0) {
+			return ESP_FAIL;
+		}
+		cur_len += received;
+	}
+	buffer[total_len] = '\0';
+	return ESP_OK;
+}
+
 esp_err_t WebHandler::login(httpd_req_t *req) {
 	char buffer[1024] = {};
 	esp_err_t err = parse_buffer(req, buffer, sizeof(buffer));
@@ -82,34 +104,35 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 	return ESP_OK;
 }
 
-esp_err_t WebHandler::parse_buffer(httpd_req_t *req, char *buffer,
-								   size_t buf_size) {
-	int total_len = req->content_len;
-	int cur_len = 0;
-	int received = 0;
-
-	if (total_len >= static_cast<int>(buf_size)) {
-		return ESP_FAIL;
-	}
-
-	// Read the body (may arrive in chunks)
-	while (cur_len < total_len) {
-		received = httpd_req_recv(req, buffer + cur_len, total_len - cur_len);
-		if (received <= 0) {
-			return ESP_FAIL;
-		}
-		cur_len += received;
-	}
-	buffer[total_len] = '\0';
-	return ESP_OK;
-}
-
 // GET /health handler: replies with a static JSON OK payload.
 esp_err_t WebHandler::healthcheck(httpd_req_t *req) {
 	const etl::string<128> payload = R"({"status": "OK"})";
 	httpd_resp_set_type(req, "application/json");
 	httpd_resp_send(req, payload.c_str(), payload.length());
 	return ESP_OK;
+}
+
+httpd_uri_t WebHandler::healthcheck_uri() {
+	return {.uri = "/health",
+			.method = HTTP_GET,
+			.handler = WebHandler::healthcheck,
+			.user_ctx = nullptr};
+}
+
+httpd_uri_t WebHandler::login_uri() {
+	return {.uri = "/wifi/login",
+			.method = HTTP_POST,
+			.handler = [](httpd_req_t *req) -> esp_err_t {
+				return static_cast<WebHandler *>(req->user_ctx)->login(req);
+			},
+			.user_ctx = this};
+}
+
+httpd_uri_t WebHandler::static_files_uri(rest_server_context_t *ctx) {
+	return {.uri = "/*",
+			.method = HTTP_GET,
+			.handler = WebHandler::serve_static_files,
+			.user_ctx = ctx};
 }
 
 // Serve static files from filesystem
