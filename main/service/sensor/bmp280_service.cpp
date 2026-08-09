@@ -41,8 +41,21 @@ esp_err_t Bmp280Service::subscribe() {
 	}
 	i2c_svc_.read(bmp280_device_handle_, BMP280_REG_ID, data, 1);
 	ESP_LOGI("i2c", "WHO_AM_I = %X", data[0]);
-	ESP_LOGI("i2c", "bmp280 successully subscribed");
+
+	err = set_normal_sampling_mode();
+	if (err != ESP_OK) {
+		return err;
+	}
+
+	ESP_LOGI("i2c", "bmp280 successfully subscribed");
 	return ESP_OK;
+}
+
+esp_err_t Bmp280Service::set_normal_sampling_mode() const {
+	// Put the sensor into normal mode with x2 oversampling. (s 4.3.4, s 3.6, s 3.3.1, s 3.3.2)
+	int data = 0b010 << 5 | 0b010 << 2 | 0b11; // osrs_t=001 (x1), osrs_p=001 (x1), mode=11 (normal)
+	return i2c_svc_.write(bmp280_device_handle_, BMP280_REG_CTRL_MEAS,
+						   data);
 }
 
 esp_err_t Bmp280Service::init_compensation_values() {

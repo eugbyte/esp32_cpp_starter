@@ -4,8 +4,8 @@
 
 #include "freertos/idf_additions.h"
 
-#include "dht.h"
 #include "dhtsensor_service.hpp"
+#include <dht.h>
 
 #include <driver/gpio.h>
 

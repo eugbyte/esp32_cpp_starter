@@ -13,6 +13,7 @@
 #define BMP280_TEMP_REGISTER_ADDR 0xFA
 #define BMP280_PRESSURE_REGISTER_ADDR 0xF7
 #define BMP280_REG_ID 0xD0
+#define BMP280_REG_CTRL_MEAS 0xF4
 
 namespace svc::sensor {
 
@@ -52,6 +53,9 @@ private:
 	// Registers the BMP280 device on the I2C bus and logs its WHO_AM_I
 	// register value.
 	esp_err_t subscribe();
+	// Writes ctrl_meas to put the sensor into normal mode with x1
+	// oversampling so it actually performs conversions.
+	esp_err_t set_normal_sampling_mode() const;
 	// Reads the factory calibration registers from the sensor into
 	// bmp280_calib_.
 	esp_err_t init_compensation_values();
