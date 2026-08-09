@@ -12,7 +12,7 @@
 
 using namespace svc::httpserver;
 
-esp_err_t task::http_task(WebHandler& web_handler, HttpServer& http_server) {
+esp_err_t task::http_task(WebHandler &web_handler, HttpServer &http_server) {
 	etl::string<16> base_path = "/www";
 	svc::storage::init_fs(base_path);
 
@@ -43,7 +43,8 @@ esp_err_t task::http_task(WebHandler& web_handler, HttpServer& http_server) {
 	http_server.register_route(&login_uri);
 
 	// wildcard route must be registered last
-	// have req_ctx persist for the lifetime of the server, since it is used as the user_ctx for the wildcard route handler
+	// have req_ctx persist for the lifetime of the server, since it is used as
+	// the user_ctx for the wildcard route handler
 	static rest_server_context_t req_ctx{};
 	strlcpy(req_ctx.base_path, base_path.data(), sizeof(req_ctx.base_path));
 	httpd_uri_t common_get_uri = {.uri = "/*",

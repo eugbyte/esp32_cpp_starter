@@ -8,9 +8,9 @@
 
 #include <esp_err.h>
 
-#define I2C_SENSOR_STACK_SIZE    4096
+#define I2C_SENSOR_STACK_SIZE 4096
 #define I2C_SENSOR_TASK_PRIORITY 1
-#define I2C_SENSOR_CORE_ID       1
+#define I2C_SENSOR_CORE_ID 1
 
 namespace task {
 esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service);

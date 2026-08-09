@@ -11,9 +11,8 @@
 #define CPP_STARTER_HTTP_TASK_HPP
 
 namespace task {
-esp_err_t http_task(svc::httpserver::WebHandler & web_handler,
-					svc::httpserver::HttpServer & http_server);
+esp_err_t http_task(svc::httpserver::WebHandler &web_handler,
+					svc::httpserver::HttpServer &http_server);
 }
-
 
 #endif // CPP_STARTER_HTTP_TASK_HPP

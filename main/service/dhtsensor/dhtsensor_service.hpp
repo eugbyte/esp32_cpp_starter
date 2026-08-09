@@ -27,8 +27,6 @@ public:
 	float get_humidity();
 	void start();
 };
-}
-
-
+} // namespace svc::sensor
 
 #endif // CPP_STARTER_DHTSENSOR_SERVICE_HPP

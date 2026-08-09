@@ -42,7 +42,8 @@ extern "C" void app_main(void) {
 	auto i2c_service = svc::i2c::I2CService();
 	auto httpserver = svc::httpserver::HttpServer();
 	auto bmp280_service = svc::sensor::Bmp280Service(i2c_service);
-	auto web_handler = svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
+	auto web_handler =
+		svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
 	ESP_ERROR_CHECK(task::http_task(web_handler, httpserver));
 	ESP_ERROR_CHECK(task::wifi_task(wifi_service));

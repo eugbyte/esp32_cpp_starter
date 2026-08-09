@@ -11,8 +11,8 @@
 
 using namespace svc::sensor;
 
-Bmp280Service::Bmp280Service(II2CService &i2c_service) : i2c_svc_(i2c_service) {
-}
+Bmp280Service::Bmp280Service(II2CService &i2c_service) :
+	i2c_svc_(i2c_service) {}
 
 esp_err_t Bmp280Service::connect() {
 	esp_err_t err = subscribe();
@@ -88,7 +88,8 @@ etl::tuple<float, esp_err_t> Bmp280Service::bmp280_read_pressure() {
 }
 
 esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
-	// 3 bytes for pressure, and another 3 bytes for temperature (s 4.3.6 - s 4.3.7)
+	// 3 bytes for pressure, and another 3 bytes for temperature (s 4.3.6 -
+	// s 4.3.7)
 	uint8_t data[6];
 	esp_err_t err =
 		i2c_svc_.read(bmp280_device_handle_, BMP280_PRESSURE_REGISTER_ADDR,
@@ -100,16 +101,14 @@ esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
 	 * (s 4.3.6 - s 4.3.7)
 	 * MSB is most significant byte, not bit.
 	 * bit:   19 18 17 16 15 14 13 12 | 11 10 9 8 7 6 5 4 | 3 2 1 0 0 0 0 0
-	          └───── MSB (8 bits)  ─┘   └─ LSB (8 bits)─┘   └XLSB─┘
+			  └───── MSB (8 bits)  ─┘   └─ LSB (8 bits)─┘   └XLSB─┘
 	 */
 
 	// pressure = msb + lsb + xlsb (s 4.3.6)
-	int32_t adc_P =
-		(data[0]) << 12 | (data[1]) << 4 | (data[2] >> 4);
+	int32_t adc_P = (data[0]) << 12 | (data[1]) << 4 | (data[2] >> 4);
 
 	// temperature = msb + lsb + xlsb (s 4.3.7)
-	int32_t adc_T =
-		(data[3] << 12) | (data[4] << 4) | (data[5] >> 4);
+	int32_t adc_T = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4);
 
 	int32_t fine_temp = 0;
 	*temperature = bmp280_compensate_temp(adc_T, &fine_temp);
@@ -117,24 +116,31 @@ esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
 	return ESP_OK;
 }
 
-
-
 // Compensation formula for temp copied from Bosch datasheet (s 3.11.3)
-float Bmp280Service::bmp280_compensate_temp(int32_t adc_temp, int32_t *fine_temp) const {
+float Bmp280Service::bmp280_compensate_temp(int32_t adc_temp,
+											int32_t *fine_temp) const {
 	bmp280_calib_t dev_ = this->bmp280_calib_;
 	auto dev = &dev_;
 
 	int32_t var1, var2;
-	var1 = ((((adc_temp >> 3) - ((int32_t)dev->dig_T1 << 1))) * (int32_t)dev->dig_T2) >> 11;
-	var2 = (((((adc_temp >> 4) - (int32_t)dev->dig_T1) * ((adc_temp >> 4) - (int32_t)dev->dig_T1)) >> 12) * (int32_t)dev->dig_T3) >> 14;
+	var1 = ((((adc_temp >> 3) - ((int32_t)dev->dig_T1 << 1))) *
+			(int32_t)dev->dig_T2) >>
+		   11;
+	var2 = (((((adc_temp >> 4) - (int32_t)dev->dig_T1) *
+			  ((adc_temp >> 4) - (int32_t)dev->dig_T1)) >>
+			 12) *
+			(int32_t)dev->dig_T3) >>
+		   14;
 
 	*fine_temp = var1 + var2;
-	int64_t T = (*fine_temp * 5 + 128) >> 8;	// temperature in hundredths of a degree Celsius
+	int64_t T = (*fine_temp * 5 + 128) >>
+				8; // temperature in hundredths of a degree Celsius
 	return T / 100.0f;
 }
 
 // Compensation formula for pressure copied from Bosch datasheet (s 3.11.3)
-float Bmp280Service::bmp280_compensate_pressure(int32_t adc_press, int32_t fine_temp) const {
+float Bmp280Service::bmp280_compensate_pressure(int32_t adc_press,
+												int32_t fine_temp) const {
 	bmp280_calib_t dev_ = this->bmp280_calib_;
 	auto dev = &dev_;
 	int64_t var1, var2, p;
@@ -143,12 +149,12 @@ float Bmp280Service::bmp280_compensate_pressure(int32_t adc_press, int32_t fine_
 	var2 = var1 * var1 * (int64_t)dev->dig_P6;
 	var2 = var2 + ((var1 * (int64_t)dev->dig_P5) << 17);
 	var2 = var2 + (((int64_t)dev->dig_P4) << 35);
-	var1 = ((var1 * var1 * (int64_t)dev->dig_P3) >> 8) + ((var1 * (int64_t)dev->dig_P2) << 12);
+	var1 = ((var1 * var1 * (int64_t)dev->dig_P3) >> 8) +
+		   ((var1 * (int64_t)dev->dig_P2) << 12);
 	var1 = (((int64_t)1 << 47) + var1) * ((int64_t)dev->dig_P1) >> 33;
 
-	if (var1 == 0)
-	{
-		return 0;  // avoid exception caused by division by zero
+	if (var1 == 0) {
+		return 0; // avoid exception caused by division by zero
 	}
 
 	p = 1048576 - adc_press;
