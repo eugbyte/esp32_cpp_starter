@@ -62,4 +62,6 @@ private:
 	float bmp280_compensate_pressure(int32_t adc_P, int32_t fine_temp) const;
 };
 
+} // namespace svc::sensor
+
 #endif // CPP_STARTER_BMP280_SERVICE_HPP
