@@ -35,7 +35,7 @@ esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service) {
 			}
 
 			if (count < 10) {
-				ESP_LOGI("main", "Temperature: %.2f, Pressure: %.2f",
+				ESP_LOGI("main", "Temperature: %.2f C, Pressure: %.2f hPa",
 						 temperature, pressure);
 				count += 1;
 			}
