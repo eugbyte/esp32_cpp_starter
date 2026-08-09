@@ -14,8 +14,6 @@
 #define BMP280_PRESSURE_REGISTER_ADDR 0xF7
 #define BMP280_REG_ID 0xD0
 #define BMP280_REG_CTRL_MEAS 0xF4
-// osrs_t=001 (x1), osrs_p=001 (x1), mode=11 (normal) (s 4.3.1 - s 4.3.3)
-#define BMP280_CTRL_MEAS_NORMAL_OSRS_X1 0x27
 
 namespace svc::sensor {
 
@@ -57,7 +55,7 @@ private:
 	esp_err_t subscribe();
 	// Writes ctrl_meas to put the sensor into normal mode with x1
 	// oversampling so it actually performs conversions.
-	esp_err_t set_normal_mode();
+	esp_err_t set_normal_sampling_mode() const;
 	// Reads the factory calibration registers from the sensor into
 	// bmp280_calib_.
 	esp_err_t init_compensation_values();
