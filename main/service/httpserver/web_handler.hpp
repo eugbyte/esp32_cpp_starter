@@ -27,6 +27,8 @@ private:
 	IWifiService &wifi_svc_;
 	static esp_err_t set_content_type_from_file(httpd_req_t *req,
 												const char *filepath);
+	// Reads the full HTTP request body (which may arrive in chunks)
+	// into buffer; fails if the body would not fit in buf_size.
 	static esp_err_t parse_buffer(httpd_req_t *req, char *buffer,
 								  size_t buf_size);
 
@@ -42,6 +44,8 @@ public:
 	// request's rest_server_context_t user_ctx, defaulting to index.html
 	// for directory-style URIs.
 	static esp_err_t serve_static_files(httpd_req_t *req);
+	// POST /wifi/login: parses ssid/password from the JSON request
+	// body and persists them to NVS under the "wifi" namespace.
 	esp_err_t login(httpd_req_t *req);
 };
 }; // namespace svc::httpserver

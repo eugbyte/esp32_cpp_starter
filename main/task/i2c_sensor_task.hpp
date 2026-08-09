@@ -13,6 +13,8 @@
 #define I2C_SENSOR_CORE_ID 1
 
 namespace task {
+// Connects to the BMP280 and spawns a pinned FreeRTOS task that polls
+// its temperature/pressure once a second for the lifetime of the app.
 esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service);
 }
 

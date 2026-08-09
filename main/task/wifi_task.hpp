@@ -9,6 +9,8 @@
 #include <esp_err.h>
 
 namespace task {
+// Connects to the configured STA access point (logging on failure)
+// and then starts the software AP alongside it.
 esp_err_t wifi_task(svc::wifi::WifiService &wifi_service);
 
 } // namespace task
