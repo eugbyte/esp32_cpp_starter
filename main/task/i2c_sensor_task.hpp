@@ -4,7 +4,7 @@
 
 #ifndef CPP_STARTER_I2C_SENSOR_TASK_HPP
 #define CPP_STARTER_I2C_SENSOR_TASK_HPP
-#include "../service/sensor/bmp280_service.hpp"
+#include "service/sensor/bmp280_service.hpp"
 
 #include <esp_err.h>
 
