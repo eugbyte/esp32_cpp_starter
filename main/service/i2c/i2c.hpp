@@ -5,8 +5,8 @@
 #ifndef CPP_STARTER_I2C_HPP
 #define CPP_STARTER_I2C_HPP
 
-#include <driver/i2c_master.h>
 #include "domain/interface/ii2c_service.hpp"
+#include <driver/i2c_master.h>
 
 #define I2C_MASTER_SCL_IO 22
 #define I2C_MASTER_SDA_IO 21
@@ -20,13 +20,23 @@ private:
 	i2c_master_bus_handle_t bus_handle_ = {};
 
 public:
+	// Configures and creates the I2C master bus (pins, clock source,
+	// glitch filter, internal pull-ups) from the I2C_MASTER_* macros.
 	I2CService();
+	// Deletes the I2C master bus.
 	~I2CService() override;
+	// Adds a device at sensor_address to the bus and returns its
+	// handle via device_handle.
 	esp_err_t subscribe(uint8_t sensor_address,
 						i2c_master_dev_handle_t *device_handle) const override;
-	esp_err_t unsubscribe(const i2c_master_dev_handle_t *device_handle) const override;
+	// Removes a previously added device from the bus.
+	esp_err_t
+	unsubscribe(const i2c_master_dev_handle_t *device_handle) const override;
+	// Writes reg_addr then reads byte_size bytes back from the device
+	// into data (combined write-then-read I2C transaction).
 	esp_err_t read(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
 				   uint8_t *data, size_t byte_size) override;
+	// Writes a single data byte to reg_addr on the device.
 	esp_err_t write(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
 					uint8_t data) override;
 };

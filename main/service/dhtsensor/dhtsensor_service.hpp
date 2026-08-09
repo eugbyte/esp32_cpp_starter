@@ -13,4 +13,20 @@
 
 #define DHT_GPIO 25
 
+namespace svc::sensor {
+class DhtSensorService {
+private:
+	float temperature_ = 0;
+	float humidity_ = 0;
+	void dht_task();
+
+public:
+	DhtSensorService();
+	~DhtSensorService();
+	float get_temperature();
+	float get_humidity();
+	void start();
+};
+} // namespace svc::sensor
+
 #endif // CPP_STARTER_DHTSENSOR_SERVICE_HPP

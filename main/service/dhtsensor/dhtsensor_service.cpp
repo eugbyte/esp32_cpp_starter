@@ -7,26 +7,9 @@
 #include "dht.h"
 #include "dhtsensor_service.hpp"
 
-#include "dhtsensor_service.hpp"
-
 #include <driver/gpio.h>
 
-// Polls a DHT11 temperature/humidity sensor from a dedicated FreeRTOS
-// task and caches the latest readings for get_temperature/get_humidity.
-class DhtSensorService {
-private:
-	float temperature_ = 0;
-	float humidity_ = 0;
-	// Task loop pinned by start(); reads the sensor every 2s.
-	void dht_task();
-
-public:
-	DhtSensorService();
-	~DhtSensorService();
-	float get_temperature();
-	float get_humidity();
-	void start();
-};
+using namespace svc::sensor;
 
 DhtSensorService::DhtSensorService() = default;
 

@@ -9,11 +9,14 @@ idf_component_register(
         "service/dhtsensor/dhtsensor_service.cpp"
         "service/i2c/i2c.cpp"
         "service/bmp280_sensor/bmp280_service.cpp"
+        "task/http_task.cpp"
+        "task/wifi_task.cpp"
+        "task/i2c_sensor_task.cpp"
         # If adding libraries at git submodules:
         # "${PROJECT_DIR}/submodule_libs/etl/include"
         REQUIRES esp_netif esp_driver_gpio esp_driver_uart esp_wifi nvs_flash esp_http_server http_parser vfs esp_driver_i2c
         # to import files use absolute file path
-        INCLUDE_DIRS "."    # DO NOT remove
+        INCLUDE_DIRS "." "domain/interface"    # DO NOT remove
 )
 
 # Link the CPM-fetched library directly to this component target

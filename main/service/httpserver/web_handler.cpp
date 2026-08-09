@@ -78,7 +78,6 @@ esp_err_t WebHandler::login(httpd_req_t *req) {
 	const etl::string<128> payload = R"({"status": "OK"})";
 	httpd_resp_set_type(req, "application/json");
 	httpd_resp_send(req, payload.c_str(), payload.length());
-	httpd_resp_send_chunk(req, nullptr, 0);
 	return ESP_OK;
 }
 
@@ -126,10 +125,19 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req) {
 	}
 	int fd = open(filepath, O_RDONLY, 0);
 	if (fd == -1) {
+		// Asset not found: fall back to index.html so the SPA router can handle
+		// client-side routes (e.g. /settings) that have no matching file on
+		// disk.
+		strlcpy(filepath, rest_context->base_path, sizeof(filepath));
+		strlcat(filepath, "/index.html", sizeof(filepath));
+		fd = open(filepath, O_RDONLY, 0);
+	}
+	if (fd == -1) {
+		// index.html itself is missing — LittleFS partition was likely not
+		// flashed. Run 'idf.py flash' (not 'app-flash') to include the www
+		// partition image.
 		ESP_LOGE(TAG, "Failed to open file : %s", filepath);
-		/* Respond with 500 Internal Server Error */
-		httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
-							"Failed to read existing file");
+		httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "File not found");
 		return ESP_FAIL;
 	}
 
@@ -158,6 +166,8 @@ esp_err_t WebHandler::serve_static_files(httpd_req_t *req) {
 	} while (read_bytes > 0);
 	/* Close file after sending complete */
 	close(fd);
+	/* Respond with an empty chunk to signal HTTP response completion */
+	httpd_resp_send_chunk(req, NULL, 0);
 	ESP_LOGI(TAG, "File sending complete");
 	return ESP_OK;
 }

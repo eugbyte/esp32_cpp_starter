@@ -95,6 +95,7 @@ esp_err_t WifiService::ap_connect() {
 		WIFI_IF_AP, WIFI_AP_BANDWIDTH)); ///> Our default bandwidth 20 MHz
 	ESP_ERROR_CHECK(
 		esp_wifi_set_ps(WIFI_STA_POWER_SAVE)); ///> Power save set to "NONE"
+	ESP_ERROR_CHECK(esp_wifi_start());
 
 	return ESP_OK;
 }
@@ -137,7 +138,7 @@ esp_err_t WifiService::sta_connect(etl::string_view ssid,
 	std::memcpy(wifi_config.sta.password, password.data(), password_length);
 	wifi_config.sta.password[password_length] = '\0';
 
-	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
 	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
 	ESP_ERROR_CHECK(esp_wifi_start());
 

@@ -60,7 +60,7 @@ private:
 	esp_netif_t *esp_sta_ = nullptr;
 	esp_netif_t *esp_ap_ = nullptr;
 	int s_retry_num_ = 0;
-	EventGroupHandle_t s_wifi_event_group_{};
+	volatile EventGroupHandle_t s_wifi_event_group_{};
 	esp_event_handler_instance_t instance_any_handler_id_{};
 	esp_event_handler_instance_t instance_got_ip_handler_id_{};
 	// WIFI_EVENT callback for the AP interface: logs station
