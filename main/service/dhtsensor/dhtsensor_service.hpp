@@ -13,4 +13,18 @@
 
 #define DHT_GPIO 25
 
+class DhtSensorService {
+private:
+	float temperature_ = 0;
+	float humidity_ = 0;
+	void dht_task();
+
+public:
+	DhtSensorService();
+	~DhtSensorService();
+	float get_temperature();
+	float get_humidity();
+	void start();
+};
+
 #endif // CPP_STARTER_DHTSENSOR_SERVICE_HPP

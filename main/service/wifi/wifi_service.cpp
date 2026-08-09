@@ -95,6 +95,7 @@ esp_err_t WifiService::ap_connect() {
 		WIFI_IF_AP, WIFI_AP_BANDWIDTH)); ///> Our default bandwidth 20 MHz
 	ESP_ERROR_CHECK(
 		esp_wifi_set_ps(WIFI_STA_POWER_SAVE)); ///> Power save set to "NONE"
+	ESP_ERROR_CHECK(esp_wifi_start());
 
 	return ESP_OK;
 }

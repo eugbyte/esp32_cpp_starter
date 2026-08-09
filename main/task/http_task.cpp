@@ -8,10 +8,12 @@
 #include "service/httpserver/web_handler.hpp"
 #include "service/storage/fs_service.hpp"
 
+#include <etl/string.h>
+
 using namespace svc::httpserver;
 
 esp_err_t task::http_task(WebHandler& web_handler, HttpServer& http_server) {
-	const char * base_path = "/www";
+	etl::string<16> base_path = "/www";
 	svc::storage::init_fs(base_path);
 
 	// device reachable at http://esp32.local
@@ -43,7 +45,7 @@ esp_err_t task::http_task(WebHandler& web_handler, HttpServer& http_server) {
 	// wildcard route must be registered last
 	// have req_ctx persist for the lifetime of the server, since it is used as the user_ctx for the wildcard route handler
 	static rest_server_context_t req_ctx{};
-	strlcpy(req_ctx.base_path, base_path, sizeof(req_ctx.base_path));
+	strlcpy(req_ctx.base_path, base_path.data(), sizeof(req_ctx.base_path));
 	httpd_uri_t common_get_uri = {.uri = "/*",
 								  .method = HTTP_GET,
 								  .handler = WebHandler::serve_static_files,
