@@ -8,7 +8,7 @@
 
 #include <esp_log.h>
 
-using namespace svc::bmp280_sensor;
+using namespace svc::sensor;
 
 esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service) {
 	esp_err_t err = bmp280_service.connect();

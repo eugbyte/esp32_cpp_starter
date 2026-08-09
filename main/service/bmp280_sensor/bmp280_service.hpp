@@ -14,7 +14,7 @@
 #define BMP280_PRESSURE_REGISTER_ADDR	0xF7
 #define BMP280_REG_ID					0xD0
 
-namespace svc::bmp280_sensor {
+namespace svc::sensor {
 
 typedef struct {
 	uint16_t dig_T1;

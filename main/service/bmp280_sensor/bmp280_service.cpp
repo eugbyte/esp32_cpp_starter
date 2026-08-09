@@ -9,7 +9,7 @@
 #include <esp_log.h>
 #include <etl/tuple.h>
 
-using namespace svc::bmp280_sensor;
+using namespace svc::sensor;
 
 Bmp280Service::Bmp280Service(II2CService &i2c_service) : i2c_svc_(i2c_service) {
 }

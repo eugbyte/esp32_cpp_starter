@@ -9,6 +9,8 @@
 
 #include <driver/gpio.h>
 
+using namespace svc::sensor;
+
 DhtSensorService::DhtSensorService() = default;
 
 DhtSensorService::~DhtSensorService() = default;

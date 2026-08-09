@@ -13,7 +13,7 @@
 #define I2C_SENSOR_CORE_ID       1
 
 namespace task {
-esp_err_t i2c_sensor_task(svc::bmp280_sensor::Bmp280Service &bmp280_service);
+esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service);
 }
 
 #endif // CPP_STARTER_I2C_SENSOR_TASK_HPP
