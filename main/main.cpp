@@ -1,3 +1,4 @@
+#include "service/bmp280_sensor/bmp280_service.hpp"
 #include "service/httpserver/http_server.hpp"
 #include "service/httpserver/web_handler.hpp"
 #include "service/i2c/i2c.hpp"
@@ -5,7 +6,7 @@
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
-#include "service/bmp280_sensor/bmp280_service.hpp"
+#include "task/http_task.hpp"
 
 #include <cstdio>
 #include <esp_log.h>
@@ -69,50 +70,11 @@ extern "C" void app_main(void) {
 
 	ESP_LOGI("main", "ssid_from_nvs: |%s|", ssid2.data(), ssid2.length());
 
-	auto web_handler =
-		new svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
+	auto web_handler = svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
+	auto httpserver = svc::httpserver::HttpServer();
+	task::http_task(web_handler, httpserver);
 
 	etl::string<32> buffer = "";
-	etl::string<32> base_path = "/www";
-
-	svc::storage::init_fs(base_path);
-	auto http_server = svc::httpserver::HttpServer();
-
-	using rest_server_context_t = svc::httpserver::rest_server_context_t;
-	auto *rest_context = static_cast<rest_server_context_t *>(
-		calloc(1, sizeof(rest_server_context_t)));
-	strlcpy(rest_context->base_path, base_path.data(),
-			sizeof(rest_context->base_path));
-
-	// device reachable at http://esp32.local
-	http_server.init_mdns();
-	http_server.start_server();
-
-	httpd_uri_t healthcheck_uri = {.uri = "/health",
-								   .method = HTTP_GET,
-								   .handler =
-									   svc::httpserver::WebHandler::healthcheck,
-								   .user_ctx = nullptr};
-	http_server.register_route(&healthcheck_uri);
-
-	httpd_uri_t login_uri = {.uri = "/wifi/login",
-							 .method = HTTP_POST,
-							 .handler = [](httpd_req_t *req) -> esp_err_t {
-								 const auto wh =
-									 static_cast<svc::httpserver::WebHandler *>(
-										 req->user_ctx);
-								 return wh->login(req);
-							 },
-							 .user_ctx = web_handler};
-	http_server.register_route(&login_uri);
-
-	// wildcard route must be registered last
-	httpd_uri_t common_get_uri = {
-		.uri = "/*",
-		.method = HTTP_GET,
-		.handler = svc::httpserver::WebHandler::serve_static_files,
-		.user_ctx = rest_context};
-	http_server.register_route(&common_get_uri);
 
 	auto i2c_service = svc::i2c::I2CService();
 
