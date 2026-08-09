@@ -1,7 +1,6 @@
 idf_component_register(
         SRCS
         "main.cpp"
-        "domain/interface/ii2c_service.hpp" "domain/interface/ildc_service.hpp" "domain/interface/invs_service.hpp" "domain/interface/iwifi_service.hpp"
         "service/lcd/lcd_service.cpp"
         "service/wifi/wifi_service.cpp"
         "service/storage/nvs_service.cpp"
@@ -17,7 +16,7 @@ idf_component_register(
         # "${PROJECT_DIR}/submodule_libs/etl/include"
         REQUIRES esp_netif esp_driver_gpio esp_driver_uart esp_wifi nvs_flash esp_http_server http_parser vfs esp_driver_i2c
         # to import files use absolute file path
-        INCLUDE_DIRS "."    # DO NOT remove
+        INCLUDE_DIRS "." "domain/interface"    # DO NOT remove
 )
 
 # Link the CPM-fetched library directly to this component target
