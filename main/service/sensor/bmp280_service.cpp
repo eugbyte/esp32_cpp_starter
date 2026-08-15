@@ -124,6 +124,7 @@ esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
 	int32_t adc_T = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4);
 
 	int32_t fine_temp = 0;
+	ESP_LOGI("BMP280_TAG", "uncompensated temperature: %x", adc_T);
 	*temperature = bmp280_compensate_temp(adc_T, &fine_temp);
 	*pressure = bmp280_compensate_pressure(adc_P, fine_temp);
 	return ESP_OK;

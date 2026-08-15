@@ -3,6 +3,9 @@
 //
 
 #include "i2c_sensor_task.hpp"
+
+#include "service/sensor/ens160_service.hpp"
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 
@@ -10,10 +13,16 @@
 
 using namespace svc::sensor;
 
-esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service) {
+esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service, Ens160Service &ens160_service) {
 	esp_err_t err = bmp280_service.connect();
 	if (err != ESP_OK) {
 		ESP_LOGE("main", "Failed to initialize BMP280 service");
+		return err;
+	}
+
+	err = ens160_service.subscribe();
+	if (err != ESP_OK) {
+		ESP_LOGE("main", "Failed to initialize Ens160 service");
 		return err;
 	}
 
@@ -40,7 +49,7 @@ esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service) {
 				count += 1;
 			}
 
-			vTaskDelay(pdMS_TO_TICKS(1000));
+			vTaskDelay(pdMS_TO_TICKS(5000));
 		}
 	};
 
