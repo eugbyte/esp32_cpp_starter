@@ -49,7 +49,7 @@ extern "C" void app_main(void) {
 
 	ESP_ERROR_CHECK(task::http_task(web_handler, httpserver));
 	ESP_ERROR_CHECK(task::wifi_task(wifi_service));
-	ESP_ERROR_CHECK(task::i2c_sensor_task(bmp280_service));
+	ESP_ERROR_CHECK(task::i2c_sensor_task(bmp280_service, ens160_service));
 
 	while (true) {
 		vTaskDelay(pdMS_TO_TICKS(1000));

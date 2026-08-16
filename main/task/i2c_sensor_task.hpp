@@ -16,7 +16,8 @@
 namespace task {
 // Connects to the BMP280 and spawns a pinned FreeRTOS task that polls
 // its temperature/pressure once a second for the lifetime of the app.
-esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service, svc::sensor::Ens160Service &ens160_service);
-}
+esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service,
+						  svc::sensor::Ens160Service &ens160_service);
+} // namespace task
 
 #endif // CPP_STARTER_I2C_SENSOR_TASK_HPP
