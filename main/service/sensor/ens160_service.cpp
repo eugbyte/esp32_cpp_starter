@@ -24,7 +24,8 @@ Ens160Service::~Ens160Service() {
 	}
 }
 
-esp_err_t Ens160Service::subscribe() {
+esp_err_t Ens160Service::connect(const float *ambient_temp_celcius_opt,
+								 const float *ambient_relative_humidity_opt) {
 	uint8_t data[2] = {7, 7};
 	esp_err_t err = i2c_svc_.subscribe(ENS160_ADDR, &ens160_device_handle_);
 	if (err != ESP_OK) {
@@ -33,7 +34,11 @@ esp_err_t Ens160Service::subscribe() {
 	i2c_svc_.read(ens160_device_handle_, ENS160_REG_ID, data, sizeof(data));
 	// address should be 0x00
 	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", data[0], data[1]);
-	return set_normal_mode();
+	err = set_normal_mode();
+	if (err != ESP_OK) {
+		return err;
+	}
+	return set_compensation_values(ambient_temp_celcius_opt, ambient_relative_humidity_opt);
 }
 
 esp_err_t Ens160Service::set_normal_mode() const {
@@ -54,12 +59,17 @@ esp_err_t Ens160Service::set_normal_mode() const {
 }
 
 etl::tuple<ens_160_read_info_t, esp_err_t>
-Ens160Service::read_air_data(float *temp_celcius_opt,
-							 float *relative_humidity_opt) {
+Ens160Service::read_air_data() {
+
 	ens_160_read_info_t data = {};
 	ens160_read_data(&data.agi_uba, &data.tvoc_ppb, &data.eco2_ppm,
 					 &data.etoh_ppb);
+	return {data, ESP_OK};
+}
 
+esp_err_t Ens160Service::set_compensation_values(const float *temp_celcius_opt,
+							 const float *relative_humidity_opt) const {
+	// write temperature and humidity as compensation values (s 16.2.5 - s 16.2.6)
 	uint16_t temperature = 0;
 	if (temp_celcius_opt != nullptr) {
 		temperature = (*temp_celcius_opt + 273.15f) * 64.0f;
@@ -72,15 +82,14 @@ Ens160Service::read_air_data(float *temp_celcius_opt,
 
 	uint16_t humidity = 0;
 	if (relative_humidity_opt != nullptr) {
-		humidity = *relative_humidity_opt * 512.0f;
+		humidity = (*relative_humidity_opt) * 512.0f;
 		uint8_t buffer[3] = {};
 		buffer[0] = ENS160_HUMIDITY_ADDR;
 		buffer[1] = humidity >> 8;		   // MSB
 		buffer[2] = humidity & 0b11111111; // LSB
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
-
-	return {data, ESP_OK};
+	return ESP_OK;
 }
 
 // agi - Air Quality Index, UBA

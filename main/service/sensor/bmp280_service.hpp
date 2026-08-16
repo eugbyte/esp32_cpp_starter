@@ -42,9 +42,9 @@ public:
 	// calibration/compensation values. Must be called before reading.
 	esp_err_t connect();
 	// Reads and returns the compensated temperature in degrees Celsius.
-	etl::tuple<float, esp_err_t> bmp280_read_temp();
+	etl::tuple<float, esp_err_t> read_temp();
 	// Reads and returns the compensated pressure in hPa.
-	etl::tuple<float, esp_err_t> bmp280_read_pressure();
+	etl::tuple<float, esp_err_t> read_pressure();
 
 private:
 	i2c_master_dev_handle_t bmp280_device_handle_ = {};

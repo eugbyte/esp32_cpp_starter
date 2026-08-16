@@ -91,13 +91,13 @@ esp_err_t Bmp280Service::init_compensation_values() {
 	return ESP_OK;
 }
 
-etl::tuple<float, esp_err_t> Bmp280Service::bmp280_read_temp() {
+etl::tuple<float, esp_err_t> Bmp280Service::read_temp() {
 	float temperature, pressure;
 	esp_err_t err = read_data(&temperature, &pressure);
 	return {temperature, err};
 }
 
-etl::tuple<float, esp_err_t> Bmp280Service::bmp280_read_pressure() {
+etl::tuple<float, esp_err_t> Bmp280Service::read_pressure() {
 	float temperature, pressure;
 	esp_err_t err = read_data(&temperature, &pressure);
 	return {pressure, err};

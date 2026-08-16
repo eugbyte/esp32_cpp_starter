@@ -26,9 +26,9 @@ class Ens160Service {
 public:
 	Ens160Service(II2CService &i2c_service);
 	~Ens160Service();
-	esp_err_t subscribe();
-	etl::tuple<ens_160_read_info_t, esp_err_t>
-	read_air_data(float *temp_celcius_opt, float *relative_humidity_opt);
+	esp_err_t connect(const float *ambient_temp_celcius_opt,
+					  const float *ambient_relative_humidity_opt);
+	etl::tuple<ens_160_read_info_t, esp_err_t> read_air_data();
 
 private:
 	i2c_master_dev_handle_t ens160_device_handle_ = {};
@@ -36,6 +36,8 @@ private:
 	esp_err_t set_normal_mode() const;
 	esp_err_t ens160_read_data(int8_t *agi, int16_t *tvoc, int16_t *eco2,
 							   int16_t *etoh);
+	esp_err_t set_compensation_values(const float *temp_celcius_opt,
+							 const float *relative_humidity_opt) const;
 };
 } // namespace svc::sensor
 

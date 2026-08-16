@@ -20,7 +20,12 @@ esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service,
 		return err;
 	}
 
-	err = ens160_service.subscribe();
+	auto [ambient_temp, ambient_temp_err] = bmp280_service.read_temp();
+	if (ambient_temp_err != ESP_OK) {
+		ESP_LOGE("main", "Failed to read temperature from BMP280");
+		return ambient_temp_err;
+	}
+	err = ens160_service.connect(&ambient_temp, nullptr);
 	if (err != ESP_OK) {
 		ESP_LOGE("main", "Failed to initialize Ens160 service");
 		return err;
@@ -31,13 +36,13 @@ esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service,
 		int count = 0;
 
 		while (true) {
-			auto [temperature, temperature_err] = service->bmp280_read_temp();
+			auto [temperature, temperature_err] = service->read_temp();
 			if (temperature_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read temperature from BMP280");
 				continue;
 			}
 
-			auto [pressure, pressure_err] = service->bmp280_read_pressure();
+			auto [pressure, pressure_err] = service->read_pressure();
 			if (pressure_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read pressure from BMP280");
 				continue;
