@@ -38,15 +38,16 @@ esp_err_t Ens160Service::connect(const float *ambient_temp_celcius_opt,
 	if (err != ESP_OK) {
 		return err;
 	}
-	return set_compensation_values(ambient_temp_celcius_opt, ambient_relative_humidity_opt);
+	return set_compensation_values(ambient_temp_celcius_opt,
+								   ambient_relative_humidity_opt);
 }
 
 esp_err_t Ens160Service::set_normal_mode() const {
 	// reset the device
 	esp_err_t err = {};
 	// esp_err_t err = i2c_svc_.write(ens160_device_handle_,
-	// ENS160_OP_MODE_ADDR, 							   ENS160_OPMODE_RESET); if (err != ESP_OK) { 	return
-	// err;
+	// ENS160_OP_MODE_ADDR, 							   ENS160_OPMODE_RESET);
+	// if (err != ESP_OK) { 	return err;
 	// }
 	// vTaskDelay(pdMS_TO_TICKS(20));
 
@@ -58,8 +59,7 @@ esp_err_t Ens160Service::set_normal_mode() const {
 	return err;
 }
 
-etl::tuple<ens_160_read_info_t, esp_err_t>
-Ens160Service::read_air_data() {
+etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service::read_air_data() {
 
 	ens_160_read_info_t data = {};
 	ens160_read_data(&data.agi_uba, &data.tvoc_ppb, &data.eco2_ppm,
@@ -67,9 +67,10 @@ Ens160Service::read_air_data() {
 	return {data, ESP_OK};
 }
 
-esp_err_t Ens160Service::set_compensation_values(const float *temp_celcius_opt,
-							 const float *relative_humidity_opt) const {
-	// write temperature and humidity as compensation values (s 16.2.5 - s 16.2.6)
+esp_err_t Ens160Service::set_compensation_values(
+	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
+	// write temperature and humidity as compensation values (s 16.2.5 -
+	// s 16.2.6)
 	uint16_t temperature = 0;
 	if (temp_celcius_opt != nullptr) {
 		temperature = (*temp_celcius_opt + 273.15f) * 64.0f;

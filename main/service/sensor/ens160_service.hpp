@@ -37,7 +37,7 @@ private:
 	esp_err_t ens160_read_data(int8_t *agi, int16_t *tvoc, int16_t *eco2,
 							   int16_t *etoh);
 	esp_err_t set_compensation_values(const float *temp_celcius_opt,
-							 const float *relative_humidity_opt) const;
+									  const float *relative_humidity_opt) const;
 };
 } // namespace svc::sensor
 

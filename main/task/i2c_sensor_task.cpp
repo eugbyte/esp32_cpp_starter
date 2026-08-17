@@ -16,7 +16,8 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 		return err;
 	}
 
-	auto [ambient_temp, ambient_temp_err] = services.bmp280_service->read_temp();
+	auto [ambient_temp, ambient_temp_err] =
+		services.bmp280_service->read_temp();
 	if (ambient_temp_err != ESP_OK) {
 		ESP_LOGE("main", "Failed to read temperature from BMP280");
 		return ambient_temp_err;
@@ -30,34 +31,34 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 	auto handler = [](void *pvParameters) -> void {
 		auto *service_ptr = static_cast<i2c_sensor_services_t *>(pvParameters);
 		i2c_sensor_services_t &services = *service_ptr;
-		int count = 0;
 
 		while (true) {
-			auto [temperature, temperature_err] = services.bmp280_service->read_temp();
+			auto [temperature, temperature_err] =
+				services.bmp280_service->read_temp();
 			if (temperature_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read temperature from BMP280");
 				continue;
 			}
 
-			auto [pressure, pressure_err] = services.bmp280_service->read_pressure();
+			auto [pressure, pressure_err] =
+				services.bmp280_service->read_pressure();
 			if (pressure_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read pressure from BMP280");
 				continue;
 			}
 
-			if (count < 10) {
-				ESP_LOGI("main", "Temperature: %.2f C, Pressure: %.2f hPa",
-						 temperature, pressure);
-				count += 1;
-			}
+			ESP_LOGI("main", "Temperature: %.2f C, Pressure: %.2f hPa",
+					 temperature, pressure);
 
-			auto [air_info , air_info_err] = services.ens160_service->read_air_data();
+			auto [air_info, air_info_err] =
+				services.ens160_service->read_air_data();
 			if (air_info_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read air info from Ens160");
 				continue;
 			}
 			ESP_LOGI("main", "agi: %.2f, tvoc: %.2f, eco2: %.2f, etoh: %.2f",
-					 air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm, air_info.etoh_ppb);
+					 air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm,
+					 air_info.etoh_ppb);
 
 			vTaskDelay(pdMS_TO_TICKS(5000));
 		}
