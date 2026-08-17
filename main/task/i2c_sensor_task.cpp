@@ -7,42 +7,39 @@
 #include <freertos/event_groups.h>
 // ---
 #include "i2c_sensor_task.hpp"
-#include "service/sensor/ens160_service.hpp"
 #include <esp_log.h>
 
-using namespace svc::sensor;
-
-esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service,
-								Ens160Service &ens160_service) {
-	esp_err_t err = bmp280_service.connect();
+esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
+	esp_err_t err = services.bmp280_service->connect();
 	if (err != ESP_OK) {
 		ESP_LOGE("main", "Failed to initialize BMP280 service");
 		return err;
 	}
 
-	auto [ambient_temp, ambient_temp_err] = bmp280_service.read_temp();
+	auto [ambient_temp, ambient_temp_err] = services.bmp280_service->read_temp();
 	if (ambient_temp_err != ESP_OK) {
 		ESP_LOGE("main", "Failed to read temperature from BMP280");
 		return ambient_temp_err;
 	}
-	err = ens160_service.connect(&ambient_temp, nullptr);
+	err = services.ens160_service->connect(&ambient_temp, nullptr);
 	if (err != ESP_OK) {
 		ESP_LOGE("main", "Failed to initialize Ens160 service");
 		return err;
 	}
 
 	auto handler = [](void *pvParameters) -> void {
-		auto *service = static_cast<Bmp280Service *>(pvParameters);
+		auto *service_ptr = static_cast<i2c_sensor_services_t *>(pvParameters);
+		i2c_sensor_services_t &services = *service_ptr;
 		int count = 0;
 
 		while (true) {
-			auto [temperature, temperature_err] = service->read_temp();
+			auto [temperature, temperature_err] = services.bmp280_service->read_temp();
 			if (temperature_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read temperature from BMP280");
 				continue;
 			}
 
-			auto [pressure, pressure_err] = service->read_pressure();
+			auto [pressure, pressure_err] = services.bmp280_service->read_pressure();
 			if (pressure_err != ESP_OK) {
 				ESP_LOGE("main", "Failed to read pressure from BMP280");
 				continue;
@@ -54,12 +51,20 @@ esp_err_t task::i2c_sensor_task(Bmp280Service &bmp280_service,
 				count += 1;
 			}
 
+			auto [air_info , air_info_err] = services.ens160_service->read_air_data();
+			if (air_info_err != ESP_OK) {
+				ESP_LOGE("main", "Failed to read air info from Ens160");
+				continue;
+			}
+			ESP_LOGI("main", "agi: %.2f, tvoc: %.2f, eco2: %.2f, etoh: %.2f",
+					 air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm, air_info.etoh_ppb);
+
 			vTaskDelay(pdMS_TO_TICKS(5000));
 		}
 	};
 
 	xTaskCreatePinnedToCore(handler, "i2c_sensor_task", I2C_SENSOR_STACK_SIZE,
-							&bmp280_service, I2C_SENSOR_TASK_PRIORITY, nullptr,
+							&services, I2C_SENSOR_TASK_PRIORITY, nullptr,
 							I2C_SENSOR_CORE_ID);
 	return ESP_OK;
 }
