@@ -104,7 +104,7 @@ esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 	uint8_t data[7] = {};
 
 	esp_err_t err =
-		i2c_svc_.read(ens160_device_handle_, ENS160_REG_ID, data, sizeof(data));
+		i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data, sizeof(data));
 	if (err != ESP_OK) {
 		return err;
 	}
