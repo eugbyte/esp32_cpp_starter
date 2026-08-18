@@ -4,3 +4,6 @@ build
 .project
 .idea
 managed_components
+.pio
+.pioenvs
+.piolibdeps

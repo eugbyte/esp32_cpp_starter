@@ -20,8 +20,13 @@ idf_component_register(
         INCLUDE_DIRS "." "domain/interface" "domain/model"    # DO NOT remove
 )
 
-# Link the CPM-fetched library directly to this component target
-target_link_libraries(${COMPONENT_LIB} PRIVATE etl::etl)
+# ETL is header-only and fetched via PlatformIO's Library Manager instead of CPM
+# (see `lib_deps` in platformio.ini), so just add its include path to this component.
+file(GLOB ETL_INCLUDE_DIR "${PROJECT_DIR}/.pio/libdeps/*/etl/include")
+if (NOT ETL_INCLUDE_DIR)
+    message(FATAL_ERROR "ETL not found under .pio/libdeps/<env>/etl - run 'pio pkg install' first")
+endif ()
+target_include_directories(${COMPONENT_LIB} PRIVATE ${ETL_INCLUDE_DIR})
 
 set(WEB_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../webpage")
 if (EXISTS ${WEB_SRC_DIR}/dist)
