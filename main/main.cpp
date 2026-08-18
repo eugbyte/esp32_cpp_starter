@@ -3,6 +3,7 @@
 #include "service/i2c/i2c.hpp"
 #include "service/lcd/lcd_service.hpp"
 #include "service/sensor/bmp280_service.hpp"
+#include "service/sensor/ens160_service.hpp"
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
@@ -42,12 +43,18 @@ extern "C" void app_main(void) {
 	auto i2c_service = svc::i2c::I2CService();
 	auto httpserver = svc::httpserver::HttpServer();
 	auto bmp280_service = svc::sensor::Bmp280Service(i2c_service);
+	auto ens160_service = svc::sensor::Ens160Service(i2c_service);
 	auto web_handler =
 		svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
+	i2c_sensor_services_t sensor_services = {
+		.bmp280_service = &bmp280_service,
+		.ens160_service = &ens160_service,
+	};
+
 	ESP_ERROR_CHECK(task::http_task(web_handler, httpserver));
 	ESP_ERROR_CHECK(task::wifi_task(wifi_service));
-	ESP_ERROR_CHECK(task::i2c_sensor_task(bmp280_service));
+	ESP_ERROR_CHECK(task::i2c_sensor_task(sensor_services));
 
 	while (true) {
 		vTaskDelay(pdMS_TO_TICKS(1000));

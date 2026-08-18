@@ -15,6 +15,6 @@ namespace task {
 // registers the /health, /wifi/login and static-file (/*) routes.
 esp_err_t http_task(svc::httpserver::WebHandler &web_handler,
 					svc::httpserver::HttpServer &http_server);
-}
+} // namespace task
 
 #endif // CPP_STARTER_HTTP_TASK_HPP

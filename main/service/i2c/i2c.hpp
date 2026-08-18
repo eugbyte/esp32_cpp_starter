@@ -36,9 +36,11 @@ public:
 	// into data (combined write-then-read I2C transaction).
 	esp_err_t read(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
 				   uint8_t *data, size_t byte_size) override;
-	// Writes a single data byte to reg_addr on the device.
-	esp_err_t write(i2c_master_dev_handle_t device_handle, uint8_t reg_addr,
-					uint8_t data) override;
+	// Writes multiple data bytes to the device, with the first byte being the
+	// register address.
+	esp_err_t write_buffer(i2c_master_dev_handle_t device_handle,
+						   const uint8_t *data_buffer_w_reg_addr_prefix,
+						   size_t byte_size) override;
 };
 } // namespace svc::i2c
 
