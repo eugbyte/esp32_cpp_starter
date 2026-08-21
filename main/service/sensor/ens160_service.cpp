@@ -103,13 +103,14 @@ esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
 	uint8_t data[5] = {};
 
-	esp_err_t err =
-		i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data, sizeof(data));
+	esp_err_t err = i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data,
+								  sizeof(data));
 	if (err != ESP_OK) {
 		return err;
 	}
 
-	ESP_LOGI("ens_160", "ens160_read_data: 0=%d, 1=%d, 2=%d, 3=%d, 4=%d", data[0], data[1], data[2], data[3], data[4]);
+	ESP_LOGI("ens_160", "ens160_read_data: 0=%d, 1=%d, 2=%d, 3=%d, 4=%d",
+			 data[0], data[1], data[2], data[3], data[4]);
 
 	*agi = data[0] & 0b111;
 	*tvoc = (data[2] << 8) | data[1];

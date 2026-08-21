@@ -53,7 +53,11 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 				continue;
 			}
 
-			ESP_LOGI(TAG_TASK, "ens160_read_data: agi=%d (UBA), tvoc=%d ppb, eco2=%d ppm, etoh=%d ppb", air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm, air_info.etoh_ppb);
+			ESP_LOGI(TAG_TASK,
+					 "ens160_read_data: agi=%d (UBA), tvoc=%d ppb, eco2=%d "
+					 "ppm, etoh=%d ppb",
+					 air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm,
+					 air_info.etoh_ppb);
 
 			vTaskDelay(pdMS_TO_TICKS(5000));
 		}
