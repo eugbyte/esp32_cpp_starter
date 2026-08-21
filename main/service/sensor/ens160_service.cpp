@@ -76,8 +76,8 @@ esp_err_t Ens160Service::set_compensation_values(
 		temperature = (*temp_celcius_opt + 273.15f) * 64.0f;
 		uint8_t buffer[3] = {};
 		buffer[0] = ENS160_TEMP_ADDR;
-		buffer[1] = temperature >> 8;		  // MSB
-		buffer[2] = temperature & 0b11111111; // LSB
+		buffer[1] = temperature & 0b11111111; // LSB
+		buffer[2] = temperature >> 8;		  // MSB
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 
@@ -86,8 +86,8 @@ esp_err_t Ens160Service::set_compensation_values(
 		humidity = (*relative_humidity_opt) * 512.0f;
 		uint8_t buffer[3] = {};
 		buffer[0] = ENS160_HUMIDITY_ADDR;
-		buffer[1] = humidity >> 8;		   // MSB
-		buffer[2] = humidity & 0b11111111; // LSB
+		buffer[1] = humidity & 0b11111111; // LSB
+		buffer[2] = humidity >> 8;		   // MSB
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 	return ESP_OK;
@@ -110,8 +110,8 @@ esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 	}
 
 	*agi = data[0] & 0b111;
-	*tvoc = (data[1] << 8) | data[2];
-	*eco2 = (data[3] << 8) | data[4];
-	*etoh = (data[5] << 8) | data[6];
+	*tvoc = (data[2] << 8) | data[1];
+	*eco2 = (data[4] << 8) | data[3];
+	*etoh = (data[6] << 8) | data[5];
 	return err;
 }
