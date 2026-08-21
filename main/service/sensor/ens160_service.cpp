@@ -109,6 +109,8 @@ esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 		return err;
 	}
 
+	ESP_LOGI("ens_160", "ens160_read_data: 6=%d, 5=%d, 4=%d, 3=%d, 2=%d, 1=%d, 0=%d", data[6], data[5], data[4], data[3], data[2], data[1], data[0]);
+
 	*agi = data[0] & 0b111;
 	*tvoc = (data[2] << 8) | data[1];
 	*eco2 = (data[4] << 8) | data[3];
