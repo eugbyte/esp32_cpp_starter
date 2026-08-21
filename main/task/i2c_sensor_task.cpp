@@ -18,12 +18,13 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 		return err;
 	}
 
-	auto [ambient_temp, ambient_temp_err] =
-		services.bmp280_service->read_temp();
-	if (ambient_temp_err != ESP_OK) {
+	auto [ambient_thermal, ambient_thermal_err] =
+		services.bmp280_service->read_thermal();
+	if (ambient_thermal_err != ESP_OK) {
 		ESP_LOGE(TAG_TASK, "Failed to read temperature from BMP280");
-		return ambient_temp_err;
+		return ambient_thermal_err;
 	}
+	float ambient_temp = ambient_thermal.temperature_celcius;
 	err = services.ens160_service->connect(&ambient_temp, nullptr);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG_TASK, "Failed to initialize Ens160 service");
@@ -35,22 +36,15 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 		i2c_sensor_services_t &services = *service_ptr;
 
 		while (true) {
-			auto [temperature, temperature_err] =
-				services.bmp280_service->read_temp();
-			if (temperature_err != ESP_OK) {
-				ESP_LOGE(TAG_TASK, "Failed to read temperature from BMP280");
+			auto [thermal, thermal_err] =
+				services.bmp280_service->read_thermal();
+			if (thermal_err != ESP_OK) {
+				ESP_LOGE(TAG_TASK, "Failed to read thermal data from BMP280");
 				continue;
 			}
 
-			auto [pressure, pressure_err] =
-				services.bmp280_service->read_pressure();
-			if (pressure_err != ESP_OK) {
-				ESP_LOGE(TAG_TASK, "Failed to read pressure from BMP280");
-				continue;
-			}
-
-			ESP_LOGI(TAG_TASK, "Temperature: %.2f C, Pressure: %.2f hPa",
-					 temperature, pressure);
+			ESP_LOGI(TAG_TASK, "Temperature: %d C, Pressure: %d hPa",
+					 thermal.temperature_celcius, thermal.relative_humidity);
 
 			auto [air_info, air_info_err] =
 				services.ens160_service->read_air_data();
@@ -59,7 +53,7 @@ esp_err_t task::i2c_sensor_task(i2c_sensor_services_t &services) {
 				continue;
 			}
 
-			ESP_LOGI(TAG_TASK, "ens160_read_data: agi=%d, tvoc=%d, eco2=%d, etoh=%d", air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm, air_info.etoh_ppb);
+			ESP_LOGI(TAG_TASK, "ens160_read_data: agi=%d (UBA), tvoc=%d ppb, eco2=%d ppm, etoh=%d ppb", air_info.agi_uba, air_info.tvoc_ppb, air_info.eco2_ppm, air_info.etoh_ppb);
 
 			vTaskDelay(pdMS_TO_TICKS(5000));
 		}

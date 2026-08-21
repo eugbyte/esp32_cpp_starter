@@ -91,16 +91,13 @@ esp_err_t Bmp280Service::init_compensation_values() {
 	return ESP_OK;
 }
 
-etl::tuple<float, esp_err_t> Bmp280Service::read_temp() {
+etl::tuple<bmp_280_read_info_t, esp_err_t> Bmp280Service::read_thermal() {
 	float temperature, pressure;
 	esp_err_t err = read_data(&temperature, &pressure);
-	return {temperature, err};
-}
-
-etl::tuple<float, esp_err_t> Bmp280Service::read_pressure() {
-	float temperature, pressure;
-	esp_err_t err = read_data(&temperature, &pressure);
-	return {pressure, err};
+	bmp_280_read_info_t info = {};
+	info.temperature_celcius = static_cast<int16_t>(temperature);
+	info.relative_humidity = static_cast<int16_t>(pressure);
+	return {info, err};
 }
 
 esp_err_t Bmp280Service::read_data(float *temperature, float *pressure) {
