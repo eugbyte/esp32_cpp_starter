@@ -99,9 +99,9 @@ esp_err_t Ens160Service::set_compensation_values(
 // etoh - ethanol concentration in ppb
 esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 										  int16_t *eco2, int16_t *etoh) {
-	// 7 bytes of contiguous data, s 16.2.8 - 16.2.11
-	// 7 = 1 (AGI) + 2 (TVOC) + 2 (ECO2) + 2 (ETOH)
-	uint8_t data[7] = {};
+	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
+	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
+	uint8_t data[5] = {};
 
 	esp_err_t err =
 		i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data, sizeof(data));
@@ -109,11 +109,11 @@ esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
 		return err;
 	}
 
-	ESP_LOGI("ens_160", "ens160_read_data: 6=%d, 5=%d, 4=%d, 3=%d, 2=%d, 1=%d, 0=%d", data[6], data[5], data[4], data[3], data[2], data[1], data[0]);
+	ESP_LOGI("ens_160", "ens160_read_data: 0=%d, 1=%d, 2=%d, 3=%d, 4=%d", data[0], data[1], data[2], data[3], data[4]);
 
 	*agi = data[0] & 0b111;
 	*tvoc = (data[2] << 8) | data[1];
 	*eco2 = (data[4] << 8) | data[3];
-	*etoh = (data[6] << 8) | data[5];
+	*etoh = *tvoc;
 	return err;
 }
