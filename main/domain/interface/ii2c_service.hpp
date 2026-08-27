@@ -27,9 +27,9 @@ public:
 						   uint8_t reg_addr, uint8_t *data,
 						   size_t byte_size) = 0;
 
-	// Writes a single data byte to reg_addr on the given device.
-	virtual esp_err_t write(i2c_master_dev_handle_t device_handle,
-							uint8_t reg_addr, uint8_t data) = 0;
+	virtual esp_err_t write_buffer(i2c_master_dev_handle_t device_handle,
+								   const uint8_t *data_buffer_w_reg_addr_prefix,
+								   size_t byte_size) = 0;
 };
 
 #endif // CPP_STARTER_II2C_SERVICE_HPP

@@ -4,7 +4,7 @@
 
 #ifndef CPP_STARTER_I2C_SENSOR_TASK_HPP
 #define CPP_STARTER_I2C_SENSOR_TASK_HPP
-#include "service/sensor/bmp280_service.hpp"
+#include "domain/model/task_model.hpp"
 
 #include <esp_err.h>
 
@@ -15,7 +15,7 @@
 namespace task {
 // Connects to the BMP280 and spawns a pinned FreeRTOS task that polls
 // its temperature/pressure once a second for the lifetime of the app.
-esp_err_t i2c_sensor_task(svc::sensor::Bmp280Service &bmp280_service);
-}
+esp_err_t i2c_sensor_task(i2c_sensor_services_t &services);
+} // namespace task
 
 #endif // CPP_STARTER_I2C_SENSOR_TASK_HPP

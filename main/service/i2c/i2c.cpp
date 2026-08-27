@@ -2,11 +2,13 @@
 // Created by eugen on 8/6/2026.
 //
 
+// freeRTOS must be included before any other header files
+#include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
+//
 #include "i2c.hpp"
 #include <esp_log.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-
+#include <etl/vector.h>
 using namespace svc::i2c;
 
 I2CService::I2CService() {
@@ -47,9 +49,9 @@ esp_err_t I2CService::read(i2c_master_dev_handle_t device_handle,
 									   byte_size, I2C_MASTER_TIMEOUT_MS);
 }
 
-esp_err_t I2CService::write(i2c_master_dev_handle_t device_handle,
-							const uint8_t reg_addr, uint8_t data) {
-	uint8_t write_buf[2] = {reg_addr, data};
-	return i2c_master_transmit(device_handle, write_buf, sizeof(write_buf),
-							   I2C_MASTER_TIMEOUT_MS);
+esp_err_t I2CService::write_buffer(i2c_master_dev_handle_t device_handle,
+								   const uint8_t *data_buffer_w_reg_addr_prefix,
+								   const size_t byte_size) {
+	return i2c_master_transmit(device_handle, data_buffer_w_reg_addr_prefix,
+							   byte_size, I2C_MASTER_TIMEOUT_MS);
 }

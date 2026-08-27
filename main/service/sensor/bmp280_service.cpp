@@ -25,11 +25,11 @@ esp_err_t Bmp280Service::connect() {
 Bmp280Service::~Bmp280Service() {
 	esp_err_t err = i2c_svc_.unsubscribe(&bmp280_device_handle_);
 	if (err != ESP_OK) {
-		ESP_LOGE("i2c", "Failed to unsubscribe bmp280 device handle");
+		ESP_LOGE("bmp280", "Failed to unsubscribe bmp280 device handle");
 	}
 	err = init_compensation_values();
 	if (err != ESP_OK) {
-		ESP_LOGE("i2c", "Failed to initialize bmp280 compensation values");
+		ESP_LOGE("bmp280", "Failed to initialize bmp280 compensation values");
 	}
 }
 
@@ -40,22 +40,25 @@ esp_err_t Bmp280Service::subscribe() {
 		return err;
 	}
 	i2c_svc_.read(bmp280_device_handle_, BMP280_REG_ID, data, 1);
-	ESP_LOGI("i2c", "WHO_AM_I = %X", data[0]);
+	ESP_LOGI("bmp280", "WHO_AM_I = %X", data[0]);
 
 	err = set_normal_sampling_mode();
 	if (err != ESP_OK) {
 		return err;
 	}
 
-	ESP_LOGI("i2c", "bmp280 successfully subscribed");
+	ESP_LOGI("bmp280", "bmp280 successfully subscribed");
 	return ESP_OK;
 }
 
 esp_err_t Bmp280Service::set_normal_sampling_mode() const {
-	// Put the sensor into normal mode with x2 oversampling. (s 4.3.4, s 3.6, s 3.3.1, s 3.3.2)
-	int data = 0b010 << 5 | 0b010 << 2 | 0b11; // osrs_t=001 (x1), osrs_p=001 (x1), mode=11 (normal)
-	return i2c_svc_.write(bmp280_device_handle_, BMP280_REG_CTRL_MEAS,
-						   data);
+	// Put the sensor into normal mode with x2 oversampling. (s 4.3.4, s 3.6,
+	// s 3.3.1, s 3.3.2)
+	int data = 0b010 << 5 | 0b010 << 2 |
+			   0b11; // osrs_t=001 (x1), osrs_p=001 (x1), mode=11 (normal)
+	uint8_t write_buf[2] = {BMP280_REG_CTRL_MEAS, static_cast<uint8_t>(data)};
+	return i2c_svc_.write_buffer(bmp280_device_handle_, write_buf,
+								 sizeof(write_buf));
 }
 
 esp_err_t Bmp280Service::init_compensation_values() {
@@ -88,19 +91,16 @@ esp_err_t Bmp280Service::init_compensation_values() {
 	return ESP_OK;
 }
 
-etl::tuple<float, esp_err_t> Bmp280Service::bmp280_read_temp() {
+etl::tuple<bmp_280_read_info_t, esp_err_t> Bmp280Service::read_thermal() {
 	float temperature, pressure;
-	esp_err_t err = bmp280_read_data(&temperature, &pressure);
-	return {temperature, err};
+	esp_err_t err = read_data(&temperature, &pressure);
+	bmp_280_read_info_t info = {};
+	info.temperature_celcius = static_cast<int16_t>(temperature);
+	info.relative_humidity = static_cast<int16_t>(pressure);
+	return {info, err};
 }
 
-etl::tuple<float, esp_err_t> Bmp280Service::bmp280_read_pressure() {
-	float temperature, pressure;
-	esp_err_t err = bmp280_read_data(&temperature, &pressure);
-	return {pressure, err};
-}
-
-esp_err_t Bmp280Service::bmp280_read_data(float *temperature, float *pressure) {
+esp_err_t Bmp280Service::read_data(float *temperature, float *pressure) {
 	// 3 bytes for pressure, and another 3 bytes for temperature (s 4.3.6 -
 	// s 4.3.7)
 	uint8_t data[6];

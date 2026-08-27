@@ -5,6 +5,7 @@
 #ifndef CPP_STARTER_BMP280_SERVICE_HPP
 #define CPP_STARTER_BMP280_SERVICE_HPP
 #include "domain/interface/ii2c_service.hpp"
+#include "domain/model/model.hpp"
 
 #include <etl/tuple.h>
 
@@ -41,10 +42,8 @@ public:
 	// Subscribes the BMP280 on the I2C bus and loads its factory
 	// calibration/compensation values. Must be called before reading.
 	esp_err_t connect();
-	// Reads and returns the compensated temperature in degrees Celsius.
-	etl::tuple<float, esp_err_t> bmp280_read_temp();
-	// Reads and returns the compensated pressure in hPa.
-	etl::tuple<float, esp_err_t> bmp280_read_pressure();
+	// Reads and returns compensated temperature (°C) and pressure (hPa).
+	etl::tuple<bmp_280_read_info_t, esp_err_t> read_thermal();
 
 private:
 	i2c_master_dev_handle_t bmp280_device_handle_ = {};
@@ -61,7 +60,7 @@ private:
 	esp_err_t init_compensation_values();
 	// Reads the raw pressure/temperature ADC registers and converts
 	// them to compensated float values.
-	esp_err_t bmp280_read_data(float *temperature, float *pressure);
+	esp_err_t read_data(float *temperature, float *pressure);
 	float bmp280_compensate_temp(int32_t adc_T, int32_t *fine_temp) const;
 	float bmp280_compensate_pressure(int32_t adc_P, int32_t fine_temp) const;
 };
