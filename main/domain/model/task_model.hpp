@@ -5,11 +5,11 @@
 #ifndef CPP_STARTER_TASK_MODEL_HPP
 #define CPP_STARTER_TASK_MODEL_HPP
 
-#include "service/sensor/bmp280_service.hpp"
+#include "domain/interface/ibmp280_service.hpp"
 #include "service/sensor/ens160_service.hpp"
 
 typedef struct {
-	svc::sensor::Bmp280Service *bmp280_service;
+	svc::sensor::IBmp280Service *bmp280_service;
 	svc::sensor::Ens160Service *ens160_service;
 } i2c_sensor_services_t;
 
