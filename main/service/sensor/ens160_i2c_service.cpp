@@ -6,7 +6,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 //
-#include "ens160_service.hpp"
+#include "ens160_i2c_service.hpp"
 #include <FreeRTOSConfig.h>
 #include <esp_log.h>
 #include <freertos/projdefs.h>
@@ -14,17 +14,17 @@
 
 using namespace svc::sensor;
 
-Ens160Service::Ens160Service(II2CService &i2c_service) :
+Ens160Service_I2C::Ens160Service_I2C(II2CService &i2c_service) :
 	i2c_svc_(i2c_service) {}
 
-Ens160Service::~Ens160Service() {
+Ens160Service_I2C::~Ens160Service_I2C() {
 	esp_err_t err = i2c_svc_.unsubscribe(&ens160_device_handle_);
 	if (err != ESP_OK) {
 		ESP_LOGE("ens160", "Failed to unsubscribe ens160 device handle");
 	}
 }
 
-esp_err_t Ens160Service::connect(const float *ambient_temp_celcius_opt,
+esp_err_t Ens160Service_I2C::connect(const float *ambient_temp_celcius_opt,
 								 const float *ambient_relative_humidity_opt) {
 	uint8_t data[2] = {7, 7};
 	esp_err_t err = i2c_svc_.subscribe(ENS160_ADDR, &ens160_device_handle_);
@@ -42,7 +42,7 @@ esp_err_t Ens160Service::connect(const float *ambient_temp_celcius_opt,
 								   ambient_relative_humidity_opt);
 }
 
-esp_err_t Ens160Service::set_normal_mode() const {
+esp_err_t Ens160Service_I2C::set_normal_mode() const {
 	// reset the device
 	esp_err_t err = {};
 	// esp_err_t err = i2c_svc_.write(ens160_device_handle_,
@@ -59,7 +59,7 @@ esp_err_t Ens160Service::set_normal_mode() const {
 	return err;
 }
 
-etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service::read_air_data() {
+etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_I2C::read_air_data() {
 
 	ens_160_read_info_t data = {};
 	ens160_read_data(&data.agi_uba, &data.tvoc_ppb, &data.eco2_ppm,
@@ -67,7 +67,7 @@ etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service::read_air_data() {
 	return {data, ESP_OK};
 }
 
-esp_err_t Ens160Service::set_compensation_values(
+esp_err_t Ens160Service_I2C::set_compensation_values(
 	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
 	// write temperature and humidity as compensation values (s 16.2.5 -
 	// s 16.2.6)
@@ -97,7 +97,7 @@ esp_err_t Ens160Service::set_compensation_values(
 // tvoc - Total Volatile Organic Compounds in ppb
 // eco2 - Carbon Dioxide Equivalent in ppm
 // etoh - ethanol concentration in ppb
-esp_err_t Ens160Service::ens160_read_data(int8_t *agi, int16_t *tvoc,
+esp_err_t Ens160Service_I2C::ens160_read_data(int8_t *agi, int16_t *tvoc,
 										  int16_t *eco2, int16_t *etoh) {
 	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
 	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22

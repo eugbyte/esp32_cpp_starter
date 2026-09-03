@@ -10,7 +10,7 @@ idf_component_register(
         "service/spi/spi.cpp"
         "service/sensor/dhtsensor_service.cpp"
         "service/sensor/bmp280_service.cpp"
-        "service/sensor/ens160_service.cpp"
+        "service/sensor/ens160_i2c_service.cpp"
         "task/http_task.cpp"
         "task/wifi_task.cpp"
         "task/i2c_sensor_task.cpp"
