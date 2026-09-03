@@ -17,7 +17,7 @@ public:
 	virtual ~IEns160Service() = default;
 
 	virtual esp_err_t connect(const float *ambient_temp_celcius_opt,
-							 const float *ambient_relative_humidity_opt) = 0;
+							  const float *ambient_relative_humidity_opt) = 0;
 	virtual etl::tuple<ens_160_read_info_t, esp_err_t> read_air_data() = 0;
 };
 

@@ -24,8 +24,9 @@ Ens160Service_I2C::~Ens160Service_I2C() {
 	}
 }
 
-esp_err_t Ens160Service_I2C::connect(const float *ambient_temp_celcius_opt,
-								 const float *ambient_relative_humidity_opt) {
+esp_err_t
+Ens160Service_I2C::connect(const float *ambient_temp_celcius_opt,
+						   const float *ambient_relative_humidity_opt) {
 	uint8_t data[2] = {7, 7};
 	esp_err_t err = i2c_svc_.subscribe(ENS160_ADDR, &ens160_device_handle_);
 	if (err != ESP_OK) {
@@ -98,7 +99,7 @@ esp_err_t Ens160Service_I2C::set_compensation_values(
 // eco2 - Carbon Dioxide Equivalent in ppm
 // etoh - ethanol concentration in ppb
 esp_err_t Ens160Service_I2C::ens160_read_data(int8_t *agi, int16_t *tvoc,
-										  int16_t *eco2, int16_t *etoh) {
+											  int16_t *eco2, int16_t *etoh) {
 	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
 	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
 	uint8_t data[5] = {};
