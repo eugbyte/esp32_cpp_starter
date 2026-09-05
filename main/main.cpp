@@ -46,7 +46,8 @@ extern "C" void app_main(void) {
 	auto httpserver = svc::httpserver::HttpServer();
 	auto bmp280_service = svc::sensor::bmp280::Bmp280Service(i2c_service);
 	auto ens160_service = svc::sensor::ens160::Ens160Service_I2C(i2c_service);
-	auto ens160_spi_service = svc::sensor::ens160::Ens160Service_SPI(spi_service);
+	auto ens160_spi_service =
+		svc::sensor::ens160::Ens160Service_SPI(spi_service);
 	auto web_handler =
 		svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
