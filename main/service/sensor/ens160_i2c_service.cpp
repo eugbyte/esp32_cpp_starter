@@ -45,12 +45,11 @@ Ens160Service_I2C::connect(const float *ambient_temp_celcius_opt,
 
 esp_err_t Ens160Service_I2C::set_normal_mode() const {
 	// reset the device
-	esp_err_t err = {};
-	// esp_err_t err = i2c_svc_.write(ens160_device_handle_,
-	// ENS160_OP_MODE_ADDR, 							   ENS160_OPMODE_RESET);
-	// if (err != ESP_OK) { 	return err;
-	// }
-	// vTaskDelay(pdMS_TO_TICKS(20));
+	uint8_t reset_buffer[2] = {ENS160_OP_MODE_ADDR, ENS160_OPMODE_RESET};
+	esp_err_t err = i2c_svc_.write_buffer(ens160_device_handle_, reset_buffer, sizeof(reset_buffer));
+	if (err != ESP_OK) { 	return err;
+	}
+	vTaskDelay(pdMS_TO_TICKS(20));
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	uint8_t write_buf[2] = {ENS160_OP_MODE_ADDR, ENS160_NORMAL_MODE};

@@ -26,12 +26,11 @@ SPIService::~SPIService() { spi_bus_free(SPI2_HOST); }
 
 spi_device_interface_config_t
 SPIService::create_default_device_config(uint8_t pin_gpio) {
-	spi_device_interface_config_t devcfg = {
-		.mode = 0,							// SPI mode 0
-		.clock_speed_hz = 10 * 1000 * 1000, // 10 MHz
-		.spics_io_num = pin_gpio,
-		.queue_size = 7,
-	};
+	spi_device_interface_config_t devcfg = {};
+	devcfg.mode = 0; // SPI mode 0
+	devcfg.clock_speed_hz = 10 * 1000 * 1000; // 10 MHz
+	devcfg.spics_io_num = pin_gpio;
+	devcfg.queue_size = 1;
 	return devcfg;
 }
 
@@ -49,10 +48,9 @@ esp_err_t SPIService::unsubscribe(spi_device_handle_t spi) {
 esp_err_t SPIService::spi_read_write_byte(uint8_t *rx_data,
 										  const uint8_t *tx_data,
 										  size_t bit_size) const {
-	spi_transaction_t t = {
-		.length = bit_size,
-		.tx_buffer = tx_data,
-		.rx_buffer = rx_data,
-	};
+	spi_transaction_t t = {};
+	t.length = bit_size;
+	t.tx_buffer = tx_data;
+	t.rx_buffer = rx_data;
 	return spi_device_transmit(_spi, &t); // blocking transmit
 }

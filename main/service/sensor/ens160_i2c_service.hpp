@@ -21,6 +21,7 @@
 #define ENS160_AQI_REG 0x21		 // s 16.2.8
 #define ENS160_TEMP_ADDR 0x13
 #define ENS160_HUMIDITY_ADDR 0x15
+#define ENS160_OPMODE_RESET 0xF0
 
 namespace svc::sensor {
 class Ens160Service_I2C : public IEns160Service {
