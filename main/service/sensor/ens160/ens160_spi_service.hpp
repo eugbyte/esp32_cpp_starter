@@ -4,21 +4,12 @@
 
 #ifndef CPP_STARTER_ENS160_SPI_SERVICE_HPP
 #define CPP_STARTER_ENS160_SPI_SERVICE_HPP
+#include "ens160_common.hpp"
 #include <iens160_service.hpp>
 #include <ispi_service.hpp>
 
-#define ENS160_AQI_REG 0x21	 // s 16.2.8
 #define ENS160_READ_BIT 0x01 // s 14.2.3
 #define ENS160_WRITE_BIT 0x00
-
-#define ENS160_ADDR 0x52
-#define ENS160_REG_ID 0x60		 // s 16.2.1
-#define ENS160_OP_MODE_ADDR 0x10 // s 16.2.2
-#define ENS160_NORMAL_MODE 0x02	 // s 16.2.2
-#define ENS160_AQI_REG 0x21		 // s 16.2.8
-#define ENS160_TEMP_ADDR 0x13
-#define ENS160_HUMIDITY_ADDR 0x15
-#define ENS160_OPMODE_RESET 0xF0
 #define PIN_NUM_CS 5
 
 namespace svc::sensor::ens160 {

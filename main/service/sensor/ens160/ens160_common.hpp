@@ -5,6 +5,23 @@
 #ifndef CPP_STARTER_ENS160_COMMON_HPP
 #define CPP_STARTER_ENS160_COMMON_HPP
 
-class ens160_common {};
+#include "domain/model/model.hpp"
+
+#include <cstdint>
+
+// The I²C slave address is 0x52 (when MISO/ADDR is set low via ground) or 0x53
+// (MISO/ADDR is set high via pull-up). (s 14)
+#define ENS160_ADDR 0x52
+#define ENS160_REG_ID 0x60		 // s 16.2.1
+#define ENS160_OP_MODE_ADDR 0x10 // s 16.2.2
+#define ENS160_NORMAL_MODE 0x02	 // s 16.2.2
+#define ENS160_AQI_REG 0x21		 // s 16.2.8
+#define ENS160_TEMP_ADDR 0x13
+#define ENS160_HUMIDITY_ADDR 0x15
+#define ENS160_OPMODE_RESET 0xF0
+
+namespace svc::sensor::ens160 {
+ens_160_read_info_t to_read_info(const uint8_t data[5]);
+} // namespace svc::sensor::ens160
 
 #endif // CPP_STARTER_ENS160_COMMON_HPP

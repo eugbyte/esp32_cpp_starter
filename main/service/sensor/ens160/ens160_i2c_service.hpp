@@ -8,20 +8,10 @@
 #include "domain/interface/iens160_service.hpp"
 #include "domain/interface/ii2c_service.hpp"
 #include "domain/model/model.hpp"
+#include "ens160_common.hpp"
 #include "esp_err.h"
 
 #include <etl/tuple.h>
-
-// The I²C slave address is 0x52 (when MISO/ADDR is set low via ground) or 0x53
-// (MISO/ADDR is set high via pull-up). (s 14)
-#define ENS160_ADDR 0x52
-#define ENS160_REG_ID 0x60		 // s 16.2.1
-#define ENS160_OP_MODE_ADDR 0x10 // s 16.2.2
-#define ENS160_NORMAL_MODE 0x02	 // s 16.2.2
-#define ENS160_AQI_REG 0x21		 // s 16.2.8
-#define ENS160_TEMP_ADDR 0x13
-#define ENS160_HUMIDITY_ADDR 0x15
-#define ENS160_OPMODE_RESET 0xF0
 
 namespace svc::sensor::ens160 {
 class Ens160Service_I2C : public IEns160Service {
@@ -36,8 +26,6 @@ private:
 	i2c_master_dev_handle_t ens160_device_handle_ = {};
 	II2CService &i2c_svc_;
 	esp_err_t set_normal_mode() const;
-	esp_err_t ens160_read_data(int8_t *agi, int16_t *tvoc, int16_t *eco2,
-							   int16_t *etoh);
 	esp_err_t set_compensation_values(const float *temp_celcius_opt,
 									  const float *relative_humidity_opt) const;
 };

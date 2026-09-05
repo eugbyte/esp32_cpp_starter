@@ -62,11 +62,17 @@ esp_err_t Ens160Service_I2C::set_normal_mode() const {
 }
 
 etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_I2C::read_air_data() {
+	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
+	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
+	uint8_t data[5] = {};
 
-	ens_160_read_info_t data = {};
-	ens160_read_data(&data.agi_uba, &data.tvoc_ppb, &data.eco2_ppm,
-					 &data.etoh_ppb);
-	return {data, ESP_OK};
+	esp_err_t err = i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data,
+								  sizeof(data));
+	if (err != ESP_OK) {
+		return {ens_160_read_info_t{}, err};
+	}
+
+	return {to_read_info(data), err};
 }
 
 esp_err_t Ens160Service_I2C::set_compensation_values(
@@ -93,30 +99,4 @@ esp_err_t Ens160Service_I2C::set_compensation_values(
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 	return ESP_OK;
-}
-
-// agi - Air Quality Index, UBA
-// tvoc - Total Volatile Organic Compounds in ppb
-// eco2 - Carbon Dioxide Equivalent in ppm
-// etoh - ethanol concentration in ppb
-esp_err_t Ens160Service_I2C::ens160_read_data(int8_t *agi, int16_t *tvoc,
-											  int16_t *eco2, int16_t *etoh) {
-	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
-	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
-	uint8_t data[5] = {};
-
-	esp_err_t err = i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data,
-								  sizeof(data));
-	if (err != ESP_OK) {
-		return err;
-	}
-
-	ESP_LOGI("ens_160", "ens160_read_data: 0=%d, 1=%d, 2=%d, 3=%d, 4=%d",
-			 data[0], data[1], data[2], data[3], data[4]);
-
-	*agi = data[0] & 0b111;
-	*tvoc = (data[2] << 8) | data[1];
-	*eco2 = (data[4] << 8) | data[3];
-	*etoh = *tvoc;
-	return err;
 }

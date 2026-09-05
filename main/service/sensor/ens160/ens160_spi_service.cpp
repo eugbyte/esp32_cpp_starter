@@ -17,18 +17,6 @@ Ens160Service_SPI::~Ens160Service_SPI() {
 	spi_svc_.unsubscribe(ens160_device_handle_);
 }
 
-ens_160_read_info_t to_read_info(uint8_t data[5]) {
-	ens_160_read_info_t result = {};
-	ESP_LOGI("ens_160", "ens160_read_data: 0=%d, 1=%d, 2=%d, 3=%d, 4=%d",
-			 data[0], data[1], data[2], data[3], data[4]);
-
-	result.agi_uba = data[0] & 0b111;
-	result.tvoc_ppb = (data[2] << 8) | data[1];
-	result.eco2_ppm = (data[4] << 8) | data[3];
-	result.etoh_ppb = result.eco2_ppm;
-	return result;
-}
-
 etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
 	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
