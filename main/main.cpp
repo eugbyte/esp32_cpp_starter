@@ -2,7 +2,7 @@
 #include "service/httpserver/web_handler.hpp"
 #include "service/i2c/i2c.hpp"
 #include "service/lcd/lcd_service.hpp"
-#include "service/sensor/bmp280_service.hpp"
+#include "service/sensor/bmp280/bmp280_service.hpp"
 #include "service/sensor/ens160/ens160_i2c_service.hpp"
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
@@ -42,7 +42,7 @@ extern "C" void app_main(void) {
 	auto wifi_service = svc::wifi::WifiService();
 	auto i2c_service = svc::i2c::I2CService();
 	auto httpserver = svc::httpserver::HttpServer();
-	auto bmp280_service = svc::sensor::Bmp280Service(i2c_service);
+	auto bmp280_service = svc::sensor::bmp280::Bmp280Service(i2c_service);
 	auto ens160_service = svc::sensor::ens160::Ens160Service_I2C(i2c_service);
 	auto web_handler =
 		svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);

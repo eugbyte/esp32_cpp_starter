@@ -17,7 +17,7 @@
 #define BMP280_REG_ID 0xD0
 #define BMP280_REG_CTRL_MEAS 0xF4
 
-namespace svc::sensor {
+namespace svc::sensor::bmp280 {
 
 typedef struct {
 	uint16_t dig_T1;
@@ -66,6 +66,6 @@ private:
 	float bmp280_compensate_pressure(int32_t adc_P, int32_t fine_temp) const;
 };
 
-} // namespace svc::sensor
+} // namespace svc::sensor::bmp280
 
 #endif // CPP_STARTER_BMP280_SERVICE_HPP
