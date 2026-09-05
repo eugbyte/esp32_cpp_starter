@@ -50,6 +50,12 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 
 	spi_device_interface_config_t devcfg =
 		spi_svc_.create_default_device_config(PIN_NUM_CS);
+	// Pins 18/19/23 route through the GPIO matrix on SPI2_HOST, so full-duplex
+	// MISO sampling shifts one bit late above ~8 MHz; keep the clock below that
+	devcfg.clock_speed_hz = 1 * 1000 * 1000;
+	devcfg.queue_size = 1;
+	devcfg.mode = 0;
+	devcfg.cs_ena_pretrans = 1;
 	esp_err_t err = spi_svc_.subscribe(&ens160_device_handle_, devcfg);
 	if (err != ESP_OK) {
 		return err;
@@ -74,17 +80,18 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
 	// reset the device
+	esp_err_t err = {};
 	uint8_t tx_data[2] = {};
 	size_t bit_size = sizeof(tx_data) * 8;
 	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
-	tx_data[1] = ENS160_OPMODE_RESET;
-
-	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr,
-												 tx_data, bit_size);
-	if (err != ESP_OK) {
-		return err;
-	}
-	vTaskDelay(pdMS_TO_TICKS(20));
+	// tx_data[1] = ENS160_OPMODE_RESET;
+	//
+	// err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr,
+	// 											 tx_data, bit_size);
+	// if (err != ESP_OK) {
+	// 	return err;
+	// }
+	// vTaskDelay(pdMS_TO_TICKS(20));
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
@@ -101,18 +108,28 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
 	// write temperature and humidity as compensation values (s 16.2.5 -
 	// s 16.2.6)
+	// SPI writes do not auto-increment the register address (s 14.2.4):
+	// each data byte must be preceded by its own address byte
 	if (temp_celcius_opt != nullptr) {
-		uint8_t buffer[3] = {};
-		to_temp_buffer((ENS160_TEMP_ADDR << 1) | ENS160_WRITE_BIT, buffer,
-					   *temp_celcius_opt);
+		uint16_t temp = to_temp_value(*temp_celcius_opt);
+		uint8_t buffer[4] = {
+			(ENS160_TEMP_ADDR << 1) | ENS160_WRITE_BIT,
+			static_cast<uint8_t>(temp & 0b11111111), // LSB
+			((ENS160_TEMP_ADDR + 1) << 1) | ENS160_WRITE_BIT,
+			static_cast<uint8_t>(temp >> 8), // MSB
+		};
 		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
 									 sizeof(buffer) * 8);
 	}
 
 	if (relative_humidity_opt != nullptr) {
-		uint8_t buffer[3] = {};
-		to_humidity_buffer((ENS160_HUMIDITY_ADDR << 1) | ENS160_WRITE_BIT,
-						   buffer, *relative_humidity_opt);
+		uint16_t humidity = to_humidity_value(*relative_humidity_opt);
+		uint8_t buffer[4] = {
+			(ENS160_HUMIDITY_ADDR << 1) | ENS160_WRITE_BIT,
+			static_cast<uint8_t>(humidity & 0b11111111), // LSB
+			((ENS160_HUMIDITY_ADDR + 1) << 1) | ENS160_WRITE_BIT,
+			static_cast<uint8_t>(humidity >> 8), // MSB
+		};
 		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
 									 sizeof(buffer) * 8);
 	}

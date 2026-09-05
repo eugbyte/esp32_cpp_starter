@@ -25,18 +25,26 @@ ens_160_read_info_t to_read_info(const uint8_t data[5]) {
 }
 
 // temperature compensation value, Kelvin * 64 (s 16.2.5)
+uint16_t to_temp_value(float temp_celcius) {
+	return (temp_celcius + 273.15f) * 64.0f;
+}
+
+// relative humidity compensation value, % * 512 (s 16.2.6)
+uint16_t to_humidity_value(float relative_humidity) {
+	return relative_humidity * 512.0f;
+}
+
 void to_temp_buffer(uint8_t temp_reg_addr, uint8_t buffer[3],
 					float temp_celcius) {
-	uint16_t temperature = (temp_celcius + 273.15f) * 64.0f;
+	uint16_t temperature = to_temp_value(temp_celcius);
 	buffer[0] = temp_reg_addr;
 	buffer[1] = temperature & 0b11111111; // LSB
 	buffer[2] = temperature >> 8;		  // MSB
 }
 
-// relative humidity compensation value, % * 512 (s 16.2.6)
 void to_humidity_buffer(uint8_t humidity_reg_addr, uint8_t buffer[3],
 						float relative_humidity) {
-	uint16_t humidity = relative_humidity * 512.0f;
+	uint16_t humidity = to_humidity_value(relative_humidity);
 	buffer[0] = humidity_reg_addr;
 	buffer[1] = humidity & 0b11111111; // LSB
 	buffer[2] = humidity >> 8;		   // MSB
