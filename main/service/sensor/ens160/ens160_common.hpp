@@ -22,6 +22,10 @@
 
 namespace svc::sensor::ens160 {
 ens_160_read_info_t to_read_info(const uint8_t data[5]);
+void to_temp_buffer(uint8_t temp_reg_addr, uint8_t buffer[3],
+					float temp_celcius);
+void to_humidity_buffer(uint8_t humidity_reg_addr, uint8_t buffer[3],
+						float relative_humidity);
 } // namespace svc::sensor::ens160
 
 #endif // CPP_STARTER_ENS160_COMMON_HPP

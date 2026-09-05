@@ -16,6 +16,7 @@ idf_component_register(
         "task/http_task.cpp"
         "task/wifi_task.cpp"
         "task/i2c_sensor_task.cpp"
+        "task/spi_sensor_task.cpp"
         # If adding libraries at git submodules:
         # "${PROJECT_DIR}/submodule_libs/etl/include"
         REQUIRES esp_netif esp_driver_gpio esp_driver_uart esp_wifi nvs_flash esp_http_server http_parser vfs esp_driver_i2c esp_driver_spi

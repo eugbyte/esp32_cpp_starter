@@ -79,23 +79,16 @@ esp_err_t Ens160Service_I2C::set_compensation_values(
 	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
 	// write temperature and humidity as compensation values (s 16.2.5 -
 	// s 16.2.6)
-	uint16_t temperature = 0;
 	if (temp_celcius_opt != nullptr) {
-		temperature = (*temp_celcius_opt + 273.15f) * 64.0f;
 		uint8_t buffer[3] = {};
-		buffer[0] = ENS160_TEMP_ADDR;
-		buffer[1] = temperature & 0b11111111; // LSB
-		buffer[2] = temperature >> 8;		  // MSB
+		to_temp_buffer(ENS160_TEMP_ADDR, buffer, *temp_celcius_opt);
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 
-	uint16_t humidity = 0;
 	if (relative_humidity_opt != nullptr) {
-		humidity = (*relative_humidity_opt) * 512.0f;
 		uint8_t buffer[3] = {};
-		buffer[0] = ENS160_HUMIDITY_ADDR;
-		buffer[1] = humidity & 0b11111111; // LSB
-		buffer[2] = humidity >> 8;		   // MSB
+		to_humidity_buffer(ENS160_HUMIDITY_ADDR, buffer,
+						   *relative_humidity_opt);
 		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 	return ESP_OK;
