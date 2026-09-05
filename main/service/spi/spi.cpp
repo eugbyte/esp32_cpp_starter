@@ -27,17 +27,20 @@ SPIService::~SPIService() { spi_bus_free(SPI2_HOST); }
 spi_device_interface_config_t
 SPIService::create_default_device_config(uint8_t pin_gpio) {
 	spi_device_interface_config_t devcfg = {};
-	devcfg.mode = 0; // SPI mode 0
+	devcfg.mode = 0;						  // SPI mode 0
 	devcfg.clock_speed_hz = 10 * 1000 * 1000; // 10 MHz
 	devcfg.spics_io_num = pin_gpio;
 	devcfg.queue_size = 1;
 	return devcfg;
 }
 
-esp_err_t SPIService::subscribe(spi_device_handle_t spi,
+esp_err_t SPIService::subscribe(spi_device_handle_t *spi,
 								spi_device_interface_config_t devcfg) {
 	// Attach the device to the SPI bus
-	esp_err_t err = spi_bus_add_device(SPI2_HOST, &devcfg, &spi);
+	esp_err_t err = spi_bus_add_device(SPI2_HOST, &devcfg, spi);
+	if (err == ESP_OK) {
+		_spi = *spi;
+	}
 	return err;
 }
 

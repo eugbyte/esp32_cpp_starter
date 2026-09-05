@@ -14,7 +14,7 @@ public:
 	virtual spi_device_interface_config_t
 	create_default_device_config(uint8_t pin_gpio) = 0;
 
-	virtual esp_err_t subscribe(spi_device_handle_t spi,
+	virtual esp_err_t subscribe(spi_device_handle_t *spi,
 								spi_device_interface_config_t devcfg) = 0;
 	virtual esp_err_t unsubscribe(spi_device_handle_t spi) = 0;
 

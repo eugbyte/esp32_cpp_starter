@@ -22,7 +22,7 @@ public:
 	~SPIService() override;
 	spi_device_interface_config_t
 	create_default_device_config(uint8_t pin_gpio) override;
-	esp_err_t subscribe(spi_device_handle_t spi,
+	esp_err_t subscribe(spi_device_handle_t *spi,
 						spi_device_interface_config_t devcfg) override;
 	esp_err_t unsubscribe(spi_device_handle_t spi) override;
 	esp_err_t spi_read_write_byte(uint8_t *rx_data, const uint8_t *tx_data,

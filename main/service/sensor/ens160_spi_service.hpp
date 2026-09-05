@@ -7,8 +7,8 @@
 #include <iens160_service.hpp>
 #include <ispi_service.hpp>
 
-#define ENS160_AQI_REG 0x21		 // s 16.2.8
-#define ENS160_READ_BIT  0x01   // s 14.2.3
+#define ENS160_AQI_REG 0x21	 // s 16.2.8
+#define ENS160_READ_BIT 0x01 // s 14.2.3
 #define ENS160_WRITE_BIT 0x00
 
 #define ENS160_ADDR 0x52

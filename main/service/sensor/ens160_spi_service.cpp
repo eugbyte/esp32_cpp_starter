@@ -11,8 +11,7 @@
 
 using namespace svc::sensor;
 
-Ens160Service_SPI::Ens160Service_SPI(ISPIService &spi) :
-	spi_svc_(spi){}
+Ens160Service_SPI::Ens160Service_SPI(ISPIService &spi) : spi_svc_(spi) {}
 
 Ens160Service_SPI::~Ens160Service_SPI() {
 	spi_svc_.unsubscribe(ens160_device_handle_);
@@ -49,8 +48,8 @@ etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 	}
 
 	uint8_t data[5] = {};
-	memcpy(data, &rx_data[1], sizeof(data));   // skip only the addr-byte slot
-    return {to_read_info(data), err};
+	memcpy(data, &rx_data[1], sizeof(data)); // skip only the addr-byte slot
+	return {to_read_info(data), err};
 }
 
 esp_err_t
@@ -60,15 +59,19 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 	uint8_t tx_data[3] = {};
 	size_t bit_size = sizeof(rx_data) * 8;
 
-	spi_device_interface_config_t devcfg = spi_svc_.create_default_device_config(PIN_NUM_CS);
-	esp_err_t err = spi_svc_.subscribe(ens160_device_handle_, devcfg);
+	spi_device_interface_config_t devcfg =
+		spi_svc_.create_default_device_config(PIN_NUM_CS);
+	esp_err_t err = spi_svc_.subscribe(&ens160_device_handle_, devcfg);
 	if (err != ESP_OK) {
 		return err;
 	}
 
-	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_WRITE_BIT;
+	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
 
-	spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	err = spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	if (err != ESP_OK) {
+		return err;
+	}
 	// address should be 0x00
 	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", rx_data[1], rx_data[2]);
 	err = set_normal_mode();
@@ -80,13 +83,12 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
 	// reset the device
-	constexpr auto rx_data = nullptr;
 	uint8_t tx_data[2] = {};
+	size_t bit_size = sizeof(tx_data) * 8;
 	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
 	tx_data[1] = ENS160_OPMODE_RESET;
-	size_t bit_size = sizeof(rx_data) * 8;
 
-	esp_err_t err = spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	esp_err_t err = spi_svc_.spi_read_write_byte(nullptr, tx_data, bit_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -94,11 +96,10 @@ esp_err_t Ens160Service_SPI::set_normal_mode() const {
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
-	err = spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	err = spi_svc_.spi_read_write_byte(nullptr, tx_data, bit_size);
 	if (err != ESP_OK) {
 		return err;
 	}
 	vTaskDelay(pdMS_TO_TICKS(20));
 	return err;
 }
-
