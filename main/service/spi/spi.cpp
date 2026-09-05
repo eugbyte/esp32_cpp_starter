@@ -8,15 +8,14 @@
 
 using namespace svc::spi;
 
-static const char *TAG = "spi_example";
-
 SPIService::SPIService() {
 	// Configuration for the SPI bus
-	spi_bus_config_t buscfg = {.mosi_io_num = GPIO_MOSI,
-							   .miso_io_num = GPIO_MISO,
-							   .sclk_io_num = GPIO_SCLK,
-							   .quadwp_io_num = -1,
-							   .quadhd_io_num = -1};
+	spi_bus_config_t buscfg = {};
+	buscfg.mosi_io_num = GPIO_MOSI;
+	buscfg.miso_io_num = GPIO_MISO;
+	buscfg.sclk_io_num = GPIO_SCLK;
+	buscfg.quadwp_io_num = -1;
+	buscfg.quadhd_io_num = -1;
 
 	esp_err_t err = spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO);
 	ESP_ERROR_CHECK(err);
@@ -37,23 +36,20 @@ SPIService::create_default_device_config(uint8_t pin_gpio) {
 esp_err_t SPIService::subscribe(spi_device_handle_t *spi,
 								spi_device_interface_config_t devcfg) {
 	// Attach the device to the SPI bus
-	esp_err_t err = spi_bus_add_device(SPI2_HOST, &devcfg, spi);
-	if (err == ESP_OK) {
-		_spi = *spi;
-	}
-	return err;
+	return spi_bus_add_device(SPI2_HOST, &devcfg, spi);
 }
 
 esp_err_t SPIService::unsubscribe(spi_device_handle_t spi) {
 	return spi_bus_remove_device(spi);
 }
 
-esp_err_t SPIService::spi_read_write_byte(uint8_t *rx_data,
+esp_err_t SPIService::spi_read_write_byte(spi_device_handle_t spi,
+										  uint8_t *rx_data,
 										  const uint8_t *tx_data,
 										  size_t bit_size) const {
 	spi_transaction_t t = {};
 	t.length = bit_size;
 	t.tx_buffer = tx_data;
 	t.rx_buffer = rx_data;
-	return spi_device_transmit(_spi, &t); // blocking transmit
+	return spi_device_transmit(spi, &t); // blocking transmit
 }

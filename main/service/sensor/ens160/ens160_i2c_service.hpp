@@ -23,14 +23,14 @@
 #define ENS160_HUMIDITY_ADDR 0x15
 #define ENS160_OPMODE_RESET 0xF0
 
-namespace svc::sensor {
+namespace svc::sensor::ens160 {
 class Ens160Service_I2C : public IEns160Service {
 public:
 	Ens160Service_I2C(II2CService &i2c_service);
-	~Ens160Service_I2C();
+	~Ens160Service_I2C() override;
 	esp_err_t connect(const float *ambient_temp_celcius_opt,
-					  const float *ambient_relative_humidity_opt);
-	etl::tuple<ens_160_read_info_t, esp_err_t> read_air_data();
+					  const float *ambient_relative_humidity_opt) override;
+	etl::tuple<ens_160_read_info_t, esp_err_t> read_air_data() override;
 
 private:
 	i2c_master_dev_handle_t ens160_device_handle_ = {};
@@ -41,6 +41,6 @@ private:
 	esp_err_t set_compensation_values(const float *temp_celcius_opt,
 									  const float *relative_humidity_opt) const;
 };
-} // namespace svc::sensor
+} // namespace svc::sensor::ens160
 
 #endif // CPP_STARTER_ENS160_I2C_SERVICE_HPP

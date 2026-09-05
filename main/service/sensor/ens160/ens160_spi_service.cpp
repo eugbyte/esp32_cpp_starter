@@ -9,7 +9,7 @@
 #include <esp_log.h>
 #include <freertos/projdefs.h>
 
-using namespace svc::sensor;
+using namespace svc::sensor::ens160;
 
 Ens160Service_SPI::Ens160Service_SPI(ISPIService &spi) : spi_svc_(spi) {}
 
@@ -42,7 +42,8 @@ etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 	// s 14.2.2, s 14.2.3
 	tx_data[0] = (ENS160_AQI_REG << 1) | ENS160_READ_BIT;
 
-	esp_err_t err = spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data,
+												 tx_data, bit_size);
 	if (err != ESP_OK) {
 		return {ens_160_read_info_t{}, err};
 	}
@@ -68,7 +69,8 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 
 	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
 
-	err = spi_svc_.spi_read_write_byte(rx_data, tx_data, bit_size);
+	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data, tx_data,
+									   bit_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -78,7 +80,8 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 	if (err != ESP_OK) {
 		return err;
 	}
-	return ESP_OK;
+	return set_compensation_values(ambient_temp_celcius_opt,
+								   ambient_relative_humidity_opt);
 }
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
@@ -88,7 +91,8 @@ esp_err_t Ens160Service_SPI::set_normal_mode() const {
 	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
 	tx_data[1] = ENS160_OPMODE_RESET;
 
-	esp_err_t err = spi_svc_.spi_read_write_byte(nullptr, tx_data, bit_size);
+	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr,
+												 tx_data, bit_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -96,10 +100,39 @@ esp_err_t Ens160Service_SPI::set_normal_mode() const {
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
-	err = spi_svc_.spi_read_write_byte(nullptr, tx_data, bit_size);
+	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, tx_data,
+									   bit_size);
 	if (err != ESP_OK) {
 		return err;
 	}
 	vTaskDelay(pdMS_TO_TICKS(20));
 	return err;
+}
+
+esp_err_t Ens160Service_SPI::set_compensation_values(
+	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
+	// write temperature and humidity as compensation values (s 16.2.5 -
+	// s 16.2.6)
+	uint16_t temperature = 0;
+	if (temp_celcius_opt != nullptr) {
+		temperature = (*temp_celcius_opt + 273.15f) * 64.0f;
+		uint8_t buffer[3] = {};
+		buffer[0] = (ENS160_TEMP_ADDR << 1) | ENS160_WRITE_BIT;
+		buffer[1] = temperature & 0b11111111; // LSB
+		buffer[2] = temperature >> 8;		  // MSB
+		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
+									 sizeof(buffer) * 8);
+	}
+
+	uint16_t humidity = 0;
+	if (relative_humidity_opt != nullptr) {
+		humidity = (*relative_humidity_opt) * 512.0f;
+		uint8_t buffer[3] = {};
+		buffer[0] = (ENS160_HUMIDITY_ADDR << 1) | ENS160_WRITE_BIT;
+		buffer[1] = humidity & 0b11111111; // LSB
+		buffer[2] = humidity >> 8;		   // MSB
+		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
+									 sizeof(buffer) * 8);
+	}
+	return ESP_OK;
 }

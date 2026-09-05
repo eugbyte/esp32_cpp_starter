@@ -12,7 +12,7 @@
 #include <freertos/projdefs.h>
 #include <math.h>
 
-using namespace svc::sensor;
+using namespace svc::sensor::ens160;
 
 Ens160Service_I2C::Ens160Service_I2C(II2CService &i2c_service) :
 	i2c_svc_(i2c_service) {}

@@ -10,8 +10,6 @@
 #include <esp_err.h>
 #include <etl/tuple.h>
 
-namespace svc::sensor {
-
 class IBmp280Service {
 public:
 	virtual ~IBmp280Service() = default;
@@ -19,7 +17,5 @@ public:
 	virtual esp_err_t connect() = 0;
 	virtual etl::tuple<bmp_280_read_info_t, esp_err_t> read_thermal() = 0;
 };
-
-} // namespace svc::sensor
 
 #endif // CPP_STARTER_IBMP280_SERVICE_HPP

@@ -21,7 +21,7 @@
 #define ENS160_OPMODE_RESET 0xF0
 #define PIN_NUM_CS 5
 
-namespace svc::sensor {
+namespace svc::sensor::ens160 {
 class Ens160Service_SPI : public IEns160Service {
 public:
 	Ens160Service_SPI(ISPIService &spi_service);
@@ -34,9 +34,9 @@ private:
 	spi_device_handle_t ens160_device_handle_ = {};
 	ISPIService &spi_svc_;
 	esp_err_t set_normal_mode() const;
-	// esp_err_t set_compensation_values(const float *temp_celcius_opt,
-	// 								  const float *relative_humidity_opt) const;
+	esp_err_t set_compensation_values(const float *temp_celcius_opt,
+									  const float *relative_humidity_opt) const;
 };
-} // namespace svc::sensor
+} // namespace svc::sensor::ens160
 
 #endif // CPP_STARTER_ENS160_SPI_SERVICE_HPP
