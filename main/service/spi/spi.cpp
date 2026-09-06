@@ -46,10 +46,16 @@ esp_err_t SPIService::unsubscribe(spi_device_handle_t spi) {
 esp_err_t SPIService::spi_read_write_byte(spi_device_handle_t spi,
 										  uint8_t *rx_data,
 										  const uint8_t *tx_data,
-										  size_t bit_size) const {
+										  size_t byte_size) const {
 	spi_transaction_t t = {};
-	t.length = bit_size;
+	t.length = byte_size * 8; // spi_transaction_t.length is in bits
 	t.tx_buffer = tx_data;
 	t.rx_buffer = rx_data;
 	return spi_device_transmit(spi, &t); // blocking transmit
+}
+
+esp_err_t SPIService::spi_write_byte(spi_device_handle_t spi,
+									 const uint8_t *tx_data,
+									 size_t byte_size) const {
+	return spi_read_write_byte(spi, nullptr, tx_data, byte_size);
 }
