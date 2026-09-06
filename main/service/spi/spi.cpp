@@ -33,23 +33,46 @@ SPIService::create_default_device_config(uint8_t pin_gpio) {
 	return devcfg;
 }
 
-esp_err_t SPIService::subscribe(spi_device_handle_t *spi,
+esp_err_t SPIService::subscribe(spi_device_handle_t *spi_device,
 								spi_device_interface_config_t devcfg) {
 	// Attach the device to the SPI bus
-	return spi_bus_add_device(SPI2_HOST, &devcfg, spi);
+	return spi_bus_add_device(SPI2_HOST, &devcfg, spi_device);
 }
 
-esp_err_t SPIService::unsubscribe(spi_device_handle_t spi) {
-	return spi_bus_remove_device(spi);
+esp_err_t SPIService::unsubscribe(spi_device_handle_t spi_device) {
+	return spi_bus_remove_device(spi_device);
 }
 
-esp_err_t SPIService::spi_read_write_byte(spi_device_handle_t spi,
+esp_err_t SPIService::write(spi_device_handle_t spi_device, uint8_t *tx_data,
+							size_t byte_size) {
+	spi_transaction_t t = {};
+	t.length = byte_size * 8; // spi_transaction_t.length is in bits
+	t.tx_buffer = tx_data;
+	t.rx_buffer = nullptr;
+	return spi_device_transmit(spi_device, &t); // blocking transmit
+}
+
+esp_err_t SPIService::read(spi_device_handle_t spi_device, uint8_t reg_addr,
+						   uint8_t *rx_data, size_t byte_size) {
+	spi_transaction_ext_t t = {};
+	// required for the ext_t address_bits override below to take effect;
+	// without it the device's default address_bits (0) is used instead
+	t.base.flags = SPI_TRANS_VARIABLE_ADDR;
+	t.address_bits = 8;
+	t.base.addr = reg_addr;
+	t.base.length = byte_size * 8; // spi_transaction_t.length is in bits
+	t.base.tx_buffer = nullptr;
+	t.base.rx_buffer = rx_data;
+	return spi_device_transmit(spi_device, reinterpret_cast<spi_transaction_t *>(&t));
+}
+
+esp_err_t SPIService::spi_read_write_byte(spi_device_handle_t spi_device,
 										  uint8_t *rx_data,
 										  const uint8_t *tx_data,
-										  size_t bit_size) const {
+										  size_t byte_size) const {
 	spi_transaction_t t = {};
-	t.length = bit_size;
+	t.length = byte_size * 8; // spi_transaction_t.length is in bits
 	t.tx_buffer = tx_data;
 	t.rx_buffer = rx_data;
-	return spi_device_transmit(spi, &t); // blocking transmit
+	return spi_device_transmit(spi_device, &t); // blocking transmit
 }
