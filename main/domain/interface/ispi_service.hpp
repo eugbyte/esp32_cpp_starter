@@ -21,7 +21,10 @@ public:
 	virtual esp_err_t spi_read_write_byte(spi_device_handle_t spi,
 										  uint8_t *rx_data,
 										  const uint8_t *tx_data,
-										  size_t bit_size) const = 0;
+										  size_t byte_size) const = 0;
+	virtual esp_err_t spi_write_byte(spi_device_handle_t spi,
+									 const uint8_t *tx_data,
+									 size_t byte_size) const = 0;
 };
 
 #endif // CPP_STARTER_ISPI_SERVICE_HPP

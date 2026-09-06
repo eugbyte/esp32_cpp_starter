@@ -25,13 +25,13 @@ etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 	constexpr int len = 1 + 5;
 	uint8_t rx_data[len] = {};
 	uint8_t tx_data[len] = {};
-	size_t bit_size = sizeof(rx_data) * 8;
+	size_t byte_size = sizeof(rx_data);
 
 	// s 14.2.2, s 14.2.3
 	tx_data[0] = (ENS160_AQI_REG << 1) | ENS160_READ_BIT;
 
 	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data,
-												 tx_data, bit_size);
+												 tx_data, byte_size);
 	if (err != ESP_OK) {
 		return {ens_160_read_info_t{}, err};
 	}
@@ -46,7 +46,7 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 						   const float *ambient_relative_humidity_opt) {
 	uint8_t rx_data[3] = {7, 7, 7};
 	uint8_t tx_data[3] = {};
-	size_t bit_size = sizeof(rx_data) * 8;
+	size_t byte_size = sizeof(rx_data);
 
 	spi_device_interface_config_t devcfg =
 		spi_svc_.create_default_device_config(PIN_NUM_CS);
@@ -69,7 +69,7 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
 
 	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data, tx_data,
-									   bit_size);
+									   byte_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -85,13 +85,13 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
 	uint8_t tx_data[2] = {};
-	size_t bit_size = sizeof(tx_data) * 8;
+	size_t byte_size = sizeof(tx_data);
 	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
-	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, tx_data,
-									   bit_size);
+	esp_err_t err = spi_svc_.spi_write_byte(ens160_device_handle_, tx_data,
+									   byte_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -113,8 +113,8 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 			((ENS160_TEMP_ADDR + 1) << 1) | ENS160_WRITE_BIT,
 			static_cast<uint8_t>(temp >> 8), // MSB
 		};
-		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
-									 sizeof(buffer) * 8);
+		spi_svc_.spi_write_byte(ens160_device_handle_, buffer,
+									 sizeof(buffer));
 	}
 
 	if (relative_humidity_opt != nullptr) {
@@ -125,8 +125,8 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 			((ENS160_HUMIDITY_ADDR + 1) << 1) | ENS160_WRITE_BIT,
 			static_cast<uint8_t>(humidity >> 8), // MSB
 		};
-		spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, buffer,
-									 sizeof(buffer) * 8);
+		spi_svc_.spi_write_byte(ens160_device_handle_, buffer,
+									 sizeof(buffer));
 	}
 	return ESP_OK;
 }
