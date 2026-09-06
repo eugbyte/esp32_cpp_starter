@@ -2,21 +2,22 @@
 #include "service/httpserver/web_handler.hpp"
 #include "service/i2c/i2c.hpp"
 #include "service/lcd/lcd_service.hpp"
-#include "service/sensor/bmp280_service.hpp"
-#include "service/sensor/ens160_service.hpp"
+#include "service/sensor/bmp280/bmp280_service.hpp"
+#include "service/sensor/ens160/ens160_i2c_service.hpp"
+#include "service/sensor/ens160/ens160_spi_service.hpp"
+#include "service/spi/spi.hpp"
 #include "service/storage/fs_service.hpp"
 #include "service/storage/nvs_service.hpp"
 #include "service/wifi/wifi_service.hpp"
 #include "task/http_task.hpp"
 #include "task/i2c_sensor_task.hpp"
+#include "task/spi_sensor_task.hpp"
 #include "task/wifi_task.hpp"
 
 #include <cstdio>
 #include <esp_log.h>
 #include <esp_netif.h>
-#include <esp_random.h>
 #include <etl/span.h>
-#include <etl/string.h>
 #include <mqtt_client.h>
 #include <nvs_flash.h>
 
@@ -41,9 +42,12 @@ extern "C" void app_main(void) {
 	auto lcd_service = svc::lcd::LcdService();
 	auto wifi_service = svc::wifi::WifiService();
 	auto i2c_service = svc::i2c::I2CService();
+	auto spi_service = svc::spi::SPIService();
 	auto httpserver = svc::httpserver::HttpServer();
-	auto bmp280_service = svc::sensor::Bmp280Service(i2c_service);
-	auto ens160_service = svc::sensor::Ens160Service(i2c_service);
+	auto bmp280_service = svc::sensor::bmp280::Bmp280Service(i2c_service);
+	auto ens160_service = svc::sensor::ens160::Ens160Service_I2C(i2c_service);
+	auto ens160_spi_service =
+		svc::sensor::ens160::Ens160Service_SPI(spi_service);
 	auto web_handler =
 		svc::httpserver::WebHandler(lcd_service, nvs_service, wifi_service);
 
@@ -54,7 +58,8 @@ extern "C" void app_main(void) {
 
 	ESP_ERROR_CHECK(task::http_task(web_handler, httpserver));
 	ESP_ERROR_CHECK(task::wifi_task(wifi_service));
-	ESP_ERROR_CHECK(task::i2c_sensor_task(sensor_services));
+	// ESP_ERROR_CHECK(task::i2c_sensor_task(sensor_services));
+	ESP_ERROR_CHECK(task::spi_sensor_task(ens160_spi_service));
 
 	while (true) {
 		vTaskDelay(pdMS_TO_TICKS(1000));

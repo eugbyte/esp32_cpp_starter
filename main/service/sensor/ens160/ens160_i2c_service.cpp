@@ -1,0 +1,95 @@
+//
+// Created by eugen on 8/15/2026.
+//
+
+// freeRTOS must be included before any other header files
+#include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
+//
+#include "ens160_i2c_service.hpp"
+#include <FreeRTOSConfig.h>
+#include <esp_log.h>
+#include <freertos/projdefs.h>
+#include <math.h>
+
+using namespace svc::sensor::ens160;
+
+Ens160Service_I2C::Ens160Service_I2C(II2CService &i2c_service) :
+	i2c_svc_(i2c_service) {}
+
+Ens160Service_I2C::~Ens160Service_I2C() {
+	esp_err_t err = i2c_svc_.unsubscribe(&ens160_device_handle_);
+	if (err != ESP_OK) {
+		ESP_LOGE("ens160", "Failed to unsubscribe ens160 device handle");
+	}
+}
+
+esp_err_t
+Ens160Service_I2C::connect(const float *ambient_temp_celcius_opt,
+						   const float *ambient_relative_humidity_opt) {
+	uint8_t data[2] = {7, 7};
+	esp_err_t err = i2c_svc_.subscribe(ENS160_ADDR, &ens160_device_handle_);
+	if (err != ESP_OK) {
+		return err;
+	}
+	i2c_svc_.read(ens160_device_handle_, ENS160_REG_ID, data, sizeof(data));
+	// address should be 0x00
+	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", data[0], data[1]);
+	err = set_normal_mode();
+	if (err != ESP_OK) {
+		return err;
+	}
+	return set_compensation_values(ambient_temp_celcius_opt,
+								   ambient_relative_humidity_opt);
+}
+
+esp_err_t Ens160Service_I2C::set_normal_mode() const {
+	// reset the device
+	uint8_t reset_buffer[2] = {ENS160_OP_MODE_ADDR, ENS160_OPMODE_RESET};
+	esp_err_t err = i2c_svc_.write_buffer(ens160_device_handle_, reset_buffer,
+										  sizeof(reset_buffer));
+	if (err != ESP_OK) {
+		return err;
+	}
+	vTaskDelay(pdMS_TO_TICKS(20));
+
+	// Switch to standard (continuous) measurement mode and standard power mode
+	uint8_t write_buf[2] = {ENS160_OP_MODE_ADDR, ENS160_NORMAL_MODE};
+	err = i2c_svc_.write_buffer(ens160_device_handle_, write_buf,
+								sizeof(write_buf));
+	vTaskDelay(pdMS_TO_TICKS(20));
+	return err;
+}
+
+etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_I2C::read_air_data() {
+	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
+	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
+	uint8_t data[5] = {};
+
+	esp_err_t err = i2c_svc_.read(ens160_device_handle_, ENS160_AQI_REG, data,
+								  sizeof(data));
+	if (err != ESP_OK) {
+		return {ens_160_read_info_t{}, err};
+	}
+
+	return {to_read_info(data), err};
+}
+
+esp_err_t Ens160Service_I2C::set_compensation_values(
+	const float *temp_celcius_opt, const float *relative_humidity_opt) const {
+	// write temperature and humidity as compensation values (s 16.2.5 -
+	// s 16.2.6)
+	if (temp_celcius_opt != nullptr) {
+		uint8_t buffer[3] = {};
+		to_temp_buffer(ENS160_TEMP_ADDR, buffer, *temp_celcius_opt);
+		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
+	}
+
+	if (relative_humidity_opt != nullptr) {
+		uint8_t buffer[3] = {};
+		to_humidity_buffer(ENS160_HUMIDITY_ADDR, buffer,
+						   *relative_humidity_opt);
+		i2c_svc_.write_buffer(ens160_device_handle_, buffer, sizeof(buffer));
+	}
+	return ESP_OK;
+}

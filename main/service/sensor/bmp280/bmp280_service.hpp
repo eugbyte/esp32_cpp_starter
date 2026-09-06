@@ -4,6 +4,7 @@
 
 #ifndef CPP_STARTER_BMP280_SERVICE_HPP
 #define CPP_STARTER_BMP280_SERVICE_HPP
+#include "domain/interface/ibmp280_service.hpp"
 #include "domain/interface/ii2c_service.hpp"
 #include "domain/model/model.hpp"
 
@@ -16,7 +17,7 @@
 #define BMP280_REG_ID 0xD0
 #define BMP280_REG_CTRL_MEAS 0xF4
 
-namespace svc::sensor {
+namespace svc::sensor::bmp280 {
 
 typedef struct {
 	uint16_t dig_T1;
@@ -33,17 +34,17 @@ typedef struct {
 	int16_t dig_P9;
 } bmp280_calib_t;
 
-class Bmp280Service {
+class Bmp280Service : public IBmp280Service {
 public:
 	Bmp280Service(II2CService &i2c_service);
 	// Unsubscribes the I2C device handle and resets the cached
 	// compensation values.
-	~Bmp280Service();
+	~Bmp280Service() override;
 	// Subscribes the BMP280 on the I2C bus and loads its factory
 	// calibration/compensation values. Must be called before reading.
-	esp_err_t connect();
+	esp_err_t connect() override;
 	// Reads and returns compensated temperature (°C) and pressure (hPa).
-	etl::tuple<bmp_280_read_info_t, esp_err_t> read_thermal();
+	etl::tuple<bmp_280_read_info_t, esp_err_t> read_thermal() override;
 
 private:
 	i2c_master_dev_handle_t bmp280_device_handle_ = {};
@@ -65,6 +66,6 @@ private:
 	float bmp280_compensate_pressure(int32_t adc_P, int32_t fine_temp) const;
 };
 
-} // namespace svc::sensor
+} // namespace svc::sensor::bmp280
 
 #endif // CPP_STARTER_BMP280_SERVICE_HPP

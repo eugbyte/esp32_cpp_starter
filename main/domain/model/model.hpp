@@ -8,9 +8,9 @@
 
 typedef struct ens_160_read_info {
 	int8_t agi_uba;
-	int16_t tvoc_ppb;
-	int16_t eco2_ppm;
-	int16_t etoh_ppb;
+	uint16_t tvoc_ppb;
+	uint16_t eco2_ppm;
+	uint16_t etoh_ppb;
 } ens_160_read_info_t;
 
 typedef struct bmp_280_read_info {
