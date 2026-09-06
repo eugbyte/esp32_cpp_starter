@@ -90,8 +90,8 @@ esp_err_t Ens160Service_SPI::set_normal_mode() const {
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
-	esp_err_t err = spi_svc_.spi_write_byte(ens160_device_handle_, tx_data,
-									   byte_size);
+	esp_err_t err =
+		spi_svc_.spi_write_byte(ens160_device_handle_, tx_data, byte_size);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -113,8 +113,7 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 			((ENS160_TEMP_ADDR + 1) << 1) | ENS160_WRITE_BIT,
 			static_cast<uint8_t>(temp >> 8), // MSB
 		};
-		spi_svc_.spi_write_byte(ens160_device_handle_, buffer,
-									 sizeof(buffer));
+		spi_svc_.spi_write_byte(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 
 	if (relative_humidity_opt != nullptr) {
@@ -125,8 +124,7 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 			((ENS160_HUMIDITY_ADDR + 1) << 1) | ENS160_WRITE_BIT,
 			static_cast<uint8_t>(humidity >> 8), // MSB
 		};
-		spi_svc_.spi_write_byte(ens160_device_handle_, buffer,
-									 sizeof(buffer));
+		spi_svc_.spi_write_byte(ens160_device_handle_, buffer, sizeof(buffer));
 	}
 	return ESP_OK;
 }

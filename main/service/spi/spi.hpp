@@ -52,7 +52,7 @@ public:
 	 * `tx_data` must each be equally `byte_size` bytes long. `byte_size`
 	 * covers the whole frame including the register-address byte(s) at the
 	 * start of `tx_data` — e.g. reading 5 data bytes behind a 1-byte register
-	 * address requires byte_size = 6. 
+	 * address requires byte_size = 6.
 	 *
 	 * `rx_data` may be nullptr to discard the received bytes (write-only).
 	 */
