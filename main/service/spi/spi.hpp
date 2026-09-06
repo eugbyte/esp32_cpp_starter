@@ -22,10 +22,10 @@ public:
 	esp_err_t subscribe(spi_device_handle_t *spi_device,
 						spi_device_interface_config_t devcfg) override;
 	esp_err_t unsubscribe(spi_device_handle_t spi_device) override;
-	esp_err_t write(spi_device_handle_t spi_device, uint8_t *tx_data,
-					size_t byte_size) override;
-	esp_err_t read(spi_device_handle_t spi_device, uint8_t reg_addr,
-				   uint8_t *rx_data, size_t byte_size) override;
+	esp_err_t write_byte(spi_device_handle_t spi_device, uint8_t reg_addr,
+						uint8_t *tx_data, size_t byte_size) override;
+	esp_err_t read_byte(spi_device_handle_t spi_device, uint8_t reg_addr,
+						uint8_t *rx_data, size_t byte_size) override;
 	esp_err_t spi_read_write_byte(spi_device_handle_t spi_device,
 								  uint8_t *rx_data, const uint8_t *tx_data,
 								  size_t byte_size) const override;

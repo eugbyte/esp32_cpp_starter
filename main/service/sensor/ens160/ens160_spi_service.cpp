@@ -84,13 +84,11 @@ etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 }
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
-	uint8_t tx_data[2] = {};
-	size_t byte_size = sizeof(tx_data);
-	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
-
 	// Switch to standard (continuous) measurement mode and standard power mode
-	tx_data[1] = ENS160_NORMAL_MODE;
-	esp_err_t err = spi_svc_.write(ens160_device_handle_, tx_data, byte_size);
+	uint8_t tx_data = ENS160_NORMAL_MODE;
+	uint8_t reg_addr = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
+	esp_err_t err = spi_svc_.write_byte(ens160_device_handle_, reg_addr,
+										&tx_data, sizeof(tx_data));
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -106,24 +104,26 @@ esp_err_t Ens160Service_SPI::set_compensation_values(
 	// each data byte must be preceded by its own address byte
 	if (temp_celcius_opt != nullptr) {
 		uint16_t temp = to_temp_value(*temp_celcius_opt);
-		uint8_t buffer[4] = {
-			(ENS160_TEMP_ADDR << 1) | ENS160_WRITE_BIT,
-			static_cast<uint8_t>(temp & 0b11111111), // LSB
-			((ENS160_TEMP_ADDR + 1) << 1) | ENS160_WRITE_BIT,
-			static_cast<uint8_t>(temp >> 8), // MSB
-		};
-		spi_svc_.write(ens160_device_handle_, buffer, sizeof(buffer));
+		uint8_t lsb = static_cast<uint8_t>(temp & 0b11111111);
+		uint8_t msb = static_cast<uint8_t>(temp >> 8);
+		spi_svc_.write_byte(ens160_device_handle_,
+							(ENS160_TEMP_ADDR << 1) | ENS160_WRITE_BIT, &lsb,
+							sizeof(lsb));
+		spi_svc_.write_byte(ens160_device_handle_,
+							((ENS160_TEMP_ADDR + 1) << 1) | ENS160_WRITE_BIT,
+							&msb, sizeof(msb));
 	}
 
 	if (relative_humidity_opt != nullptr) {
 		uint16_t humidity = to_humidity_value(*relative_humidity_opt);
-		uint8_t buffer[4] = {
-			(ENS160_HUMIDITY_ADDR << 1) | ENS160_WRITE_BIT,
-			static_cast<uint8_t>(humidity & 0b11111111), // LSB
-			((ENS160_HUMIDITY_ADDR + 1) << 1) | ENS160_WRITE_BIT,
-			static_cast<uint8_t>(humidity >> 8), // MSB
-		};
-		spi_svc_.write(ens160_device_handle_, buffer, sizeof(buffer));
+		uint8_t lsb = static_cast<uint8_t>(humidity & 0b11111111);
+		uint8_t msb = static_cast<uint8_t>(humidity >> 8);
+		spi_svc_.write_byte(ens160_device_handle_,
+							(ENS160_HUMIDITY_ADDR << 1) | ENS160_WRITE_BIT,
+							&lsb, sizeof(lsb));
+		spi_svc_.write_byte(ens160_device_handle_,
+							((ENS160_HUMIDITY_ADDR + 1) << 1) | ENS160_WRITE_BIT,
+							&msb, sizeof(msb));
 	}
 	return ESP_OK;
 }
