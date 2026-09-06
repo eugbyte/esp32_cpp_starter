@@ -53,8 +53,13 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 	// Pins 18/19/23 route through the GPIO matrix on SPI2_HOST, so full-duplex
 	// MISO sampling shifts one bit late above ~8 MHz; keep the clock below that
 	devcfg.clock_speed_hz = 1 * 1000 * 1000;
+	// only blocking spi_device_transmit() is used, so at most one
+	// transaction is ever in flight
 	devcfg.queue_size = 1;
+	// ENS160 requires SPI mode 0: CPOL=0, CPHA=0 (s 14.2.1)
 	devcfg.mode = 0;
+	// assert CS one bit-cycle before the first clock edge so the sensor
+	// meets its CS-setup time and doesn't miss the first address bit
 	devcfg.cs_ena_pretrans = 1;
 	esp_err_t err = spi_svc_.subscribe(&ens160_device_handle_, devcfg);
 	if (err != ESP_OK) {
