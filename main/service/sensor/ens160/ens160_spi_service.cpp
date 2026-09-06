@@ -20,8 +20,7 @@ Ens160Service_SPI::~Ens160Service_SPI() {
 esp_err_t
 Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 						   const float *ambient_relative_humidity_opt) {
-	uint8_t rx_data[3] = {7, 7, 7};
-	uint8_t tx_data[3] = {};
+	uint8_t rx_data[2] = {7, 7};
 	size_t byte_size = sizeof(rx_data);
 
 	spi_device_interface_config_t devcfg =
@@ -42,15 +41,15 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 		return err;
 	}
 
-	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
+	uint8_t reg_addr = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
 
-	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data, tx_data,
-									   byte_size);
+	err = spi_svc_.read_byte(ens160_device_handle_, reg_addr, rx_data,
+							 byte_size);
 	if (err != ESP_OK) {
 		return err;
 	}
 	// address should be 0x00
-	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", rx_data[1], rx_data[2]);
+	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", rx_data[0], rx_data[1]);
 	err = set_normal_mode();
 	if (err != ESP_OK) {
 		return err;
@@ -62,25 +61,20 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 etl::tuple<ens_160_read_info_t, esp_err_t> Ens160Service_SPI::read_air_data() {
 	// 5 bytes of contiguous data, s 16.2.8 - 16.2.10
 	// 5 = 1 (AGI) + 2 (TVOC) + 2 (ECO2); ETOH mirrors TVOC at 0x22
-	// In SPI, first byte is register address
-	// 6 = 1 (reg_addr) + 5
-	constexpr int len = 1 + 5;
+	constexpr int len = 5;
 	uint8_t rx_data[len] = {};
-	uint8_t tx_data[len] = {};
 	size_t byte_size = sizeof(rx_data);
 
 	// s 14.2.2, s 14.2.3
-	tx_data[0] = (ENS160_AQI_REG << 1) | ENS160_READ_BIT;
+	uint8_t reg_addr = (ENS160_AQI_REG << 1) | ENS160_READ_BIT;
 
-	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data,
-												 tx_data, byte_size);
+	esp_err_t err = spi_svc_.read_byte(ens160_device_handle_, reg_addr,
+									   rx_data, byte_size);
 	if (err != ESP_OK) {
 		return {ens_160_read_info_t{}, err};
 	}
 
-	uint8_t data[5] = {};
-	memcpy(data, &rx_data[1], sizeof(data)); // skip only the addr-byte slot
-	return {to_read_info(data), err};
+	return {to_read_info(rx_data), err};
 }
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
