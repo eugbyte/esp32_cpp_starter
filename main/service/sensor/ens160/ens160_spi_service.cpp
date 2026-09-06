@@ -84,23 +84,13 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 }
 
 esp_err_t Ens160Service_SPI::set_normal_mode() const {
-	// reset the device
-	esp_err_t err = {};
 	uint8_t tx_data[2] = {};
 	size_t bit_size = sizeof(tx_data) * 8;
 	tx_data[0] = (ENS160_OP_MODE_ADDR << 1) | ENS160_WRITE_BIT;
-	// tx_data[1] = ENS160_OPMODE_RESET;
-	//
-	// err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr,
-	// 											 tx_data, bit_size);
-	// if (err != ESP_OK) {
-	// 	return err;
-	// }
-	// vTaskDelay(pdMS_TO_TICKS(20));
 
 	// Switch to standard (continuous) measurement mode and standard power mode
 	tx_data[1] = ENS160_NORMAL_MODE;
-	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, tx_data,
+	esp_err_t err = spi_svc_.spi_read_write_byte(ens160_device_handle_, nullptr, tx_data,
 									   bit_size);
 	if (err != ESP_OK) {
 		return err;
