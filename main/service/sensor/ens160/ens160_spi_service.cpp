@@ -66,6 +66,14 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 		return err;
 	}
 
+	// give the sensor its boot time before the first transaction (s 14)
+	vTaskDelay(pdMS_TO_TICKS(25));
+
+	err = set_normal_mode();
+	if (err != ESP_OK) {
+		return err;
+	}
+
 	tx_data[0] = (ENS160_REG_ID << 1) | ENS160_READ_BIT;
 
 	err = spi_svc_.spi_read_write_byte(ens160_device_handle_, rx_data, tx_data,
@@ -75,10 +83,6 @@ Ens160Service_SPI::connect(const float *ambient_temp_celcius_opt,
 	}
 	// address should be 0x00
 	ESP_LOGI("ens_160", "WHO_AM_I = %X%X", rx_data[1], rx_data[2]);
-	err = set_normal_mode();
-	if (err != ESP_OK) {
-		return err;
-	}
 	return set_compensation_values(ambient_temp_celcius_opt,
 								   ambient_relative_humidity_opt);
 }

@@ -27,7 +27,7 @@ spi_device_interface_config_t
 SPIService::create_default_device_config(uint8_t pin_gpio) {
 	spi_device_interface_config_t devcfg = {};
 	devcfg.mode = 0;						  // SPI mode 0
-	devcfg.clock_speed_hz = 10 * 1000 * 1000; // 10 MHz
+	devcfg.clock_speed_hz = 1 * 1000 * 1000; // 10 MHz
 	devcfg.spics_io_num = pin_gpio;
 	devcfg.queue_size = 1;
 	return devcfg;
