@@ -5,8 +5,6 @@
 #ifndef C_STARTER_WIFI_SERVICE_H
 #define C_STARTER_WIFI_SERVICE_H
 
-#include "domain/interface/iwifi_service.h"
-
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
 
@@ -36,14 +34,12 @@
 /**
  * ESP-IDF Wi-Fi STA+AP service. Uses a FreeRTOS event group plus
  * WIFI_EVENT/IP_EVENT handlers to signal connect success/failure, with
- * automatic reconnect retries up to CONFIG_ESP_MAXIMUM_RETRY. Implements
- * iwifi_service_t; `base` must stay the first member.
+ * automatic reconnect retries up to CONFIG_ESP_MAXIMUM_RETRY.
  *
  * The instance is registered as the event handler argument, so it must
  * outlive the registration (i.e. until wifi_service_deinit()).
  */
 typedef struct wifi_service {
-	iwifi_service_t base;
 	esp_netif_t *esp_sta;
 	esp_netif_t *esp_ap;
 	int retry_num;
@@ -65,10 +61,5 @@ esp_err_t wifi_service_sta_connect(wifi_service_t *self, const char *ssid,
 								   const char *password);
 // Disconnects from the currently associated access point.
 esp_err_t wifi_service_sta_disconnect(wifi_service_t *self);
-
-// Upcast to the interface.
-static inline iwifi_service_t *wifi_service_as_interface(wifi_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_WIFI_SERVICE_H

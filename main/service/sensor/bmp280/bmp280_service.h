@@ -5,8 +5,7 @@
 #ifndef C_STARTER_BMP280_SERVICE_H
 #define C_STARTER_BMP280_SERVICE_H
 
-#include "domain/interface/ibmp280_service.h"
-#include "domain/interface/ii2c_service.h"
+#include "service/i2c/i2c_service.h"
 #include "domain/model/model.h"
 
 #include <stdbool.h>
@@ -33,18 +32,16 @@ typedef struct bmp280_calib {
 	int16_t dig_P9;
 } bmp280_calib_t;
 
-// BMP280 temperature/pressure sensor on an I2C bus. Implements
-// ibmp280_service_t; `base` must stay the first member.
+// BMP280 temperature/pressure sensor on an I2C bus.
 typedef struct bmp280_service {
-	ibmp280_service_t base;
-	ii2c_service_t *i2c_svc;
+	i2c_service_t *i2c_svc;
 	i2c_master_dev_handle_t device_handle;
 	bmp280_calib_t calib;
 	bool subscribed;
 } bmp280_service_t;
 
 // Binds the sensor to an I2C bus service. Does not touch the hardware.
-void bmp280_service_init(bmp280_service_t *self, ii2c_service_t *i2c_svc);
+void bmp280_service_init(bmp280_service_t *self, i2c_service_t *i2c_svc);
 // Unsubscribes the I2C device and clears the cached calibration values.
 void bmp280_service_deinit(bmp280_service_t *self);
 // Subscribes the BMP280 on the I2C bus and loads its factory calibration
@@ -57,11 +54,5 @@ esp_err_t bmp280_service_read_thermal(bmp280_service_t *self,
 // Reads compensated temperature (degC) and pressure (hPa) as floats.
 esp_err_t bmp280_service_read_data(bmp280_service_t *self, float *temperature,
 								   float *pressure);
-
-// Upcast to the interface.
-static inline ibmp280_service_t *
-bmp280_service_as_interface(bmp280_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_BMP280_SERVICE_H

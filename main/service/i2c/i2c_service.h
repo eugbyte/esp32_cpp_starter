@@ -5,9 +5,10 @@
 #ifndef C_STARTER_I2C_SERVICE_H
 #define C_STARTER_I2C_SERVICE_H
 
-#include "domain/interface/ii2c_service.h"
-
 #include <driver/i2c_master.h>
+#include <esp_err.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define I2C_MASTER_SCL_IO 22
 #define I2C_MASTER_SDA_IO 21
@@ -15,10 +16,8 @@
 #define I2C_MASTER_FREQ_HZ 100000
 #define I2C_MASTER_TIMEOUT_MS 1000
 
-// I2C master bus service. Implements ii2c_service_t; `base` must stay the
-// first member so &self->base can be used as the interface.
+// I2C master bus service.
 typedef struct i2c_service {
-	ii2c_service_t base;
 	i2c_master_bus_handle_t bus_handle;
 } i2c_service_t;
 
@@ -46,10 +45,5 @@ esp_err_t i2c_service_write_buffer(i2c_service_t *self,
 								   i2c_master_dev_handle_t device_handle,
 								   const uint8_t *data_buffer_w_reg_addr_prefix,
 								   size_t byte_size);
-
-// Upcast to the interface.
-static inline ii2c_service_t *i2c_service_as_interface(i2c_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_I2C_SERVICE_H

@@ -5,9 +5,9 @@
 #ifndef C_STARTER_WEB_HANDLER_H
 #define C_STARTER_WEB_HANDLER_H
 
-#include "domain/interface/ildc_service.h"
-#include "domain/interface/invs_service.h"
-#include "domain/interface/iwifi_service.h"
+#include "service/lcd/lcd_service.h"
+#include "service/storage/nvs_service.h"
+#include "service/wifi/wifi_service.h"
 
 #include <esp_http_server.h>
 #include <esp_vfs.h>
@@ -24,17 +24,17 @@
  * allocate it on the heap rather than the stack.
  */
 typedef struct web_handler {
-	ilcd_service_t *lcd_svc;
-	invs_service_t *nvs_svc;
-	iwifi_service_t *wifi_svc;
+	lcd_service_t *lcd_svc;
+	nvs_service_t *nvs_svc;
+	wifi_service_t *wifi_svc;
 	char base_path[ESP_VFS_PATH_MAX + 1];
 	char scratch[SCRATCH_BUFSIZE];
 } web_handler_t;
 
 // Binds the handler to the services used by its routes and to the
 // filesystem base_path that static files are served from.
-void web_handler_init(web_handler_t *self, ilcd_service_t *lcd_svc,
-					  invs_service_t *nvs_svc, iwifi_service_t *wifi_svc,
+void web_handler_init(web_handler_t *self, lcd_service_t *lcd_svc,
+					  nvs_service_t *nvs_svc, wifi_service_t *wifi_svc,
 					  const char *base_path);
 void web_handler_deinit(web_handler_t *self);
 

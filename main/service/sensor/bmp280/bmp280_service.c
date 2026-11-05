@@ -10,41 +10,19 @@
 
 static const char TAG[] = "bmp280";
 
-// Downcast from the interface; valid because `base` is the first member.
-#define BMP280_SELF(iface) ((bmp280_service_t *)(iface))
-
-static esp_err_t vt_connect(ibmp280_service_t *iface) {
-	return bmp280_service_connect(BMP280_SELF(iface));
-}
-
-static esp_err_t vt_read_thermal(ibmp280_service_t *iface,
-								 bmp_280_read_info_t *out_info) {
-	return bmp280_service_read_thermal(BMP280_SELF(iface), out_info);
-}
-
-static void vt_deinit(ibmp280_service_t *iface) {
-	bmp280_service_deinit(BMP280_SELF(iface));
-}
-
-static const ibmp280_service_vtable_t BMP280_SERVICE_VTABLE = {
-	.connect = vt_connect,
-	.read_thermal = vt_read_thermal,
-	.deinit = vt_deinit,
-};
-
 // Writes ctrl_meas to put the sensor into normal mode with x2 oversampling
 // so it actually performs conversions (s 4.3.4, s 3.6, s 3.3.1, s 3.3.2).
 static esp_err_t set_normal_sampling_mode(bmp280_service_t *self) {
 	// osrs_t=010 (x2), osrs_p=010 (x2), mode=11 (normal)
 	uint8_t ctrl = (uint8_t)(0b010 << 5 | 0b010 << 2 | 0b11);
 	uint8_t write_buf[2] = {BMP280_REG_CTRL_MEAS, ctrl};
-	return ii2c_service_write_buffer(self->i2c_svc, self->device_handle,
+	return i2c_service_write_buffer(self->i2c_svc, self->device_handle,
 									 write_buf, sizeof(write_buf));
 }
 
 // Registers the BMP280 on the I2C bus and logs its WHO_AM_I value.
 static esp_err_t subscribe(bmp280_service_t *self) {
-	esp_err_t err = ii2c_service_subscribe(self->i2c_svc, BMP280_ADDR,
+	esp_err_t err = i2c_service_subscribe(self->i2c_svc, BMP280_ADDR,
 										   &self->device_handle);
 	if (err != ESP_OK) {
 		return err;
@@ -52,7 +30,7 @@ static esp_err_t subscribe(bmp280_service_t *self) {
 	self->subscribed = true;
 
 	uint8_t id = 0;
-	ii2c_service_read(self->i2c_svc, self->device_handle, BMP280_REG_ID, &id,
+	i2c_service_read(self->i2c_svc, self->device_handle, BMP280_REG_ID, &id,
 					  1);
 	ESP_LOGI(TAG, "WHO_AM_I = %X", id);
 
@@ -69,7 +47,7 @@ static esp_err_t subscribe(bmp280_service_t *self) {
 static esp_err_t init_compensation_values(bmp280_service_t *self) {
 	// 12 calibration shorts * 2 bytes = 24 bytes (s 3.11.2)
 	uint8_t buf[24] = {0};
-	esp_err_t err = ii2c_service_read(self->i2c_svc, self->device_handle,
+	esp_err_t err = i2c_service_read(self->i2c_svc, self->device_handle,
 									  BMP280_REG_CALIB, buf, sizeof(buf));
 	if (err != ESP_OK) {
 		return err;
@@ -140,16 +118,15 @@ static float compensate_pressure(const bmp280_service_t *self,
 	return (float)p / 256.0f / 100.0f; // Pa -> hPa
 }
 
-void bmp280_service_init(bmp280_service_t *self, ii2c_service_t *i2c_svc) {
+void bmp280_service_init(bmp280_service_t *self, i2c_service_t *i2c_svc) {
 	memset(self, 0, sizeof(*self));
-	self->base.vtable = &BMP280_SERVICE_VTABLE;
 	self->i2c_svc = i2c_svc;
 }
 
 void bmp280_service_deinit(bmp280_service_t *self) {
 	if (self->subscribed) {
 		esp_err_t err =
-			ii2c_service_unsubscribe(self->i2c_svc, &self->device_handle);
+			i2c_service_unsubscribe(self->i2c_svc, &self->device_handle);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Failed to unsubscribe bmp280 device handle");
 		}
@@ -171,7 +148,7 @@ esp_err_t bmp280_service_read_data(bmp280_service_t *self, float *temperature,
 	// 3 bytes pressure then 3 bytes temperature (s 4.3.6 - s 4.3.7)
 	uint8_t data[6];
 	esp_err_t err =
-		ii2c_service_read(self->i2c_svc, self->device_handle,
+		i2c_service_read(self->i2c_svc, self->device_handle,
 						  BMP280_PRESSURE_REGISTER_ADDR, data, sizeof(data));
 	if (err != ESP_OK) {
 		return err;

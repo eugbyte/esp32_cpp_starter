@@ -13,7 +13,7 @@ static const char TAG[] = "spi_sensor_task";
 // Reads and logs the sensor once.
 static void poll_once(spi_sensor_task_t *self) {
 	ens_160_read_info_t air_info = {0};
-	if (iens160_service_read_air_data(self->ens160_service, &air_info) !=
+	if (ens160_spi_service_read_air_data(self->ens160_service, &air_info) !=
 		ESP_OK) {
 		ESP_LOGE(TAG, "Failed to read air info from Ens160");
 		return;
@@ -35,7 +35,7 @@ static void task_loop(void *parameter) {
 }
 
 void spi_sensor_task_init(spi_sensor_task_t *self,
-						  iens160_service_t *ens160_service) {
+						  ens160_spi_service_t *ens160_service) {
 	self->ens160_service = ens160_service;
 	self->task_handle = NULL;
 }
@@ -49,7 +49,7 @@ void spi_sensor_task_deinit(spi_sensor_task_t *self) {
 
 esp_err_t spi_sensor_task_start(spi_sensor_task_t *self) {
 	// No ambient sensor on the SPI bus, so skip compensation
-	esp_err_t err = iens160_service_connect(self->ens160_service, NULL, NULL);
+	esp_err_t err = ens160_spi_service_connect(self->ens160_service, NULL, NULL);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize Ens160 service");
 		return err;

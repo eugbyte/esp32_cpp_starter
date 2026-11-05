@@ -6,8 +6,8 @@
 #ifndef C_STARTER_I2C_SENSOR_TASK_H
 #define C_STARTER_I2C_SENSOR_TASK_H
 
-#include "domain/interface/ibmp280_service.h"
-#include "domain/interface/iens160_service.h"
+#include "service/sensor/bmp280/bmp280_service.h"
+#include "service/sensor/ens160/ens160_i2c_service.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -22,14 +22,14 @@
 // Polls the BMP280 and ENS160 on a pinned FreeRTOS task. The struct is the
 // task's argument, so it must outlive the task (give it static storage).
 typedef struct i2c_sensor_task {
-	ibmp280_service_t *bmp280_service;
-	iens160_service_t *ens160_service;
+	bmp280_service_t *bmp280_service;
+	ens160_i2c_service_t *ens160_service;
 	TaskHandle_t task_handle;
 } i2c_sensor_task_t;
 
 void i2c_sensor_task_init(i2c_sensor_task_t *self,
-						  ibmp280_service_t *bmp280_service,
-						  iens160_service_t *ens160_service);
+						  bmp280_service_t *bmp280_service,
+						  ens160_i2c_service_t *ens160_service);
 // Stops the polling task if it was started.
 void i2c_sensor_task_deinit(i2c_sensor_task_t *self);
 // Connects the BMP280, uses its temperature to compensate the ENS160, then

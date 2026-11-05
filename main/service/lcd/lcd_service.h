@@ -5,10 +5,9 @@
 #ifndef C_STARTER_LCD_SERVICE_H
 #define C_STARTER_LCD_SERVICE_H
 
-#include "domain/interface/ildc_service.h"
-
 #include <driver/gpio.h>
 #include <driver/uart.h>
+#include <esp_err.h>
 
 #define LCD_UART_NUM UART_NUM_1
 #define LCD_TX_PIN GPIO_NUM_17
@@ -17,11 +16,9 @@
 
 /**
  * UART-based LCD service. Drives a serial character LCD over UART1 using
- * vendor-specific control bytes (e.g. 0xFE 0x01 to clear). Implements
- * ilcd_service_t; `base` must stay the first member.
+ * vendor-specific control bytes (e.g. 0xFE 0x01 to clear).
  */
 typedef struct lcd_service {
-	ilcd_service_t base;
 	uart_port_t uart_num;
 	uart_config_t uart_config;
 } lcd_service_t;
@@ -34,10 +31,5 @@ void lcd_service_deinit(lcd_service_t *self);
 esp_err_t lcd_service_send_text(lcd_service_t *self, const char *text);
 // Sends the clear-screen command and waits for the LCD to process it.
 esp_err_t lcd_service_clear(lcd_service_t *self);
-
-// Upcast to the interface.
-static inline ilcd_service_t *lcd_service_as_interface(lcd_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_LCD_SERVICE_H

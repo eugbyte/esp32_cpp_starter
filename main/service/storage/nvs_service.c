@@ -11,37 +11,6 @@
 
 static const char TAG[] = "nvs_service";
 
-// Downcast from the interface; valid because `base` is the first member.
-#define NVS_SELF(iface) ((nvs_service_t *)(iface))
-
-static esp_err_t vt_get_item_size(invs_service_t *iface, const char *ns_name,
-								  const char *key, size_t *out_size) {
-	return nvs_service_get_item_size(NVS_SELF(iface), ns_name, key, out_size);
-}
-
-static esp_err_t vt_get_blob(invs_service_t *iface, const char *ns_name,
-							 const char *key, void *out, size_t required_size) {
-	return nvs_service_get_blob(NVS_SELF(iface), ns_name, key, out,
-								required_size);
-}
-
-static esp_err_t vt_write_blob(invs_service_t *iface, const char *ns_name,
-							   const char *key, const void *data,
-							   size_t size) {
-	return nvs_service_write_blob(NVS_SELF(iface), ns_name, key, data, size);
-}
-
-static void vt_deinit(invs_service_t *iface) {
-	nvs_service_deinit(NVS_SELF(iface));
-}
-
-static const invs_service_vtable_t NVS_SERVICE_VTABLE = {
-	.get_item_size = vt_get_item_size,
-	.get_blob = vt_get_blob,
-	.write_blob = vt_write_blob,
-	.deinit = vt_deinit,
-};
-
 // Copies src into out as a null-terminated string, truncating to fit.
 static void to_cstr(const char *src, char *out, size_t out_size) {
 	size_t len = strlen(src);
@@ -66,9 +35,7 @@ static esp_err_t open_namespace(const char *ns_name, nvs_open_mode_t mode,
 	return err;
 }
 
-void nvs_service_init(nvs_service_t *self) {
-	self->base.vtable = &NVS_SERVICE_VTABLE;
-}
+void nvs_service_init(nvs_service_t *self) { self->reserved = 0; }
 
 void nvs_service_deinit(nvs_service_t *self) { (void)self; }
 

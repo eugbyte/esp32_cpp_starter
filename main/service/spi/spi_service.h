@@ -5,9 +5,10 @@
 #ifndef C_STARTER_SPI_SERVICE_H
 #define C_STARTER_SPI_SERVICE_H
 
-#include "domain/interface/ispi_service.h"
-
 #include <driver/spi_master.h>
+#include <esp_err.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define GPIO_MISO 19
 #define GPIO_MOSI 23
@@ -15,14 +16,12 @@
 #define PIN_NUM_CS 5
 
 /**
- * Full-duplex SPI master service. Implements ispi_service_t; `base` must
- * stay the first member so &self->base can be used as the interface.
+ * Full-duplex SPI master service.
  *
  * spi_service_init() initializes the bus (MOSI/MISO/SCLK per the macros
  * above, DMA channel auto-selected); spi_service_deinit() frees it.
  */
 typedef struct spi_service {
-	ispi_service_t base;
 	spi_host_device_t host;
 } spi_service_t;
 
@@ -61,10 +60,5 @@ esp_err_t spi_service_read_write_byte(const spi_service_t *self,
 esp_err_t spi_service_write_byte(const spi_service_t *self,
 								 spi_device_handle_t spi,
 								 const uint8_t *tx_data, size_t byte_size);
-
-// Upcast to the interface.
-static inline ispi_service_t *spi_service_as_interface(spi_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_SPI_SERVICE_H

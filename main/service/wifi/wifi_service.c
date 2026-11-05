@@ -14,28 +14,6 @@
 
 static const char TAG[] = "wifi_service";
 
-// Downcast from the interface; valid because `base` is the first member.
-#define WIFI_SELF(iface) ((wifi_service_t *)(iface))
-
-static esp_err_t vt_sta_connect(iwifi_service_t *iface, const char *ssid,
-								const char *password) {
-	return wifi_service_sta_connect(WIFI_SELF(iface), ssid, password);
-}
-
-static esp_err_t vt_sta_disconnect(iwifi_service_t *iface) {
-	return wifi_service_sta_disconnect(WIFI_SELF(iface));
-}
-
-static void vt_deinit(iwifi_service_t *iface) {
-	wifi_service_deinit(WIFI_SELF(iface));
-}
-
-static const iwifi_service_vtable_t WIFI_SERVICE_VTABLE = {
-	.sta_connect = vt_sta_connect,
-	.sta_disconnect = vt_sta_disconnect,
-	.deinit = vt_deinit,
-};
-
 // Copies src into a fixed-size uint8_t field, truncating to fit and always
 // leaving a null terminator. Returns the number of bytes copied.
 static size_t copy_cstr(uint8_t *dst, size_t dst_size, const char *src) {
@@ -101,7 +79,6 @@ static void event_handler(void *arg, esp_event_base_t event_base,
 
 esp_err_t wifi_service_init(wifi_service_t *self) {
 	memset(self, 0, sizeof(*self));
-	self->base.vtable = &WIFI_SERVICE_VTABLE;
 
 	self->wifi_event_group = xEventGroupCreate();
 	if (self->wifi_event_group == NULL) {

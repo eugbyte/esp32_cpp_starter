@@ -5,8 +5,6 @@
 #ifndef C_STARTER_NVS_SERVICE_H
 #define C_STARTER_NVS_SERVICE_H
 
-#include "domain/interface/invs_service.h"
-
 #include <esp_err.h>
 #include <stddef.h>
 
@@ -16,14 +14,14 @@
 
 /**
  * ESP-IDF NVS-backed blob storage. Opens a fresh handle per call scoped to
- * the requested namespace. Implements invs_service_t; `base` must stay the
- * first member.
+ * the requested namespace. Holds no state yet; the struct gives the
+ * functions a receiver and leaves room for e.g. a default namespace.
  */
 typedef struct nvs_service {
-	invs_service_t base;
+	char reserved; // C requires at least one member
 } nvs_service_t;
 
-// Binds the vtable. nvs_flash_init() must already have been called.
+// nvs_flash_init() must already have been called.
 void nvs_service_init(nvs_service_t *self);
 void nvs_service_deinit(nvs_service_t *self);
 
@@ -38,10 +36,5 @@ esp_err_t nvs_service_get_blob(nvs_service_t *self, const char *ns_name,
 esp_err_t nvs_service_write_blob(nvs_service_t *self, const char *ns_name,
 								 const char *key, const void *data,
 								 size_t size);
-
-// Upcast to the interface.
-static inline invs_service_t *nvs_service_as_interface(nvs_service_t *self) {
-	return &self->base;
-}
 
 #endif // C_STARTER_NVS_SERVICE_H

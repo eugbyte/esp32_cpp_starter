@@ -71,8 +71,8 @@ static esp_err_t send_ok_json(httpd_req_t *req) {
 	return httpd_resp_send(req, OK_PAYLOAD, HTTPD_RESP_USE_STRLEN);
 }
 
-void web_handler_init(web_handler_t *self, ilcd_service_t *lcd_svc,
-					  invs_service_t *nvs_svc, iwifi_service_t *wifi_svc,
+void web_handler_init(web_handler_t *self, lcd_service_t *lcd_svc,
+					  nvs_service_t *nvs_svc, wifi_service_t *wifi_svc,
 					  const char *base_path) {
 	self->lcd_svc = lcd_svc;
 	self->nvs_svc = nvs_svc;
@@ -120,9 +120,9 @@ esp_err_t web_handler_login(web_handler_t *self, httpd_req_t *req) {
 	ESP_LOGI(TAG, "Received ssid: %s", ssid);
 
 	// include the null terminator
-	invs_service_write_blob(self->nvs_svc, "wifi", "ssid", ssid,
+	nvs_service_write_blob(self->nvs_svc, "wifi", "ssid", ssid,
 							strlen(ssid) + 1);
-	invs_service_write_blob(self->nvs_svc, "wifi", "password", password,
+	nvs_service_write_blob(self->nvs_svc, "wifi", "password", password,
 							strlen(password) + 1);
 
 	cJSON_Delete(root);

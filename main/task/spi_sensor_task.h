@@ -5,7 +5,7 @@
 #ifndef C_STARTER_SPI_SENSOR_TASK_H
 #define C_STARTER_SPI_SENSOR_TASK_H
 
-#include "domain/interface/iens160_service.h"
+#include "service/sensor/ens160/ens160_spi_service.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -20,12 +20,12 @@
 // Polls the ENS160 over SPI on a pinned FreeRTOS task. The struct is the
 // task's argument, so it must outlive the task (give it static storage).
 typedef struct spi_sensor_task {
-	iens160_service_t *ens160_service;
+	ens160_spi_service_t *ens160_service;
 	TaskHandle_t task_handle;
 } spi_sensor_task_t;
 
 void spi_sensor_task_init(spi_sensor_task_t *self,
-						  iens160_service_t *ens160_service);
+						  ens160_spi_service_t *ens160_service);
 // Stops the polling task if it was started.
 void spi_sensor_task_deinit(spi_sensor_task_t *self);
 // Connects the ENS160 (no compensation: no ambient sensor on the SPI bus)

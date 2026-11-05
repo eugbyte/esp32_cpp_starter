@@ -13,7 +13,7 @@ static const char TAG[] = "i2c_sensor_task";
 // Reads and logs both sensors once.
 static void poll_once(i2c_sensor_task_t *self) {
 	bmp_280_read_info_t thermal = {0};
-	if (ibmp280_service_read_thermal(self->bmp280_service, &thermal) !=
+	if (bmp280_service_read_thermal(self->bmp280_service, &thermal) !=
 		ESP_OK) {
 		ESP_LOGE(TAG, "Failed to read thermal data from BMP280");
 		return;
@@ -22,7 +22,7 @@ static void poll_once(i2c_sensor_task_t *self) {
 			 thermal.temperature_celcius, thermal.relative_humidity);
 
 	ens_160_read_info_t air_info = {0};
-	if (iens160_service_read_air_data(self->ens160_service, &air_info) !=
+	if (ens160_i2c_service_read_air_data(self->ens160_service, &air_info) !=
 		ESP_OK) {
 		ESP_LOGE(TAG, "Failed to read air info from Ens160");
 		return;
@@ -44,8 +44,8 @@ static void task_loop(void *parameter) {
 }
 
 void i2c_sensor_task_init(i2c_sensor_task_t *self,
-						  ibmp280_service_t *bmp280_service,
-						  iens160_service_t *ens160_service) {
+						  bmp280_service_t *bmp280_service,
+						  ens160_i2c_service_t *ens160_service) {
 	self->bmp280_service = bmp280_service;
 	self->ens160_service = ens160_service;
 	self->task_handle = NULL;
@@ -59,21 +59,21 @@ void i2c_sensor_task_deinit(i2c_sensor_task_t *self) {
 }
 
 esp_err_t i2c_sensor_task_start(i2c_sensor_task_t *self) {
-	esp_err_t err = ibmp280_service_connect(self->bmp280_service);
+	esp_err_t err = bmp280_service_connect(self->bmp280_service);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize BMP280 service");
 		return err;
 	}
 
 	bmp_280_read_info_t ambient = {0};
-	err = ibmp280_service_read_thermal(self->bmp280_service, &ambient);
+	err = bmp280_service_read_thermal(self->bmp280_service, &ambient);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to read temperature from BMP280");
 		return err;
 	}
 
 	float ambient_temp = ambient.temperature_celcius;
-	err = iens160_service_connect(self->ens160_service, &ambient_temp, NULL);
+	err = ens160_i2c_service_connect(self->ens160_service, &ambient_temp, NULL);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize Ens160 service");
 		return err;

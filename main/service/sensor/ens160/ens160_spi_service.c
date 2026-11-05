@@ -17,39 +17,13 @@ static const char TAG[] = "ens160";
 // (s 14.2.2, s 14.2.3).
 #define ENS160_SPI_ADDR(reg, rw) ((uint8_t)(((reg) << 1) | (rw)))
 
-// Downcast from the interface; valid because `base` is the first member.
-#define ENS160_SPI_SELF(iface) ((ens160_spi_service_t *)(iface))
-
-static esp_err_t vt_connect(iens160_service_t *iface,
-							const float *ambient_temp_celcius_opt,
-							const float *ambient_relative_humidity_opt) {
-	return ens160_spi_service_connect(ENS160_SPI_SELF(iface),
-									  ambient_temp_celcius_opt,
-									  ambient_relative_humidity_opt);
-}
-
-static esp_err_t vt_read_air_data(iens160_service_t *iface,
-								  ens_160_read_info_t *out_info) {
-	return ens160_spi_service_read_air_data(ENS160_SPI_SELF(iface), out_info);
-}
-
-static void vt_deinit(iens160_service_t *iface) {
-	ens160_spi_service_deinit(ENS160_SPI_SELF(iface));
-}
-
-static const iens160_service_vtable_t ENS160_SPI_SERVICE_VTABLE = {
-	.connect = vt_connect,
-	.read_air_data = vt_read_air_data,
-	.deinit = vt_deinit,
-};
-
 // Switches to standard (continuous) measurement and standard power mode.
 static esp_err_t set_normal_mode(ens160_spi_service_t *self) {
 	uint8_t tx_data[2] = {
 		ENS160_SPI_ADDR(ENS160_OP_MODE_ADDR, ENS160_WRITE_BIT),
 		ENS160_NORMAL_MODE,
 	};
-	esp_err_t err = ispi_service_write_byte(self->spi_svc, self->device_handle,
+	esp_err_t err = spi_service_write_byte(self->spi_svc, self->device_handle,
 											tx_data, sizeof(tx_data));
 	if (err != ESP_OK) {
 		return err;
@@ -69,7 +43,7 @@ static esp_err_t write_u16(ens160_spi_service_t *self, uint8_t reg,
 		ENS160_SPI_ADDR(reg + 1, ENS160_WRITE_BIT),
 		(uint8_t)(value >> 8), // MSB
 	};
-	return ispi_service_write_byte(self->spi_svc, self->device_handle, buffer,
+	return spi_service_write_byte(self->spi_svc, self->device_handle, buffer,
 								   sizeof(buffer));
 }
 
@@ -90,9 +64,8 @@ static esp_err_t set_compensation_values(ens160_spi_service_t *self,
 }
 
 void ens160_spi_service_init(ens160_spi_service_t *self,
-							 ispi_service_t *spi_svc) {
+							 spi_service_t *spi_svc) {
 	memset(self, 0, sizeof(*self));
-	self->base.vtable = &ENS160_SPI_SERVICE_VTABLE;
 	self->spi_svc = spi_svc;
 }
 
@@ -100,7 +73,7 @@ void ens160_spi_service_deinit(ens160_spi_service_t *self) {
 	if (!self->subscribed) {
 		return;
 	}
-	ispi_service_unsubscribe(self->spi_svc, self->device_handle);
+	spi_service_unsubscribe(self->spi_svc, self->device_handle);
 	self->subscribed = false;
 }
 
@@ -109,7 +82,7 @@ ens160_spi_service_connect(ens160_spi_service_t *self,
 						   const float *ambient_temp_celcius_opt,
 						   const float *ambient_relative_humidity_opt) {
 	spi_device_interface_config_t devcfg =
-		ispi_service_create_default_device_config(self->spi_svc, PIN_NUM_CS);
+		spi_service_create_default_device_config(self->spi_svc, PIN_NUM_CS);
 	// Pins 18/19/23 route through the GPIO matrix on SPI2_HOST, so
 	// full-duplex MISO sampling shifts one bit late above ~8 MHz; keep the
 	// clock below that
@@ -124,7 +97,7 @@ ens160_spi_service_connect(ens160_spi_service_t *self,
 	devcfg.cs_ena_pretrans = 1;
 
 	esp_err_t err =
-		ispi_service_subscribe(self->spi_svc, &self->device_handle, devcfg);
+		spi_service_subscribe(self->spi_svc, &self->device_handle, devcfg);
 	if (err != ESP_OK) {
 		return err;
 	}
@@ -132,7 +105,7 @@ ens160_spi_service_connect(ens160_spi_service_t *self,
 
 	uint8_t rx_data[3] = {7, 7, 7};
 	uint8_t tx_data[3] = {ENS160_SPI_ADDR(ENS160_REG_ID, ENS160_READ_BIT)};
-	err = ispi_service_read_write_byte(self->spi_svc, self->device_handle,
+	err = spi_service_read_write_byte(self->spi_svc, self->device_handle,
 									   rx_data, tx_data, sizeof(rx_data));
 	if (err != ESP_OK) {
 		return err;
@@ -154,7 +127,7 @@ esp_err_t ens160_spi_service_read_air_data(ens160_spi_service_t *self,
 	uint8_t rx_data[1 + 5] = {0};
 	uint8_t tx_data[1 + 5] = {ENS160_SPI_ADDR(ENS160_AQI_REG, ENS160_READ_BIT)};
 
-	esp_err_t err = ispi_service_read_write_byte(
+	esp_err_t err = spi_service_read_write_byte(
 		self->spi_svc, self->device_handle, rx_data, tx_data, sizeof(rx_data));
 	if (err != ESP_OK) {
 		memset(out_info, 0, sizeof(*out_info));

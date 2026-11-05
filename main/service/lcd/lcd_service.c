@@ -9,29 +9,7 @@
 
 #include <string.h>
 
-// Downcast from the interface; valid because `base` is the first member.
-#define LCD_SELF(iface) ((lcd_service_t *)(iface))
-
-static esp_err_t vt_send_text(ilcd_service_t *iface, const char *text) {
-	return lcd_service_send_text(LCD_SELF(iface), text);
-}
-
-static esp_err_t vt_clear(ilcd_service_t *iface) {
-	return lcd_service_clear(LCD_SELF(iface));
-}
-
-static void vt_deinit(ilcd_service_t *iface) {
-	lcd_service_deinit(LCD_SELF(iface));
-}
-
-static const ilcd_service_vtable_t LCD_SERVICE_VTABLE = {
-	.send_text = vt_send_text,
-	.clear = vt_clear,
-	.deinit = vt_deinit,
-};
-
 esp_err_t lcd_service_init(lcd_service_t *self) {
-	self->base.vtable = &LCD_SERVICE_VTABLE;
 	self->uart_num = LCD_UART_NUM;
 	self->uart_config = (uart_config_t){
 		.baud_rate = LCD_BAUD_RATE,

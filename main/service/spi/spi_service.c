@@ -6,54 +6,7 @@
 
 #include <driver/gpio.h>
 
-// Downcast from the interface; valid because `base` is the first member.
-#define SPI_SELF(iface) ((spi_service_t *)(iface))
-#define SPI_CONST_SELF(iface) ((const spi_service_t *)(iface))
-
-static spi_device_interface_config_t
-vt_create_default_device_config(ispi_service_t *iface, uint8_t pin_gpio) {
-	return spi_service_create_default_device_config(SPI_SELF(iface), pin_gpio);
-}
-
-static esp_err_t vt_subscribe(ispi_service_t *iface, spi_device_handle_t *spi,
-							  spi_device_interface_config_t devcfg) {
-	return spi_service_subscribe(SPI_SELF(iface), spi, devcfg);
-}
-
-static esp_err_t vt_unsubscribe(ispi_service_t *iface,
-								spi_device_handle_t spi) {
-	return spi_service_unsubscribe(SPI_SELF(iface), spi);
-}
-
-static esp_err_t vt_read_write_byte(const ispi_service_t *iface,
-									spi_device_handle_t spi, uint8_t *rx_data,
-									const uint8_t *tx_data, size_t byte_size) {
-	return spi_service_read_write_byte(SPI_CONST_SELF(iface), spi, rx_data,
-									   tx_data, byte_size);
-}
-
-static esp_err_t vt_write_byte(const ispi_service_t *iface,
-							   spi_device_handle_t spi, const uint8_t *tx_data,
-							   size_t byte_size) {
-	return spi_service_write_byte(SPI_CONST_SELF(iface), spi, tx_data,
-								  byte_size);
-}
-
-static void vt_deinit(ispi_service_t *iface) {
-	spi_service_deinit(SPI_SELF(iface));
-}
-
-static const ispi_service_vtable_t SPI_SERVICE_VTABLE = {
-	.create_default_device_config = vt_create_default_device_config,
-	.subscribe = vt_subscribe,
-	.unsubscribe = vt_unsubscribe,
-	.read_write_byte = vt_read_write_byte,
-	.write_byte = vt_write_byte,
-	.deinit = vt_deinit,
-};
-
 esp_err_t spi_service_init(spi_service_t *self) {
-	self->base.vtable = &SPI_SERVICE_VTABLE;
 	self->host = SPI2_HOST;
 
 	spi_bus_config_t buscfg = {
@@ -74,7 +27,7 @@ spi_service_create_default_device_config(spi_service_t *self,
 										 uint8_t pin_gpio) {
 	(void)self;
 	spi_device_interface_config_t devcfg = {
-		.mode = 0,						  // SPI mode 0
+		.mode = 0,							// SPI mode 0
 		.clock_speed_hz = 10 * 1000 * 1000, // 10 MHz
 		.spics_io_num = pin_gpio,
 		.queue_size = 1,
